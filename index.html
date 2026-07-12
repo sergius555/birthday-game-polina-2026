@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Бортовой компьютер «Космический Единорог»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#05060e;--tab:#0b1122;--tab2:#131b31;--muted:#8b95b3;--cyan:#5fd0e6;--accent:#e6b552;--rule:rgba(190,200,230,.22);--tabh:64px;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;background:#05060e}
+  body{font-family:'Oswald',system-ui,sans-serif;-webkit-text-size-adjust:100%}
+  /* space background in the side gutters */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(1000px 800px at 80% -5%,rgba(60,90,180,.18),transparent 60%),
+      radial-gradient(900px 700px at 10% 100%,rgba(120,70,160,.14),transparent 60%),#05060e}
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;
+    background-image:radial-gradient(1.4px 1.4px at 30px 40px,#fff,transparent),
+      radial-gradient(1.1px 1.1px at 130px 90px,#cdd8ff,transparent),
+      radial-gradient(1.2px 1.2px at 210px 170px,#fff,transparent);
+    background-repeat:repeat;background-size:230px 230px}
+
+  .views{position:fixed;left:0;right:0;top:0;bottom:calc(var(--tabh) + env(safe-area-inset-bottom,0px));
+    max-width:720px;margin:0 auto;z-index:1;transition:bottom .35s ease}
+  .views iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:var(--bg)}
+  .views iframe.active{display:block}
+  /* incoming-call mode: iframe covers the whole screen (full darkening), tabs hidden */
+  body.calling .views{bottom:0;max-width:none}
+  body.calling .tabs{transform:translateY(140%);pointer-events:none}
+
+  .tabs{position:fixed;left:0;right:0;bottom:0;max-width:720px;margin:0 auto;z-index:10;display:flex;transition:transform .35s ease;
+    height:calc(var(--tabh) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+    background:linear-gradient(180deg,var(--tab2),var(--tab));border-top:2px solid var(--rule);box-shadow:0 -10px 30px rgba(0,0,0,.5)}
+  .tabs button{flex:1;background:none;border:none;cursor:pointer;color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    font-family:'Oswald';text-transform:uppercase;letter-spacing:.05em;font-size:9.5px;position:relative;transition:color .2s;padding:0 2px}
+  .tabs button .i{font-size:20px;line-height:1;filter:grayscale(.4) opacity(.8)}
+  .tabs button .badge{position:absolute;top:8px;right:calc(50% - 18px);width:8px;height:8px;border-radius:50%;background:#ff5468;box-shadow:0 0 7px #ff5468;display:none}
+  .tabs button.notify .badge{display:block}
+  .tabs button+button{border-left:1px solid rgba(190,200,230,.1)}
+  .tabs button.active{color:var(--cyan)}
+  .tabs button.active .i{filter:none}
+  .tabs button.active::before{content:"";position:absolute;top:0;left:20%;right:20%;height:3px;background:var(--cyan);border-radius:0 0 3px 3px;box-shadow:0 0 10px var(--cyan)}
+  .tabs button:active{transform:scale(.95)}
+</style>
+</head>
+<body>
+  <div class="views">
+    <iframe id="f-hyper"  class="active" src="Гиперсвязь.html" title="Гиперсвязь"></iframe>
+    <iframe id="f-gazeta"            src="vestnik.html"         title="Газета"></iframe>
+    <iframe id="f-nav"               src="Навигация.html"       title="Навигация"></iframe>
+    <iframe id="f-ship"              src="Корабль.html"         title="Корабль"></iframe>
+    <iframe id="f-log"               src="Журнал.html"          title="Журнал"></iframe>
+  </div>
+
+  <nav class="tabs">
+    <button data-t="hyper"  class="active"><span class="i">📡</span>Гиперсвязь<span class="badge"></span></button>
+    <button data-t="gazeta"><span class="i">📰</span>Газета<span class="badge"></span></button>
+    <button data-t="nav"><span class="i">🧭</span>Навигация<span class="badge"></span></button>
+    <button data-t="ship"><span class="i">🚀</span>Корабль<span class="badge"></span></button>
+    <button data-t="log"><span class="i">❑</span>Журнал<span class="badge"></span></button>
+  </nav>
+
+<script>
+  const frames={hyper:'f-hyper',gazeta:'f-gazeta',nav:'f-nav',ship:'f-ship',log:'f-log'};
+  const btns=[...document.querySelectorAll('.tabs button')];
+  let current='hyper';
+
+  // ---- global saved progress (localStorage lives in this TOP window — reliable on file://) ----
+  const STORE='edinorog_state';
+  const DEFAULT={level:1,callSeen:false,mailRead:[],mailLater:false,ship:''};
+  // read from localStorage (survives tab close) or window.name (survives reload even when file:// storage is blocked, e.g. Safari)
+  function readRaw(){
+    try{ const v=localStorage.getItem(STORE); if(v) return v; }catch(e){}
+    try{ if((window.name||'').indexOf('EDST:')===0) return window.name.slice(5); }catch(e){}
+    return null;
+  }
+  function loadState(){ try{return Object.assign({},DEFAULT,JSON.parse(readRaw()||'{}'));}catch(e){return Object.assign({},DEFAULT);} }
+  function saveState(){ const j=JSON.stringify(gameState);
+    try{ localStorage.setItem(STORE,j); }catch(e){}
+    try{ window.name='EDST:'+j; }catch(e){}
+  }
+  // сброс прогресса: открыть index.html#reset (или ?reset)
+  if(location.hash==='#reset' || location.search.indexOf('reset')>=0){
+    try{localStorage.removeItem(STORE);}catch(e){}
+    try{window.name='';}catch(e){}
+    try{location.replace(location.pathname);}catch(e){}
+  }
+  let gameState=loadState();
+  function applySet(key,val){
+    if(key==='level') gameState.level=Math.max(gameState.level||1, parseInt(val,10)||1);
+    else if(key==='callSeen') gameState.callSeen=true;
+    else if(key==='mailLater') gameState.mailLater=true;
+    else if(key==='mailRead'){ gameState.mailRead=gameState.mailRead||[]; if(!gameState.mailRead.includes(val)) gameState.mailRead.push(val); }
+    else if(key==='ship') gameState.ship=val;
+    else return;
+    saveState();
+  }
+  function pushState(win){ try{ win.postMessage('state:'+JSON.stringify(gameState),'*'); }catch(e){} }
+
+  function frameEl(name){return document.getElementById(frames[name]);}
+  function activate(name){
+    if(!frames[name]||name===current)return;
+    if(current==='hyper'){ try{frameEl('hyper').contentWindow.postMessage('pause','*');}catch(e){} }
+    Object.keys(frames).forEach(k=>frameEl(k).classList.toggle('active',k===name));
+    btns.forEach(b=>{ b.classList.toggle('active',b.dataset.t===name); if(b.dataset.t===name) b.classList.remove('notify'); });
+    current=name;
+  }
+  btns.forEach(b=>b.addEventListener('click',()=>activate(b.dataset.t)));
+
+  // push saved state to each page as it loads (covers the request/reply race)
+  Object.keys(frames).forEach(k=>{ const f=frameEl(k); f.addEventListener('load',()=>pushState(f.contentWindow)); });
+
+  // pages inside can: request/update saved state, switch tab, raise notifications
+  window.addEventListener('message',(e)=>{
+    if(typeof e.data!=='string')return;
+    const d=e.data;
+    if(d==='req:state'){ if(e.source) pushState(e.source); return; }
+    if(d.indexOf('set:')===0){ const p=d.split(':'); applySet(p[1],p.slice(2).join(':'));
+      Object.keys(frames).forEach(k=>pushState(frameEl(k).contentWindow)); return; }   // разослать обновлённое состояние всем вкладкам
+    if(d.indexOf('tab:')===0) activate(d.slice(4));
+    if(d==='call:on') document.body.classList.add('calling');
+    if(d==='call:off') document.body.classList.remove('calling');
+    if(d.indexOf('notify:')===0){ const n=d.slice(7); const b=btns.find(x=>x.dataset.t===n); if(b&&n!==current)b.classList.add('notify'); }
+  });
+
+  // initial broadcast in case an iframe finished loading before listeners were ready
+  Object.keys(frames).forEach(k=>pushState(frameEl(k).contentWindow));
+</script>
+</body>
+</html>

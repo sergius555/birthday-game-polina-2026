@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Бортовой навигатор «Пегас»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Oswald:wght@300;400;500;600;700&family=Share+Tech+Mono&family=PT+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#05060e;--panel1:#141b30;--panel2:#0e1425;--ink:#e7e3d5;--head:#fbf9f1;--muted:#9aa3bd;
+    --rule:rgba(190,200,230,.28);--rule-soft:rgba(190,200,230,.16);--accent:#e6b552;--cyan:#5fd0e6;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{background:#05060e;font-family:'PT Serif',Georgia,serif;color:var(--ink);
+    padding:18px 12px 28px;-webkit-text-size-adjust:100%;display:flex;justify-content:center}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(1000px 700px at 84% 4%,rgba(70,100,200,.22),transparent 62%),
+      radial-gradient(820px 620px at 8% 92%,rgba(140,80,180,.18),transparent 60%),
+      radial-gradient(1400px 1000px at 50% 40%,rgba(18,28,64,.55),transparent 72%),#05060e;}
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.8;
+    background-image:radial-gradient(1.4px 1.4px at 24px 32px,#fff,transparent),
+      radial-gradient(1.1px 1.1px at 96px 70px,#dce8ff,transparent),
+      radial-gradient(1px 1px at 150px 20px,#fff,transparent),
+      radial-gradient(1.1px 1.1px at 56px 130px,#fff,transparent);
+    background-repeat:repeat;background-size:200px 200px;animation:tw 5s ease-in-out infinite}
+  @keyframes tw{0%,100%{opacity:.8}50%{opacity:.5}}
+
+  .nav{position:relative;z-index:1;width:100%;max-width:760px;
+    background:linear-gradient(180deg,var(--panel1),var(--panel2));
+    border:2px solid var(--accent);border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 40px rgba(230,181,82,.1);overflow:hidden}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    background:rgba(230,181,82,.1);border-bottom:1px solid var(--rule);padding:9px 16px;
+    font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;color:var(--accent)}
+  .bar .r{display:inline-flex;align-items:center;gap:8px}
+  .bar .r i{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:bl 1.3s infinite}
+  @keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
+  .bar .id{font-family:'Share Tech Mono',monospace;color:var(--muted)}
+
+  .top{display:flex;gap:14px;align-items:center;padding:16px 18px 6px}
+  @media(max-width:560px){.top{flex-direction:column;text-align:center}}
+  .radar{flex:0 0 auto;width:76px;height:76px;border-radius:50%;border:1px solid var(--rule);position:relative;overflow:hidden;
+    background:radial-gradient(circle at 50% 50%,rgba(95,208,230,.12),transparent 70%)}
+  .radar::before{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,rgba(95,208,230,.5),transparent 60%);animation:spin 3s linear infinite}
+  .radar::after{content:"";position:absolute;inset:24px;border:1px solid var(--rule-soft);border-radius:50%}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .top h1{font-family:'Playfair Display';font-weight:900;color:var(--head);font-size:clamp(20px,3.6vw,26px);text-transform:uppercase}
+  .top p{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+
+  .display{margin:10px 18px;border:1px solid var(--rule);border-radius:8px;background:#070c1e;
+    padding:12px 14px;font-family:'Share Tech Mono',monospace}
+  .display .lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+  .display .val{font-size:26px;color:var(--head);letter-spacing:.12em;min-height:32px;word-break:break-word}
+  .display .val .cur{color:var(--cyan);animation:bl .8s steps(1) infinite}
+  .display.err{border-color:#ff8091;animation:shake .4s}
+  @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .hud{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:8px;
+    font-size:10px;letter-spacing:.06em;color:var(--muted)}
+  .hud b{color:var(--cyan)}
+
+  .kb{padding:2px 14px 6px}
+  .row{display:flex;justify-content:center;gap:6px;margin-bottom:6px;flex-wrap:nowrap}
+  .k{flex:1 1 auto;max-width:52px;min-width:0;height:44px;border:1px solid var(--rule);border-radius:7px;
+    background:rgba(95,208,230,.06);color:var(--head);font-family:'Oswald';font-size:17px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center}
+  .k:active{transform:scale(.93);background:rgba(95,208,230,.18)}
+  .k.wide{max-width:none;flex:2}
+
+  .go-row{display:flex;gap:8px;padding:6px 14px 16px}
+  .k.back{flex:1;height:48px;font-size:15px;letter-spacing:.06em}
+  #go{flex:2;height:48px;border:none;border-radius:8px;font-family:'Oswald';font-weight:700;text-transform:uppercase;
+    letter-spacing:.16em;font-size:16px;color:#08131f;background:linear-gradient(180deg,#7ee1f2,#37b7d0);cursor:pointer;
+    box-shadow:0 0 20px rgba(95,208,230,.45);display:flex;align-items:center;justify-content:center;gap:8px}
+  #go:active{transform:scale(.98)}
+
+  /* WARP + arrival */
+  #warp{position:fixed;inset:0;z-index:40;display:none;background:#02030a}
+  #warp.show{display:block}
+  #warp canvas{position:absolute;inset:0;width:100%;height:100%}
+  #warp .cap{position:absolute;left:0;right:0;bottom:16%;text-align:center;color:var(--cyan);
+    font-family:'Oswald';text-transform:uppercase;letter-spacing:.34em;font-size:15px;text-shadow:0 0 16px rgba(95,208,230,.7)}
+  #warp .prog{position:absolute;left:20%;right:20%;bottom:13%;height:4px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden}
+  #warp .prog b{display:block;height:100%;width:0;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+
+  #arrive{position:fixed;inset:0;z-index:41;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;
+    background:radial-gradient(circle at 50% 45%,rgba(10,16,38,.92),rgba(3,4,10,.98))}
+  #arrive.show{display:flex}
+  #arrive .k{font-family:'Oswald';text-transform:uppercase;letter-spacing:.3em;font-size:13px;color:var(--cyan)}
+  #arrive .planet{width:150px;height:150px;border-radius:50%;margin:6px 0;
+    background:radial-gradient(circle at 35% 30%,#7ad0a0,#3f8f6b 45%,#245a44 78%,#12331f);
+    box-shadow:0 0 60px rgba(120,220,170,.55),inset -16px -12px 34px rgba(0,0,0,.5);position:relative;animation:hue 12s linear infinite}
+  #arrive .planet::after{content:"";position:absolute;left:-18%;top:44%;width:136%;height:16%;border-radius:50%;
+    background:linear-gradient(90deg,transparent,rgba(230,181,82,.6),transparent);transform:rotate(-18deg)}
+  @keyframes hue{to{filter:hue-rotate(24deg)}}
+  #arrive .big{font-family:'Playfair Display';font-weight:900;font-size:52px;color:var(--head);letter-spacing:.06em;text-shadow:0 0 30px rgba(120,220,170,.5)}
+  #arrive .sub{font-family:'PT Serif';font-style:italic;color:#cfe0ff;font-size:16px;max-width:380px}
+  #arrive .cont{margin-top:8px;font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:13px;
+    color:#08131f;background:var(--accent);border:none;border-radius:30px;padding:12px 30px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="bar"><span class="r"><i></i>Бортовой навигатор</span><span class="id">СИСТ. «ПЕГАС» · гипердвигатель готов</span></div>
+
+  <div class="top">
+    <div class="radar"></div>
+    <div>
+      <h1>Проложить курс</h1>
+      <p>Введи пункт назначения — название планеты или координаты — и нажми «Вперёд». Гипердвигатель совершит прыжок.</p>
+    </div>
+  </div>
+
+  <div class="display" id="disp">
+    <div class="lbl">Пункт назначения</div>
+    <div class="val" id="val"><span class="cur">▋</span></div>
+    <div class="hud"><span>Топливо: <b>78%</b></span><span>Двигатель: <b>ГОТОВ</b></span><span>Сектор: <b>Солнечный</b></span></div>
+  </div>
+
+  <div class="kb" id="kb"></div>
+  <div class="go-row">
+    <button class="k back" id="back">⌫ Стереть</button>
+    <button id="go">▶ Вперёд</button>
+  </div>
+</div>
+
+<!-- WARP -->
+<div id="warp"><canvas id="cv"></canvas><div class="prog"><b id="pb"></b></div><div class="cap" id="wcap">Гиперпрыжок…</div></div>
+
+<!-- ARRIVAL -->
+<div id="arrive">
+  <div class="k">✦ Прибытие ✦</div>
+  <div class="planet"></div>
+  <div class="big" id="arrName">БЛУК</div>
+  <div class="sub" id="arrSub">Мы на планете Блук. Здесь начинается охота за Крысом — следующий уровень.</div>
+  <button class="cont" id="cont">Высадиться →</button>
+</div>
+
+<script>
+  // ===== настройки уровня (меняются на следующих уровнях) =====
+  const TARGETS=['БЛУК','BLUK'];         // допустимые ответы (название/лат.)
+  const ARRIVE_NAME='БЛУК';
+  const ARRIVE_SUB='Мы на планете Блук. Здесь начинается охота за Крысом — следующий уровень.';
+  // ============================================================
+
+  let text='';
+  const val=document.getElementById('val');
+  function render(){ val.innerHTML=(text||'')+'<span class="cur">▋</span>'; }
+  function add(ch){ if(text.length<14){ text+=ch; render(); } }
+  function back(){ text=text.slice(0,-1); render(); }
+
+  // keyboard: ЙЦУКЕН + цифры
+  const rows=[
+    'Й Ц У К Е Н Г Ш Щ З Х Ъ',
+    'Ф Ы В А П Р О Л Д Ж Э',
+    'Я Ч С М И Т Ь Б Ю Ё',
+    '1 2 3 4 5 6 7 8 9 0 -'
+  ];
+  const kb=document.getElementById('kb');
+  rows.forEach(r=>{const row=document.createElement('div');row.className='row';
+    r.split(' ').forEach(ch=>{const b=document.createElement('button');b.className='k';b.textContent=ch;
+      b.addEventListener('click',()=>add(ch));row.appendChild(b);});kb.appendChild(row);});
+  document.getElementById('back').addEventListener('click',back);
+
+  // WARP starfield
+  const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+  let stars=[],warpRAF=null;
+  function resize(){cv.width=innerWidth;cv.height=innerHeight;}
+  function warp(){
+    resize();const cx=cv.width/2,cy=cv.height/2;
+    stars=[];for(let i=0;i<320;i++)stars.push({x:(Math.random()*2-1)*cv.width,y:(Math.random()*2-1)*cv.height,z:Math.random()*cv.width});
+    let speed=6;const t0=performance.now();
+    (function loop(now){
+      ctx.fillStyle='rgba(2,3,10,.35)';ctx.fillRect(0,0,cv.width,cv.height);
+      speed=6+(now-t0)/120;
+      for(const s of stars){
+        const pz=s.z;s.z-=speed;if(s.z<1){s.z=cv.width;s.x=(Math.random()*2-1)*cv.width;s.y=(Math.random()*2-1)*cv.height;}
+        const k=128/s.z,k0=128/pz;
+        const x=cx+s.x*k,y=cy+s.y*k,x0=cx+s.x*k0,y0=cy+s.y*k0;
+        const a=Math.min(1,(cv.width-s.z)/cv.width+.2);
+        ctx.strokeStyle='rgba('+ (170+Math.floor(60*a)) +','+ (210) +',255,'+a+')';
+        ctx.lineWidth=Math.max(1,2.4*k);ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x,y);ctx.stroke();
+      }
+      warpRAF=requestAnimationFrame(loop);
+    })(t0);
+  }
+  function stopWarp(){ if(warpRAF)cancelAnimationFrame(warpRAF); warpRAF=null; }
+
+  document.getElementById('go').addEventListener('click',()=>{
+    const guess=text.trim().toUpperCase();
+    if(!guess){flashErr();return;}
+    if(TARGETS.includes(guess)){ launch(); }
+    else { flashErr(); }
+  });
+  function flashErr(){const d=document.getElementById('disp');d.classList.add('err');setTimeout(()=>d.classList.remove('err'),450);
+    document.getElementById('val').innerHTML='<span style="color:#ff8091">Курс не распознан</span>';setTimeout(render,900);}
+
+  function launch(){
+    document.getElementById('warp').classList.add('show');
+    document.getElementById('wcap').textContent='Гиперпрыжок на «'+ (text.trim().toUpperCase()) +'»…';
+    warp();
+    const pb=document.getElementById('pb');let p=0;
+    const pi=setInterval(()=>{p+=2+Math.random()*3;pb.style.width=Math.min(100,p)+'%';if(p>=100)clearInterval(pi);},70);
+    setTimeout(()=>{
+      stopWarp();
+      document.getElementById('warp').classList.remove('show');
+      document.getElementById('arrName').textContent=ARRIVE_NAME;
+      document.getElementById('arrSub').textContent=ARRIVE_SUB;
+      document.getElementById('arrive').classList.add('show');
+    },3600);
+  }
+
+  document.getElementById('cont').addEventListener('click',()=>{
+    document.getElementById('arrive').classList.remove('show');
+    // сюда позже подключим переход на следующий уровень (напр. postMessage в оболочку)
+    try{ if(window.parent!==window) window.parent.postMessage('level:bluk','*'); }catch(e){}
+  });
+
+  window.addEventListener('resize',()=>{ if(warpRAF)resize(); });
+  render();
+</script>
+</body>
+</html>

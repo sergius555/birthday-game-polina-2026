@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Журнал заданий</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--muted:#9aa3bd;--head:#fbf9f1;--rule:rgba(190,200,230,.2);}
+  *{box-sizing:border-box;margin:0;padding:0}html,body{min-height:100%}
+  body{background:#05060e;color:var(--muted);font-family:'Oswald',system-ui,sans-serif;min-height:100vh;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(1000px 700px at 50% 30%,rgba(30,45,90,.4),transparent 60%),#05060e}
+  body::after{content:"";position:fixed;inset:0;z-index:0;opacity:.6;pointer-events:none;
+    background-image:radial-gradient(1.3px 1.3px at 30px 40px,#fff,transparent),radial-gradient(1px 1px at 130px 90px,#cdd,transparent);
+    background-repeat:repeat;background-size:220px 220px}
+  .c{position:relative;z-index:1}
+  .ic{font-size:44px;opacity:.5}
+  h1{font-family:'Playfair Display';font-weight:700;color:var(--head);font-size:24px;margin:12px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+  p{font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+</style></head>
+<body>
+  <div class="c">
+    <div class="ic">❑</div>
+    <h1>Журнал заданий</h1>
+    <p>раздел появится позже</p>
+  </div>
+</body></html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Космограмма — Алиса Селезнёва</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,600;1,700&family=Oswald:wght@300;400;500;600;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05060e;--panel1:#141b30;--panel2:#0e1425;
+    --ink:#e7e3d5;--head:#fbf9f1;--muted:#9aa3bd;
+    --rule:rgba(190,200,230,.28);--rule-soft:rgba(190,200,230,.16);--accent:#e6b552;--cyan:#5fd0e6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:#05060e;font-family:'PT Serif',Georgia,serif;color:var(--ink);
+    min-height:100%;padding:24px 14px;-webkit-text-size-adjust:100%;
+    display:flex;align-items:center;justify-content:center}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1000px 700px at 84% 4%, rgba(70,100,200,.22), transparent 62%),
+      radial-gradient(820px 620px at 8% 92%, rgba(140,80,180,.18), transparent 60%),
+      radial-gradient(700px 520px at 60% 55%, rgba(40,120,150,.12), transparent 60%),
+      radial-gradient(1400px 1000px at 50% 40%, rgba(18,28,64,.55), transparent 72%),#05060e;}
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.9;
+    background-image:
+      radial-gradient(1.6px 1.6px at 24px 32px,#fff,transparent),
+      radial-gradient(1.3px 1.3px at 96px 70px,#dce8ff,transparent),
+      radial-gradient(1px 1px at 150px 20px,#fff,transparent),
+      radial-gradient(1.2px 1.2px at 56px 130px,#fff,transparent),
+      radial-gradient(1px 1px at 170px 150px,#bcd2ff,transparent),
+      radial-gradient(1.7px 1.7px at 128px 24px,#fff,transparent),
+      radial-gradient(1px 1px at 40px 96px,#cfe0ff,transparent);
+    background-repeat:repeat;background-size:200px 200px;animation:tw 5s ease-in-out infinite}
+  @keyframes tw{0%,100%{opacity:.9}50%{opacity:.55}}
+  #sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .meteor{position:fixed;width:3px;height:3px;border-radius:50%;background:#fff;
+    box-shadow:0 0 8px 2px rgba(255,255,255,.9);opacity:0}
+  .meteor::after{content:"";position:absolute;top:50%;left:2px;width:120px;height:1.4px;
+    transform:translateY(-50%);background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(180,210,255,.3),transparent)}
+
+  /* ---------- INCOMING CALL ---------- */
+  #conn{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 42%, rgba(12,18,40,.35), rgba(5,6,14,.86));
+    transition:opacity .5s ease}
+  #conn.hide{opacity:0;pointer-events:none}
+  .hail{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;
+    gap:12px;text-align:center;padding:24px}
+  .hail .badge{font-family:'Share Tech Mono',monospace;letter-spacing:.14em;font-size:11px;
+    color:var(--cyan);text-transform:uppercase;opacity:.9}
+  .avatarwrap{position:relative;width:132px;height:132px;display:flex;align-items:center;justify-content:center;margin:8px 0}
+  .avatarwrap::before,.avatarwrap::after{content:"";position:absolute;width:132px;height:132px;border-radius:50%;
+    border:2px solid rgba(95,208,230,.55);animation:ping 2.2s ease-out infinite}
+  .avatarwrap::after{animation-delay:1.1s}
+  @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.3);opacity:0}}
+  .avatar{width:132px;height:132px;border-radius:50%;overflow:hidden;position:relative;z-index:2;
+    border:2px solid var(--cyan);box-shadow:0 0 34px rgba(95,208,230,.55);
+    background:linear-gradient(160deg,#0b1a3a,#0a1230)}
+  .avatar img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+  .avatar .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--cyan)}
+  .avatar .ph svg{width:60px;height:60px;opacity:.85}
+  .avatar .scan{position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(95,208,230,.12) 0 1px,transparent 1px 3px);animation:scanp 5s linear infinite}
+  @keyframes scanp{from{background-position:0 0}to{background-position:0 60px}}
+  .hail .title{font-family:'Oswald';text-transform:uppercase;letter-spacing:.2em;font-size:13px;color:var(--head);
+    max-width:320px;line-height:1.5}
+  .hail .name{font-family:'Playfair Display';font-weight:700;font-size:28px;color:var(--head)}
+  .hail .sub{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:.06em}
+  #accept{margin-top:12px;font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.18em;
+    font-size:16px;color:#08131f;background:linear-gradient(180deg,#7ee1f2,#37b7d0);border:none;border-radius:44px;
+    padding:15px 48px;cursor:pointer;box-shadow:0 0 24px rgba(95,208,230,.5);animation:btnpulse 1.6s infinite;
+    display:inline-flex;align-items:center;gap:10px}
+  #accept .dot{width:10px;height:10px;border-radius:50%;background:#0a5a2a;box-shadow:0 0 0 3px rgba(10,120,50,.35)}
+  @keyframes btnpulse{0%,100%{box-shadow:0 0 20px rgba(95,208,230,.4)}50%{box-shadow:0 0 36px rgba(95,208,230,.8)}}
+  #accept:active{transform:scale(.97)}
+  .hail .hint{font-family:'Oswald';text-transform:uppercase;letter-spacing:.12em;font-size:10px;color:var(--muted)}
+
+  /* ---------- transmission panel (letter) ---------- */
+  .cg{position:relative;z-index:1;width:100%;max-width:640px;
+    background:linear-gradient(180deg,var(--panel1),var(--panel2));
+    border:2px solid var(--accent);border-radius:12px;
+    box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 40px rgba(230,181,82,.12);
+    overflow:hidden;opacity:0;transform:translateY(14px);
+    transition:opacity .8s ease,transform .8s ease}
+  .cg.show{opacity:1;transform:none}
+  .cg::before,.cg::after{content:"";position:absolute;width:20px;height:20px;pointer-events:none;z-index:6}
+  .cg::before{top:8px;left:8px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)}
+  .cg::after{bottom:8px;right:8px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)}
+  .crt{position:absolute;inset:0;z-index:5;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.10) 0 2px,transparent 2px 4px);mix-blend-mode:overlay;opacity:.5}
+  .crt::after{content:"";position:absolute;left:0;right:0;height:140px;top:-140px;
+    background:linear-gradient(rgba(95,208,230,.07),transparent);animation:sweep 7s linear infinite}
+  @keyframes sweep{to{top:100%}}
+
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    background:rgba(230,181,82,.1);border-bottom:1px solid var(--rule);
+    padding:9px 16px 9px 38px;font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;color:var(--accent)}
+  .bar .rec{display:inline-flex;align-items:center;gap:8px}
+  .bar .rec i{width:9px;height:9px;border-radius:50%;background:#ff5468;box-shadow:0 0 8px #ff5468;animation:blink 1.1s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .bar .hud{display:inline-flex;align-items:center;gap:12px;color:var(--muted)}
+  .bar .sig{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
+  .bar .sig b{width:3px;background:var(--cyan);border-radius:1px;display:inline-block;opacity:.9}
+  .bar .sig b:nth-child(1){height:4px}.bar .sig b:nth-child(2){height:6px}
+  .bar .sig b:nth-child(3){height:9px}.bar .sig b:nth-child(4){height:12px}
+  .bar .tmr{font-family:'Share Tech Mono',monospace;letter-spacing:.05em;color:var(--cyan)}
+
+  .body{padding:20px 22px 6px}
+  .head-row{display:flex;gap:18px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--rule);margin-bottom:16px}
+  @media(max-width:520px){.head-row{flex-direction:column;text-align:center;gap:12px}}
+  .portrait{flex:0 0 auto;width:152px;height:178px;position:relative;border:2px solid var(--cyan);
+    border-radius:8px;overflow:hidden;background:linear-gradient(160deg,#0b1a3a,#0a1230);box-shadow:0 0 26px rgba(95,208,230,.3)}
+  .portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;filter:saturate(1.05) contrast(1.03)}
+  .portrait .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    color:var(--cyan);font-family:'Oswald';font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:10px}
+  .portrait .ph svg{width:52px;height:52px;opacity:.8}
+  .portrait .scan{position:absolute;inset:0;pointer-events:none;z-index:2;
+    background:repeating-linear-gradient(0deg,rgba(95,208,230,.10) 0 1px,transparent 1px 3px);animation:scanp 5s linear infinite}
+  .portrait .tag{position:absolute;top:6px;left:6px;z-index:3;font-family:'Oswald';font-size:8.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--cyan);background:rgba(7,9,18,.72);border:1px solid rgba(95,208,230,.5);border-radius:3px;padding:2px 6px}
+  .portrait .wave{position:absolute;bottom:7px;left:8px;right:8px;height:20px;z-index:3;display:flex;align-items:flex-end;gap:3px}
+  .portrait .wave i{flex:1;background:var(--cyan);border-radius:2px;opacity:.85;animation:eq 1s infinite ease-in-out}
+  @keyframes eq{0%,100%{height:18%}50%{height:100%}}
+  .portrait{animation:flick 6.5s infinite}
+  @keyframes flick{0%,96%,100%{filter:none}97%{filter:brightness(1.25)}98%{filter:brightness(.85)}}
+
+  .who{flex:1 1 auto;min-width:0}
+  .who .from{font-family:'Playfair Display';font-weight:700;color:var(--head);font-size:24px;line-height:1.1;animation:glitch 8s infinite}
+  @keyframes glitch{0%,96.5%,100%{text-shadow:none;transform:none}
+    97%{transform:translateX(1px);text-shadow:-1px 0 var(--cyan),1px 0 #ff5468}
+    98%{transform:translateX(-1px);text-shadow:1px 0 var(--cyan),-1px 0 #ff5468}98.5%{transform:none}}
+  .who .role{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--cyan);margin-top:5px}
+  .who .to{font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;font-size:11px;color:var(--muted);margin-top:9px}
+  .who .to b{color:var(--accent)}
+
+  .letter p{font-size:15.5px;line-height:1.62;margin-bottom:12px;color:var(--ink)}
+  .letter p.hi{font-family:'Playfair Display';font-style:italic;font-weight:600;font-size:18px;color:var(--head);margin-bottom:14px}
+  .letter b{color:var(--head)}
+  .letter .warn{color:var(--accent);font-weight:700}
+
+  .callout{margin:16px 0 4px;border:1px solid var(--accent);border-left:4px solid var(--accent);
+    background:rgba(230,181,82,.08);padding:12px 15px;font-family:'PT Serif';font-size:14.5px;color:#f0e7cf;
+    display:flex;gap:10px;align-items:flex-start;border-radius:4px}
+  .callout .ic{font-size:18px;line-height:1.2}
+  .callout b{color:var(--accent)}
+  .callout .go{display:inline-flex;align-items:center;gap:8px;margin-top:10px;font-family:'Oswald';font-weight:600;
+    text-transform:uppercase;letter-spacing:.12em;font-size:12.5px;color:#1a1305;background:var(--accent);
+    border-radius:30px;padding:9px 20px;text-decoration:none;box-shadow:0 0 18px rgba(230,181,82,.35)}
+  .callout .go:active{transform:scale(.98)}
+
+  .sign{margin-top:16px;text-align:right}
+  .sign .s{font-family:'Playfair Display';font-style:italic;font-weight:700;font-size:26px;color:var(--head)}
+  .sign .s2{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;color:var(--muted);margin-top:3px}
+
+  .status{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between;align-items:center;
+    margin-top:18px;border-top:1px solid var(--rule);background:rgba(95,208,230,.05);
+    padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:10.5px;letter-spacing:.04em;color:var(--muted)}
+  .status .ok{color:var(--cyan)}
+  .status .cur::after{content:"▋";color:var(--cyan);animation:blink 1s steps(1) infinite;margin-left:2px}
+</style>
+</head>
+<body>
+<div id="sky"></div>
+<audio id="voice" preload="auto" src="audio.mp3"></audio>
+
+<!-- INCOMING CALL SCREEN -->
+<div id="conn">
+  <div class="hail">
+    <div class="badge">◉ Гиперсвязь · защищённый канал</div>
+    <div class="avatarwrap">
+      <div class="avatar">
+        <img id="av" src="alisa.jpg" alt="Алиса"
+             onerror="this.style.display='none';document.getElementById('avph').style.display='flex';">
+        <div id="avph" class="ph" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </div>
+        <div class="scan"></div>
+      </div>
+    </div>
+    <div class="title">Вам входящее сообщение<br>по гиперсвязи</div>
+    <div class="name">Алиса Селезнёва</div>
+    <div class="sub" id="calling">борт «Пегас» · вызов…</div>
+    <button id="accept"><span class="dot"></span>Принять</button>
+    <div class="hint">нажми, чтобы принять сообщение</div>
+  </div>
+</div>
+
+<!-- LETTER -->
+<div class="cg" id="cg">
+  <div class="crt"></div>
+  <div class="bar">
+    <span class="rec"><i></i>Входящее сообщение</span>
+    <span class="hud">
+      <span class="sig"><b></b><b></b><b></b><b></b></span>
+      <span class="tmr" id="tmr">REC 00:00</span>
+    </span>
+  </div>
+
+  <div class="body">
+    <div class="head-row">
+      <div class="portrait">
+        <img id="alisa" src="alisa.jpg" alt="Алиса Селезнёва"
+             onerror="this.style.display='none';document.getElementById('ph').style.display='flex';">
+        <div id="ph" class="ph" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Фото Алисы
+        </div>
+        <span class="tag">◉ голосвязь</span>
+        <div class="scan"></div>
+        <div class="wave">
+          <i style="animation-delay:0s"></i><i style="animation-delay:.12s"></i><i style="animation-delay:.24s"></i>
+          <i style="animation-delay:.08s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.18s"></i>
+          <i style="animation-delay:.26s"></i><i style="animation-delay:.05s"></i><i style="animation-delay:.22s"></i>
+        </div>
+      </div>
+      <div class="who">
+        <div class="from">Алиса Селезнёва</div>
+        <div class="role">Экипаж корабля «Пегас»</div>
+        <div class="to">Кому: <b>Полине</b> · срочно · лично</div>
+      </div>
+    </div>
+
+    <div class="letter">
+      <p class="hi">Полина, привет! Это Алиса Селезнёва.</p>
+      <p>Прости, что так неожиданно и по секретной гиперсвязи, но случилась беда — и без тебя нам не справиться.</p>
+      <p>Космический пират <b>Крыс</b> сбежал. Он собрал целую команду и <span class="warn">напал на грузовой почтовый корабль</span>, забрав всё, что там было. А везли самое важное: абсолютное топливо <b>«галактий»</b> — учёные впервые в истории смогли создать его по секретной формуле. На таком топливе корабли долетят до самых дальних звёзд. Если «галактий» останется у Крыса, случится непоправимое.</p>
+      <p>Мы с экипажем «Пегаса» сейчас страшно далеко — на другом конце галактики, и вернуться вовремя никак не успеваем. Капитаны тоже в дальней экспедиции, до них не докричаться.</p>
+      <p>Я долго думала, кто способен всё исправить, — и поняла: <b>только ты</b>. Ты умная, смелая и никогда не сдаёшься. Пожалуйста, помоги нам вернуть топливо и останови Крыса. Я в тебя верю. Удачи, капитан Полина!</p>
+
+      <div class="callout"><span class="ic">📡</span><div>
+        <b>С чего начать:</b> открой свежий выпуск «Космического&nbsp;Вестника» — там все подробности и первая зацепка.
+        <a class="go" href="vestnik.html">📰 Открыть «Космический Вестник» →</a>
+      </div></div>
+
+      <div class="sign">
+        <div class="s">Алиса</div>
+        <div class="s2">Передано с борта «Пегаса»</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status">
+    <span><span class="ok">🔒 Канал защищён</span> · шифр 256-бит</span>
+    <span class="cur">Сообщение декодировано</span>
+  </div>
+</div>
+
+<script>
+  const conn=document.getElementById('conn'), cg=document.getElementById('cg');
+  const voice=document.getElementById('voice');
+  let timerStarted=false;
+  function startTimer(){ if(timerStarted)return; timerStarted=true; let t=0; const tmr=document.getElementById('tmr');
+    setInterval(()=>{t++;const m=String(Math.floor(t/60)).padStart(2,'0'),s=String(t%60).padStart(2,'0');if(tmr)tmr.textContent='REC '+m+':'+s;},1000); }
+  function stopVoice(){ try{ voice.pause(); }catch(e){} }
+  document.getElementById('accept').addEventListener('click',()=>{
+    conn.classList.add('hide'); cg.classList.add('show'); startTimer();
+    try{ voice.currentTime=0; voice.play().catch(()=>{}); }catch(e){}
+  });
+  // stop audio when leaving to the newspaper (switch tab if inside the tablet shell)
+  const inFrame = (window.parent && window.parent!==window);
+  const goLink=document.querySelector('.callout .go');
+  if(goLink) goLink.addEventListener('click',(e)=>{ stopVoice();
+    if(inFrame){ e.preventDefault(); try{ window.parent.postMessage('tab:gazeta','*'); }catch(_){}} });
+  // shell tells us to pause when its tab is switched away
+  window.addEventListener('message',(e)=>{ if(e.data==='pause') stopVoice(); });
+  // stop audio when the page is hidden / navigated away / app switched
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) stopVoice(); });
+  window.addEventListener('pagehide', stopVoice);
+  window.addEventListener('beforeunload', stopVoice);
+
+  // "вызов…" animated dots
+  let d=0;const cl=document.getElementById('calling');const base='борт «Пегас» · вызов';
+  setInterval(()=>{d=(d+1)%4;if(cl && !conn.classList.contains('hide'))cl.textContent=base+'.'.repeat(d);},400);
+
+  // shooting stars (behind everything)
+  const sky=document.getElementById('sky');
+  function meteor(){const m=document.createElement('div');m.className='meteor';
+    const w=innerWidth,h=innerHeight;m.style.left=(w*0.2+Math.random()*w*0.85)+'px';m.style.top=(-20+Math.random()*h*0.5)+'px';
+    sky.appendChild(m);const dd=240+Math.random()*280;
+    m.animate([{transform:'translate(0,0) rotate(-45deg)',opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.72},
+      {transform:`translate(${-dd}px,${dd}px) rotate(-45deg)`,opacity:0}],{duration:900+Math.random()*800,easing:'linear'});
+    setTimeout(()=>m.remove(),1900);}
+  setInterval(()=>{const n=1+Math.floor(Math.random()*2);for(let i=0;i<n;i++)setTimeout(meteor,Math.random()*600);},1700);
+</script>
+</body>
+</html>

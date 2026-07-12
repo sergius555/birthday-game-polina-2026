@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Корабль — Космический Единорог</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&family=PT+Serif&display=swap" rel="stylesheet">
+<style>
+  :root{--panel1:#141b30;--panel2:#0e1425;--ink:#e7e3d5;--head:#fbf9f1;--muted:#9aa3bd;--rule:rgba(190,200,230,.28);--rule-soft:rgba(190,200,230,.16);--accent:#e6b552;--cyan:#5fd0e6;--warn:#ff8091;}
+  *{box-sizing:border-box;margin:0;padding:0}html,body{min-height:100%}
+  body{background:#05060e;font-family:'PT Serif',Georgia,serif;color:var(--ink);padding:18px 12px 28px;display:flex;justify-content:center;-webkit-text-size-adjust:100%}
+  body::before{content:"";position:fixed;inset:0;z-index:0;background:radial-gradient(1000px 700px at 84% 4%,rgba(70,100,200,.2),transparent 62%),radial-gradient(1400px 1000px at 50% 40%,rgba(18,28,64,.5),transparent 72%),#05060e;pointer-events:none}
+  body::after{content:"";position:fixed;inset:0;z-index:0;opacity:.7;pointer-events:none;background-image:radial-gradient(1.3px 1.3px at 24px 32px,#fff,transparent),radial-gradient(1px 1px at 96px 70px,#dce8ff,transparent),radial-gradient(1px 1px at 150px 20px,#fff,transparent);background-repeat:repeat;background-size:200px 200px}
+  .p{position:relative;z-index:1;width:100%;max-width:820px;background:linear-gradient(180deg,var(--panel1),var(--panel2));border:2px solid var(--accent);border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.7);overflow:hidden}
+  .bar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;background:rgba(230,181,82,.1);border-bottom:1px solid var(--rule);padding:9px 16px;font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;color:var(--accent)}
+  .bar .id{font-family:'Share Tech Mono',monospace;color:var(--muted)}
+  .head{text-align:center;padding:15px 18px 2px}
+  .head h1{font-family:'Playfair Display';font-weight:900;color:var(--head);font-size:clamp(20px,3.6vw,28px);text-transform:uppercase}
+  .head p{color:var(--muted);font-size:13px;margin-top:5px}
+  .schem{margin:10px 14px;border:1px solid var(--rule);border-radius:10px;background:
+      linear-gradient(rgba(95,208,230,.05),rgba(95,208,230,.05)),
+      radial-gradient(120% 120% at 50% 30%,#0c1430,#070b1c);
+    padding:6px;position:relative}
+  .schem::before{content:"";position:absolute;inset:6px;pointer-events:none;
+    background-image:linear-gradient(rgba(95,208,230,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(95,208,230,.06) 1px,transparent 1px);
+    background-size:22px 22px;border-radius:6px}
+  .schem svg{display:block;width:100%;height:auto;position:relative}
+  .led{animation:pl 2s ease-in-out infinite}@keyframes pl{0%,100%{opacity:1}50%{opacity:.45}}
+  .sys{margin:4px 16px 4px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  @media(max-width:520px){.sys{grid-template-columns:1fr}}
+  .row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:9px 12px;font-family:'Oswald';font-size:12.5px;letter-spacing:.04em}
+  .row .st{font-family:'Share Tech Mono',monospace;font-size:11px}
+  .ok{color:var(--cyan)}.warn{color:var(--warn)}
+  .note{text-align:center;color:var(--muted);font-style:italic;font-size:12.5px;padding:10px 16px 18px}
+
+  /* ---- fuel-pouring puzzle ---- */
+  .fuel{margin:8px 16px 4px;border:1px solid var(--rule);border-radius:10px;
+    background:radial-gradient(120% 120% at 50% 20%,#0c1430,#070b1c);padding:14px 14px 16px}
+  .fuel .ft{text-align:center;font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--cyan)}
+  .fuel .goal{text-align:center;color:var(--muted);font-size:13px;line-height:1.5;margin:6px auto 14px;max-width:440px}
+  .fuel .goal b{color:var(--accent)}
+  .cans{display:flex;justify-content:center;gap:30px;align-items:flex-end}
+  .can{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;-webkit-user-select:none;user-select:none}
+  .can .glass{position:relative;width:76px;height:130px;border:2px solid var(--rule);border-top:none;
+    border-radius:0 0 14px 14px;background:rgba(255,255,255,.03);overflow:hidden;transition:box-shadow .2s,border-color .2s}
+  .can.sel .glass{border-color:var(--cyan);box-shadow:0 0 18px rgba(95,208,230,.45)}
+  .can.win .glass{border-color:var(--accent);box-shadow:0 0 24px rgba(230,181,82,.6)}
+  .can .fill{position:absolute;left:0;right:0;bottom:0;height:0;
+    background:linear-gradient(180deg,#ffd36a,#e6a13a);transition:height .35s ease}
+  .can .fill::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:rgba(255,255,255,.4)}
+  .can .cap{font-family:'Oswald';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .can .amt{font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--head)}
+  .fbtns{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .fbtns button{font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;font-size:11.5px;
+    border:1px solid var(--rule);background:rgba(95,208,230,.06);color:var(--ink);border-radius:20px;padding:9px 14px;cursor:pointer}
+  .fbtns button:active{transform:scale(.96)}
+  .fhint{text-align:center;min-height:20px;font-size:13px;color:var(--muted);margin-top:12px;font-style:italic}
+  .fhint .win{color:var(--accent);font-family:'Oswald';font-style:normal;text-transform:uppercase;letter-spacing:.12em}
+  .repair{margin:8px 16px 4px;border:1px solid var(--warn);border-radius:10px;background:rgba(255,128,145,.08);padding:16px;text-align:center}
+  .repair .rt{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--warn)}
+  .repair .rd{color:#f0d2d6;font-size:13.5px;line-height:1.5;margin:8px auto 14px;max-width:440px}
+  .repair button{font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:13px;
+    color:#2a0a0f;background:var(--warn);border:none;border-radius:26px;padding:12px 22px;cursor:pointer}
+  .repair button:active{transform:scale(.97)}
+  .fixedmsg{margin:8px 16px 4px;border:1px solid var(--cyan);border-radius:10px;background:rgba(95,208,230,.08);
+    padding:14px 16px;text-align:center;color:var(--cyan);font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;font-size:12.5px}
+</style></head>
+<body>
+<div class="p">
+  <div class="bar"><span>◈ Космический Единорог · схема</span><span class="id">СИСТ. КОНТРОЛЬ · вид сбоку</span></div>
+  <div class="head"><h1>Космический Единорог</h1><p>Отсеки корабля и состояние систем</p></div>
+
+  <div class="schem">
+    <svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="hull" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="rgba(95,208,230,.14)"/><stop offset="1" stop-color="rgba(95,208,230,.04)"/>
+        </linearGradient>
+        <radialGradient id="exh" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#ffd35a"/><stop offset=".5" stop-color="rgba(230,150,60,.5)"/><stop offset="1" stop-color="transparent"/></radialGradient>
+      </defs>
+
+      <!-- engine exhaust -->
+      <ellipse cx="34" cy="150" rx="46" ry="10" fill="url(#exh)" opacity=".8"/>
+      <ellipse cx="34" cy="120" rx="34" ry="7" fill="url(#exh)" opacity=".6"/>
+      <ellipse cx="34" cy="180" rx="34" ry="7" fill="url(#exh)" opacity=".6"/>
+
+      <!-- engine nozzles -->
+      <g stroke="#5fd0e6" stroke-width="2" fill="rgba(95,208,230,.10)">
+        <path d="M92 108 L66 100 L66 140 L92 132 Z"/>
+        <path d="M92 138 L60 132 L60 168 L92 162 Z"/>
+        <path d="M92 168 L66 160 L66 200 L92 192 Z"/>
+      </g>
+
+      <!-- tail fins -->
+      <g stroke="#5fd0e6" stroke-width="2" fill="rgba(95,208,230,.06)">
+        <path d="M96 108 L120 60 L150 108 Z"/>
+        <path d="M96 192 L120 240 L150 192 Z"/>
+      </g>
+
+      <!-- solar / radiator panels -->
+      <g stroke="#5fd0e6" stroke-width="1.6" fill="rgba(95,208,230,.05)">
+        <rect x="250" y="30" width="70" height="40" rx="3"/>
+        <line x1="250" y1="70" x2="285" y2="98"/><line x1="320" y1="70" x2="300" y2="96"/>
+        <rect x="250" y="230" width="70" height="40" rx="3"/>
+        <line x1="250" y1="230" x2="285" y2="202"/><line x1="320" y1="230" x2="300" y2="204"/>
+        <path d="M262 30 V70 M282 30 V70 M302 30 V70 M262 230 V270 M282 230 V270 M302 230 V270" opacity=".6"/>
+      </g>
+
+      <!-- antenna dish (гиперсвязь) -->
+      <g stroke="#5fd0e6" stroke-width="2" fill="rgba(95,208,230,.08)">
+        <line x1="360" y1="96" x2="360" y2="66"/>
+        <ellipse cx="360" cy="58" rx="20" ry="9"/>
+        <line x1="360" y1="58" x2="360" y2="49"/><circle cx="360" cy="47" r="2.4" fill="#e6b552" stroke="none"/>
+      </g>
+
+      <!-- main hull -->
+      <path d="M96 96 H430 Q470 100 496 150 Q470 200 430 204 H96 Q86 150 96 96 Z" fill="url(#hull)" stroke="#5fd0e6" stroke-width="2.4"/>
+
+      <!-- bulkheads (compartment dividers) -->
+      <g stroke="rgba(95,208,230,.55)" stroke-width="1.4" stroke-dasharray="4 4">
+        <line x1="150" y1="100" x2="150" y2="200"/>
+        <line x1="220" y1="98" x2="220" y2="202"/>
+        <line x1="300" y1="98" x2="300" y2="203"/>
+        <line x1="380" y1="99" x2="380" y2="203"/>
+      </g>
+
+      <!-- cockpit window (мостик) -->
+      <path d="M430 118 Q470 124 486 150 Q470 176 430 182 Z" fill="rgba(95,208,230,.22)" stroke="#5fd0e6" stroke-width="1.6"/>
+      <line x1="440" y1="122" x2="440" y2="178" stroke="rgba(95,208,230,.5)"/>
+
+      <!-- airlock / cargo hatch (bottom) -->
+      <rect x="234" y="188" width="46" height="16" rx="3" fill="rgba(230,181,82,.14)" stroke="#e6b552" stroke-width="1.6"/>
+      <!-- landing gear -->
+      <g stroke="#9aa3bd" stroke-width="2"><line x1="180" y1="204" x2="172" y2="228"/><line x1="160" y1="228" x2="184" y2="228"/>
+        <line x1="330" y1="204" x2="338" y2="228"/><line x1="326" y1="228" x2="350" y2="228"/></g>
+
+      <!-- compartment labels + LEDs -->
+      <g font-family="Oswald" font-size="12" fill="#cdd8f5" text-anchor="middle">
+        <circle class="led" cx="108" cy="150" r="3.4" fill="#5fd0e6"/><text x="122" y="153">Реактор</text>
+        <circle class="led" cx="160" cy="150" r="3.4" fill="#5fd0e6"/><text x="185" y="153">Топливо</text>
+        <circle class="led" cx="232" cy="150" r="3.4" fill="#5fd0e6"/><text x="260" y="141">Жилой</text><text x="260" y="156">отсек</text>
+        <circle class="led" cx="312" cy="150" r="3.4" fill="#5fd0e6"/><text x="340" y="153">Навигация</text>
+        <circle class="led" cx="392" cy="150" r="3.4" fill="#5fd0e6"/><text x="410" y="153">Мостик</text>
+      </g>
+      <g font-family="Oswald" font-size="11" fill="#9aa3bd" text-anchor="middle">
+        <text x="60" y="150">Двигатели</text>
+        <text x="360" y="34">Гиперсвязь</text>
+        <text x="257" y="216">Шлюз</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="sys">
+    <div class="row"><span>Двигатели</span><span class="st ok">● В НОРМЕ</span></div>
+    <div class="row"><span>Реактор</span><span class="st ok" id="reactorSt">● 78%</span></div>
+    <div class="row"><span>Топливные баки</span><span class="st ok">● ПОЛНЫ</span></div>
+    <div class="row"><span>Навигация</span><span class="st ok">● ОНЛАЙН</span></div>
+    <div class="row"><span>Гиперсвязь</span><span class="st ok">● СИГНАЛ ЕСТЬ</span></div>
+    <div class="row"><span>Мостик</span><span class="st ok">● ГЕРМЕТИЧЕН</span></div>
+  </div>
+  <div class="repair" id="repairIntro" style="display:none">
+    <div class="rt">⚠ Авария: реактор обесточен</div>
+    <div class="rd">Двигатель заглох — не хватает топлива. Нужно вручную отмерить и залить топливо в реактор.</div>
+    <button id="startFix">🔧 Начать переливание топлива</button>
+  </div>
+
+  <div class="fixedmsg" id="fixedmsg" style="display:none">✔ Реактор заправлен и запущен. Курс на Блук открыт — возвращайся в «Навигацию».</div>
+
+  <div class="fuel" id="fuel" style="display:none">
+    <div class="ft">⛽ Переливание топлива · починка реактора</div>
+    <div class="goal">Реактор заглох. Залей в него ровно <b>4 л</b> топлива, но приборы врут — отмерь точно, переливая между канистрами. Нажми на одну канистру, потом на другую — топливо перельётся.</div>
+    <div class="cans" id="cans"></div>
+    <div class="fbtns">
+      <button id="fill">🛢 Наполнить</button>
+      <button id="spill">🚿 Слить</button>
+      <button id="hint">💡 Подсказка</button>
+      <button id="freset">↺ Сброс</button>
+    </div>
+    <div class="fhint" id="fhint">Выбери канистру.</div>
+  </div>
+
+  <div class="note">Раздел в сборке — сюда добавим и другие поломки/починки (сборка QR для перезапуска систем). При аварии отсек загорится красным.</div>
+</div>
+
+<script>
+(function(){
+  const CAP={A:5,B:3}, TARGET=4, GH=130;
+  let amt={A:0,B:0}, sel=null, hintStep=0, solved=false;
+  const cans=document.getElementById('cans'), fhint=document.getElementById('fhint');
+
+  function build(){
+    cans.innerHTML='';
+    ['A','B'].forEach(k=>{
+      const c=document.createElement('div');c.className='can';c.dataset.k=k;
+      c.innerHTML='<div class="glass"><div class="fill"></div></div>'+
+        '<div class="cap">канистра '+CAP[k]+' л</div><div class="amt"><b>0</b> л</div>';
+      c.addEventListener('click',()=>tap(k));
+      cans.appendChild(c);
+    });
+    render();
+  }
+  function render(){
+    ['A','B'].forEach(k=>{
+      const c=cans.querySelector('.can[data-k="'+k+'"]');
+      c.querySelector('.fill').style.height=(GH*amt[k]/CAP[k])+'px';
+      c.querySelector('.amt').innerHTML='<b>'+amt[k]+'</b> л';
+      c.classList.toggle('sel',sel===k);
+      c.classList.toggle('win',amt[k]===TARGET);
+    });
+  }
+  function setHint(t){ if(!solved) fhint.textContent=t; }
+  function pour(s,d){ const t=Math.min(amt[s],CAP[d]-amt[d]); amt[d]+=t; amt[s]-=t; }
+  function check(){
+    if(!solved && (amt.A===TARGET||amt.B===TARGET)){
+      solved=true; sel=null; render();
+      fhint.innerHTML='<span class="win">✔ Реактор заправлен! Системы в норме.</span>';
+      persistSet('ship','fixed');                                  // реактор починен → курс на Блук открыт
+      try{ if(inShell) window.parent.postMessage('notify:nav','*'); }catch(e){}
+      setTimeout(applyShip,900);
+    }
+  }
+  function tap(k){
+    if(solved)return;
+    if(sel===null){ sel=k; setHint('Теперь нажми на другую канистру, чтобы перелить, — или кнопку ниже.'); }
+    else if(sel===k){ sel=null; setHint('Выбери канистру.'); }
+    else { pour(sel,k); sel=null; setHint('Переливаем…'); }
+    render(); check();
+  }
+  document.getElementById('fill').addEventListener('click',()=>{ if(solved)return; if(sel){amt[sel]=CAP[sel];render();check();} else setHint('Сначала выбери канистру.'); });
+  document.getElementById('spill').addEventListener('click',()=>{ if(solved)return; if(sel){amt[sel]=0;render();} else setHint('Сначала выбери канистру.'); });
+  const HINTS=['Наполни канистру 5 л.','Перелей из 5 л в 3 л (в 5 л останется 2 л).','Слей канистру 3 л.','Перелей 2 л из 5 л в 3 л.','Наполни канистру 5 л.','Перелей из 5 л в 3 л доверху — в 5 л останется ровно 4 л!'];
+  document.getElementById('hint').addEventListener('click',()=>{ if(solved)return; setHint('💡 '+HINTS[hintStep%HINTS.length]); hintStep++; });
+  document.getElementById('freset').addEventListener('click',()=>{ if(solved)return; amt={A:0,B:0};sel=null;hintStep=0;render();setHint('Выбери канистру.'); });
+
+  // ---- связь с оболочкой: починку показываем только при аварии ----
+  const inShell = window.parent!==window;
+  let started=false, SHIP='';
+  function localState(){
+    try{ const v=localStorage.getItem('edinorog_state'); if(v) return JSON.parse(v)||{}; }catch(e){}
+    try{ if((window.name||'').indexOf('EDST:')===0) return JSON.parse(window.name.slice(5))||{}; }catch(e){}
+    return {};
+  }
+  function persistSet(key,val){
+    try{ if(inShell) window.parent.postMessage('set:'+key+':'+val,'*'); }catch(e){}
+    const s=localState(); s[key]=val;
+    const j=JSON.stringify(s);
+    try{ localStorage.setItem('edinorog_state',j); }catch(e){}
+    try{ window.name='EDST:'+j; }catch(e){}
+  }
+  const intro=document.getElementById('repairIntro'), fuel=document.getElementById('fuel'),
+        fixedmsg=document.getElementById('fixedmsg'), reactorSt=document.getElementById('reactorSt');
+  function applyShip(){
+    const broken = SHIP==='broken' && !solved;
+    const done   = SHIP==='fixed' || solved;
+    intro.style.display    = (broken && !started) ? '' : 'none';
+    fuel.style.display     = (broken &&  started) ? '' : 'none';
+    fixedmsg.style.display = done ? '' : 'none';
+    if(reactorSt){
+      if(done){ reactorSt.className='st ok'; reactorSt.textContent='● 100%'; }
+      else if(SHIP==='broken'){ reactorSt.className='st warn'; reactorSt.textContent='● АВАРИЯ'; }
+    }
+  }
+  document.getElementById('startFix').addEventListener('click',()=>{ started=true; build(); applyShip(); });
+  function applyState(st){ if(st&&st.ship) SHIP=st.ship; applyShip(); }
+  window.addEventListener('message',(e)=>{ if(typeof e.data!=='string')return;
+    if(e.data.indexOf('state:')===0){ let st={}; try{st=JSON.parse(e.data.slice(6));}catch(_){}
+      applyState(st); } });
+  if(inShell){ try{window.parent.postMessage('req:state','*');}catch(e){} setTimeout(()=>applyState(localState()),400); }
+  else { applyState(localState()); }
+})();
+</script>
+</body></html>
