@@ -192,7 +192,7 @@
   <div class="hail">
     <div class="badge">◉ Гиперсвязь · защищённый канал</div>
     <div class="awrap"><div class="aimg">
-      <img id="callImg" src="alisa.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <img id="callImg" src="alisa.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
       <div id="callPh" class="ph" style="display:none">👩‍🚀</div>
     </div></div>
     <div class="title">Вам входящее сообщение<br>по гиперсвязи</div>
@@ -237,7 +237,7 @@
 
   // ---- messages ----
   const messages=[
-    {id:'alisa',from:'Алиса Селезнёва',role:'Экипаж корабля «Пегас»',photo:'alisa.jpg',emoji:'👩‍🚀',urgent:true,unread:true,
+    {id:'alisa',from:'Алиса Селезнёва',role:'Экипаж корабля «Пегас»',photo:'alisa.png',emoji:'👩‍🚀',urgent:true,unread:true,
      ts:4,time:'сейчас',subj:'СРОЧНО: помоги вернуть «галактий»!',
      snip:'Полина, случилась беда — без тебя не справиться…', special:'alisa'},
     {id:'parents',from:'Мама и Папа',icon:'💌',unread:true,ts:3,time:'утром',
@@ -287,7 +287,7 @@
        <p>Опять просто твой папа звонил, сказал, что Салатовый мне не к лицу.</p>
        <p>Ты как там? Нашла Крыса? Ждём от тебя вестей.</p>
        <div class="sign"><div class="s">Механик Фиолетовый</div></div>`},
-    {id:'robot',from:'Робот Ш-Ш-Шелезяки',photo:'robot.jpg',emoji:'🤖',role:'Планета Шелезяка',unread:true,afterRead:'fiolet',ts:9,time:'сейчас',
+    {id:'robot',from:'Робот Ш-Ш-Шелезяки',photo:'robot.png',emoji:'🤖',role:'Планета Шелезяка',unread:true,afterRead:'fiolet',ts:9,time:'сейчас',
      subj:'⚠ ТРЕВОГА — это ловушка!',
      snip:'Нам подсыпали яд… вас заманили… сигнал искажён…', special:'robot'}
   ];
@@ -387,7 +387,7 @@
   const call=document.getElementById('call');
   function shellMsg(m){ try{ if(window.parent!==window) window.parent.postMessage(m,'*'); }catch(e){} }
   const CALLS={
-    alisa:{name:'Алиса Селезнёва', photo:'alisa.jpg', ph:'👩‍🚀', sub:'борт «Пегас» · вызов', msg:'alisa'},
+    alisa:{name:'Алиса Селезнёва', photo:'alisa.png', ph:'👩‍🚀', sub:'борт «Пегас» · вызов', msg:'alisa'},
     ushan:{name:'Ушаны с Блука', photo:'ushan.jpg', ph:'🐰', sub:'планета Блук · вызов', msg:'ushan'}
   };
   const callImg=document.getElementById('callImg'), callPh=document.getElementById('callPh'),
