@@ -72,6 +72,30 @@
   .gtap{position:absolute;bottom:26px;left:0;right:0;z-index:6;text-align:center;font-family:'Oswald';
     text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--muted)}
 
+  /* shooter (Шелезяка) */
+  #shooter{position:absolute;inset:0;z-index:5;display:none}
+  #shooter.show{display:block}
+  #shooter canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+  #joy{position:absolute;left:22px;bottom:26px;width:120px;height:120px;border-radius:50%;z-index:6;
+    background:radial-gradient(circle at 50% 50%,rgba(95,208,230,.10),rgba(95,208,230,.03));
+    border:2px solid rgba(95,208,230,.4);touch-action:none}
+  #joyknob{position:absolute;left:35px;top:35px;width:50px;height:50px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle at 40% 35%,#9fe8f5,#37b7d0);box-shadow:0 0 16px rgba(95,208,230,.6)}
+  .shud{position:absolute;top:48px;right:16px;z-index:7;font-size:18px;letter-spacing:.1em;color:var(--head);text-shadow:0 1px 4px rgba(0,0,0,.6)}
+  #sprog{position:absolute;top:50px;left:16px;right:96px;z-index:7;height:22px}
+  #sprog .strack{position:relative;height:100%;border-radius:14px;background:rgba(8,14,30,.72);border:1px solid rgba(95,208,230,.35)}
+  #sprog .sfill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:14px;background:linear-gradient(90deg,rgba(95,208,230,.12),rgba(95,208,230,.45))}
+  #sprog .sgoal{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:17px}
+  #sprog .sship{position:absolute;left:0;top:50%;transform:translate(-50%,-50%);font-size:16px;z-index:2;filter:drop-shadow(0 0 4px rgba(95,208,230,.7))}
+  #sover{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;
+    background:radial-gradient(circle at 50% 45%,rgba(44,10,16,.92),rgba(6,7,14,.97))}
+  #sover.show{display:flex}
+  #sover .sk{font-family:'Oswald';text-transform:uppercase;letter-spacing:.2em;font-size:14px;color:#ff8091}
+  #sover .sbig{font-family:'Playfair Display';font-weight:900;font-size:clamp(28px,7vw,44px);color:var(--head)}
+  #sover button{font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:14px;
+    color:#08131f;background:linear-gradient(180deg,#7ee1f2,#37b7d0);border:none;border-radius:28px;padding:13px 30px;cursor:pointer}
+  #sover button:active{transform:scale(.97)}
+
   /* arrival */
   #arrive{position:fixed;inset:0;z-index:41;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;
     background:radial-gradient(circle at 50% 45%,rgba(10,16,38,.94),rgba(3,4,10,.98))}
@@ -124,6 +148,19 @@
     <div class="gtap" id="gtap">жми на экран — прыжок</div>
   </div>
 
+  <div id="shooter">
+    <canvas id="sh"></canvas>
+    <div id="sprog"><div class="strack"><div class="sfill" id="sprogfill"></div><div class="sgoal">🪐</div><div class="sship" id="sprogship">🚀</div></div></div>
+    <div class="shud" id="shud">❤❤❤</div>
+    <div class="gmsg" id="smsg"></div>
+    <div id="joy"><div id="joyknob"></div></div>
+    <div id="sover">
+      <div class="sk">💥 Корабль подбит!</div>
+      <div class="sbig">Не сдавайся!</div>
+      <button id="sretry">↺ Ещё раз</button>
+    </div>
+  </div>
+
   <div id="arrive">
     <div class="k">✦ Прибытие ✦</div>
     <div class="venus"></div>
@@ -143,7 +180,7 @@
 
 <script>
   const inShell = window.parent!==window;
-  let LEVEL=1, SHIP='';   // ship: '' ок · 'broken' реактор повреждён · 'fixed' починен
+  let LEVEL=1, shipState='';   // '' ок · 'broken' реактор повреждён · 'fixed' починен
   function localState(){
     try{ const v=localStorage.getItem('edinorog_state'); if(v) return JSON.parse(v)||{}; }catch(e){}
     try{ if((window.name||'').indexOf('EDST:')===0) return JSON.parse(window.name.slice(5))||{}; }catch(e){}
@@ -163,11 +200,12 @@
   const lbl=document.querySelector('.dock .lbl');
   function resetErr(){dest.style.borderColor='';lbl.textContent='◎ Пункт назначения';lbl.style.color='';}
 
-  // цель по уровню: 1 → Венера, 3 → Блук
+  // цель по уровню: 1 → Венера, 3 → Блук, 4+ → Шелезяка
   function target(){
-    return LEVEL>=3
-      ? {names:['БЛУК','BLUK'], hint:'◎ Курс не распознан — проверь письмо Механика'}
-      : {names:['ВЕНЕРА','VENERA','VENUS'], hint:'◎ Курс не распознан — загляни в «Космический Вестник»'};
+    if(LEVEL>=5) return {names:['ШЕШИНЕРУ','SHESHINERU'], hint:'◎ Курс не распознан — расшифруй сообщение робота'};
+    if(LEVEL>=4) return {names:['ШЕЛЕЗЯКА','SHELEZYAKA'], hint:'◎ Курс не распознан — прочитай записку из отеля'};
+    if(LEVEL>=3) return {names:['БЛУК','BLUK'], hint:'◎ Курс не распознан — проверь письмо Механика'};
+    return {names:['ВЕНЕРА','VENERA','VENUS'], hint:'◎ Курс не распознан — загляни в «Космический Вестник»'};
   }
   function tryLaunch(){
     const raw=dest.value.trim();if(!raw){dest.focus();return;}
@@ -178,14 +216,16 @@
       dest.addEventListener('input',resetErr,{once:true});return;
     }
     dest.blur();
-    if(LEVEL<3){ persistLevel(2); startRunnerUI(); }        // Венера → раннер
-    else if(SHIP==='fixed'){ launchBluk(); }                 // реактор починен → летим
-    else { triggerMalfunction(); }                           // Блук, но реактор повреждён
+    if(LEVEL<3){ persistLevel(2); startRunnerUI(); }                                        // Венера → раннер
+    else if(LEVEL===3){ if(shipState==='fixed') launchBluk(); else triggerMalfunction(); }  // Блук (нужен целый реактор)
+    else if(LEVEL===4){ startShooter(); }                                                   // Шелезяка → бой с пиратами
+    else { launchShesh(); }                                                                 // Шешинеру (level 5+)
   }
   function startRunnerUI(){
     document.getElementById('center').style.display='none';
     document.getElementById('dock').style.display='none';
     document.getElementById('game').classList.add('show');
+    try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}
     startGame();
   }
   document.getElementById('go').addEventListener('click',()=>{ if(LEVEL===2) startRunnerUI(); else tryLaunch(); });
@@ -193,7 +233,7 @@
 
   // авария реактора при попытке лететь на Блук
   function triggerMalfunction(){
-    SHIP='broken'; persistSet('ship','broken');
+    shipState='broken'; persistSet('ship','broken');
     try{ if(inShell) window.parent.postMessage('notify:ship','*'); }catch(e){}
     document.getElementById('alarm').classList.add('show');
   }
@@ -203,23 +243,36 @@
   });
   document.getElementById('alarmClose').addEventListener('click',()=>document.getElementById('alarm').classList.remove('show'));
 
-  // прыжок на Блук (после починки)
-  function launchBluk(){
-    persistLevel(4); setPosition();
-    const a=document.getElementById('arrive');
-    a.querySelector('.big').textContent='Мы на Блуке!';
-    a.querySelector('.sub').textContent='Прибыли на планету-рынок Блук — по следу Крыса. Ищем, кому он сбыл краденое.';
-    a.querySelector('.venus').style.background='radial-gradient(circle at 35% 30%,#a6d4ff,#5a7fe8 42%,#3a4bb9 76%,#1f2570)';
-    document.getElementById('dock').style.display='none';
-    a.classList.add('show');
+  // темы планет: градиент шара + свечение
+  const PLANETS={
+    venera:{title:'Мы на Венере!', sub:'Корабль сел на Венеру. Отсюда Крыс начал свой путь — ищем следующий след.',
+      grad:'radial-gradient(circle at 35% 30%,#ffe6a6,#e8b45a 42%,#b9793a 76%,#7d4e28)', glow:'rgba(240,200,120,.55)'},
+    bluk:{title:'Мы на Блуке!', sub:'Прибыли на планету-рынок Блук — по следу Крыса. Ищем, кому он сбыл краденое.',
+      grad:'radial-gradient(circle at 35% 30%,#a6d4ff,#5a7fe8 42%,#3a4bb9 76%,#1f2570)', glow:'rgba(120,160,255,.5)'},
+    shelezyaka:{title:'Мы на Шелезяке!', sub:'Планета роботов Шелезяка. Здесь Крыс назначил встречу — идём по следу.',
+      grad:'radial-gradient(circle at 35% 30%,#e6ebf2,#9aa3b2 42%,#5b6472 76%,#2c3038)', glow:'rgba(190,205,225,.5)'},
+    shesh:{title:'Мы на Шешинеру!', sub:'Планета Шешинеру. Здесь прячется настоящий Крыс — идём по следу.',
+      grad:'radial-gradient(circle at 35% 30%,#f6c9ff,#c86fd8 44%,#8b3fa8 76%,#4a1f5e)', glow:'rgba(210,140,240,.5)'}
+  };
+  function arrivePlanet(key){
+    const a=document.getElementById('arrive'), pl=PLANETS[key], p=a.querySelector('.venus');
+    a.querySelector('.big').textContent=pl.title; a.querySelector('.big').style.textShadow='0 0 30px '+pl.glow;
+    a.querySelector('.sub').textContent=pl.sub;
+    p.style.background=pl.grad; p.style.boxShadow='0 0 60px '+pl.glow+',inset -18px -12px 40px rgba(0,0,0,.45)';
+    document.getElementById('dock').style.display='none'; a.classList.add('show');
   }
+  // прыжок на Блук (после починки)
+  function launchBluk(){ persistLevel(4); setPosition(); arrivePlanet('bluk'); }
+  // прыжок на Шелезяку (по записке из отеля)
+  function launchShelezyaka(){ persistLevel(5); setPosition(); arrivePlanet('shelezyaka'); }
+  function launchShesh(){ persistLevel(6); setPosition(); arrivePlanet('shesh'); }
 
-  // положение: Земля → Венера → Блук
+  // положение: Земля → Венера → Блук → Шелезяка
   function setPosition(){
     const el=document.getElementById('posName'); if(!el)return;
-    el.textContent = LEVEL>=4 ? '🪐 Блук' : (LEVEL>=3 ? '🪐 Венера' : '🌍 Земля');
+    el.textContent = LEVEL>=6 ? '🛸 Шешинеру' : LEVEL>=5 ? '⚙️ Шелезяка' : LEVEL>=4 ? '🔵 Блук' : LEVEL>=3 ? '🟡 Венера' : '🌍 Земля';
   }
-  function blukDock(){   // на Венере: поле ввода готово принять «Блук»
+  function showDock(){   // на Венере: поле ввода готово принять «Блук»
     document.getElementById('center').style.display='';
     const d=document.getElementById('dock'); d.style.display='';
     dest.style.display=''; dest.value='';
@@ -227,28 +280,28 @@
     document.getElementById('go').innerHTML='▶ Вперёд';
   }
   // прибытие на Венеру (после раннера)
-  function enterVenus(showArrive){
+  function enterVenus(withArrive){
     LEVEL=Math.max(LEVEL,3); setPosition();
     document.getElementById('game').classList.remove('show');
-    blukDock();
-    if(showArrive) document.getElementById('arrive').classList.add('show');
+    showDock();
+    if(withArrive) arrivePlanet('venera');
   }
   function applyLevel(){
     setPosition();
-    if(LEVEL>=4){ document.getElementById('dock').style.display='none'; }
-    else if(LEVEL===3){ blukDock(); }        // на Венере, вводим Блук (без повторного экрана прибытия)
-    else if(LEVEL===2){
+    if(LEVEL===2){   // раннер ещё не пройден — экран «Продолжить полёт»
       document.querySelector('.dock .lbl').textContent='◎ Полёт к Венере';
       dest.style.display='none';
       document.getElementById('go').innerHTML='▶ Продолжить полёт';
+    } else {
+      showDock();    // на планете строка ввода следующего курса всегда доступна
     }
-    // LEVEL 1 — Земля, ввод Венеры
   }
   let navStarted=false;
   function applyState(st){
-    if(st){ if(st.level) LEVEL=Math.max(LEVEL, st.level); if(st.ship) SHIP=st.ship; }
+    if(st){ if(st.level) LEVEL=Math.max(LEVEL, st.level); if(st.ship) shipState=st.ship; }
     if(!navStarted){ navStarted=true; applyLevel(); }
-    else if(SHIP==='fixed'){ document.getElementById('alarm').classList.remove('show'); }
+    // реактор починен на Венере → завершаем прыжок и показываем прибытие на Блук
+    if(shipState==='fixed' && LEVEL===3){ document.getElementById('alarm').classList.remove('show'); launchBluk(); }
   }
   window.addEventListener('message',(e)=>{ if(typeof e.data!=='string')return;
     if(e.data.indexOf('state:')===0){ let st={}; try{st=JSON.parse(e.data.slice(6));}catch(_){}
@@ -384,9 +437,190 @@
     let t=0;(function up(){ ctx.clearRect(0,0,W,H);drawGround();S.shipY-=6;S.obs=[];drawShip();
       t++; if(t<60){requestAnimationFrame(up);} else { enterVenus(true); } })();
   }
-  document.getElementById('cont').addEventListener('click',()=>{ document.getElementById('arrive').classList.remove('show'); });
+  document.getElementById('cont').addEventListener('click',()=>{ document.getElementById('arrive').classList.remove('show'); showDock();
+    try{ if(inShell) window.parent.postMessage('game:off','*'); }catch(e){} });
 
   window.addEventListener('resize',()=>{ if(document.getElementById('game').classList.contains('show')){fit();S.shipY=Math.min(S.shipY,groundY-SHIP.h);} });
+
+  // ---------- SHOOTER (Шелезяка): бой с пиратами ----------
+  const scv=document.getElementById('sh'), sctx=scv.getContext('2d');
+  const shooterEl=document.getElementById('shooter'), smsg=document.getElementById('smsg');
+  const joy=document.getElementById('joy'), joyknob=document.getElementById('joyknob');
+  let SW=0,SH=0,sdpr=1, joyVec={x:0,y:0}, joyId=null;
+  const G={state:'idle',raf:null,ship:{x:0,y:0},vx:0,vy:0,bul:[],ebul:[],en:[],crates:[],expl:[],stars:[],kills:0,fire:0,spawn:0,crateT:0,lives:3,inv:0,shake:0,weapon:'single',weaponT:0,wing:false,elapsed:0,last:0};
+
+  function sfit(){ sdpr=Math.min(2,window.devicePixelRatio||1); SW=scv.clientWidth; SH=scv.clientHeight;
+    scv.width=SW*sdpr; scv.height=SH*sdpr; sctx.setTransform(sdpr,0,0,sdpr,0,0); }
+
+  function resetRound(){
+    G.ship.x=SW/2; G.ship.y=SH-90; G.bul=[]; G.ebul=[]; G.en=[]; G.crates=[]; G.expl=[]; G.kills=0; G.fire=0; G.spawn=30; G.crateT=300; G.lives=3; G.shake=0; G.weapon='single'; G.weaponT=0; G.wing=false; G.elapsed=0; G.last=0;
+    updateHearts(); resetKnob();
+    var f=document.getElementById('sprogfill'), sh=document.getElementById('sprogship');
+    if(f)f.style.width='0%'; if(sh)sh.style.left='4%';
+  }
+  function startShooter(){
+    document.getElementById('center').style.display='none';
+    document.getElementById('dock').style.display='none';
+    shooterEl.classList.add('show'); sfit();
+    try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}
+    G.stars=[]; for(let i=0;i<46;i++) G.stars.push({x:Math.random()*SW,y:Math.random()*SH,z:1+Math.random()*2,sp:1+Math.random()*2.5});
+    resetRound(); G.inv=0; joyId=null; scountdown(3);
+  }
+  function scountdown(n){ G.state='count'; sdraw();
+    if(n>0){ smsg.innerHTML='<div class="big">'+n+'</div>'; setTimeout(()=>scountdown(n-1),650); }
+    else { smsg.innerHTML='<div class="big" style="font-size:40px">В бой!</div>'; setTimeout(()=>{smsg.innerHTML='';G.last=performance.now();G.state='run';sloop();},650); }
+  }
+
+  // джойстик
+  function joyAt(ev){ const r=joy.getBoundingClientRect(); const cx=r.left+r.width/2, cy=r.top+r.height/2;
+    let dx=ev.clientX-cx, dy=ev.clientY-cy; const max=r.width/2-8, d=Math.hypot(dx,dy);
+    if(d>max){ dx=dx/d*max; dy=dy/d*max; }
+    joyknob.style.left=(r.width/2-25+dx)+'px'; joyknob.style.top=(r.height/2-25+dy)+'px';
+    joyVec={x:dx/max, y:dy/max};
+  }
+  function resetKnob(){ joyknob.style.left='35px'; joyknob.style.top='35px'; joyVec={x:0,y:0}; }
+  joy.addEventListener('pointerdown',e=>{ e.preventDefault(); joyId=e.pointerId; try{joy.setPointerCapture(e.pointerId);}catch(_){}; joyAt(e); });
+  joy.addEventListener('pointermove',e=>{ if(joyId===e.pointerId) joyAt(e); });
+  joy.addEventListener('pointerup',e=>{ if(joyId===e.pointerId){ joyId=null; resetKnob(); } });
+  joy.addEventListener('pointercancel',()=>{ joyId=null; resetKnob(); });
+
+  function spawnEnemy(){
+    const roll=Math.random(); const type=roll<0.6?'s':roll<0.95?'m':'b';
+    const hp=type==='s'?1:type==='m'?2:3, size=type==='s'?26:type==='m'?38:56, spd=type==='b'?1.1:type==='m'?1.6:2.1;
+    const side=Math.random(); let x,y,vx,vy;
+    if(side<0.7){ x=size+Math.random()*(SW-2*size); y=-size; vx=Math.max(-1.6,Math.min(1.6,(G.ship.x-x)/220)); vy=spd; }
+    else if(side<0.85){ x=-size; y=Math.random()*SH*0.4; vx=spd*0.9; vy=spd*0.5; }
+    else { x=SW+size; y=Math.random()*SH*0.4; vx=-spd*0.9; vy=spd*0.5; }
+    const fireT=type==='m'?(60+Math.floor(Math.random()*60)):type==='b'?(90+Math.floor(Math.random()*60)):1e9;
+    G.en.push({x,y,vx,vy,hp,maxhp:hp,r:size/2,type,flash:0,fireT});
+  }
+  function boom(x,y){ for(let i=0;i<12;i++){ const a=Math.random()*7, s=1+Math.random()*3;
+    G.expl.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:16+Math.random()*10,r:2+Math.random()*3}); } }
+
+  function supdate(){
+    if(G.inv>0)G.inv--; if(G.shake>0)G.shake--;
+    G.ship.x=Math.max(20,Math.min(SW-20,G.ship.x+joyVec.x*2.5));
+    G.ship.y=Math.max(SH*0.25,Math.min(SH-40,G.ship.y+joyVec.y*2.5));
+    // авто-огонь игрока (режим зависит от бонуса)
+    G.fire--; if(G.fire<=0){ shoot(); G.fire=(G.weapon==='single'?66:G.weapon==='triple'?78:84); }
+    for(const b of G.bul){ if(b.homing) homeBullet(b); b.x+=b.vx; b.y+=b.vy; b.life--; }
+    // оружие и напарники — навсегда (сбрасываются только при гибели / прилёте)
+    // спавн врагов и ящиков-бонусов
+    G.spawn--; if(G.spawn<=0){ spawnEnemy(); G.spawn=48+Math.floor(Math.random()*36); }
+    G.crateT--; if(G.crateT<=0){ spawnCrate(); G.crateT=360+Math.floor(Math.random()*200); }
+    for(const c of G.crates){ c.y+=c.vy; c.spin+=0.03; }
+    // движение врагов + их стрельба
+    for(const e of G.en){ e.x+=e.vx; e.y+=e.vy; if(e.flash>0)e.flash--;
+      if(e.type!=='s' && e.y>0 && e.y<SH*0.85){ e.fireT--; if(e.fireT<=0){ enemyFire(e); e.fireT=(e.type==='b'?180:130)+Math.floor(Math.random()*70); } } }
+    // пули врагов
+    for(const b of G.ebul){ b.x+=b.vx; b.y+=b.vy; }
+    G.ebul=G.ebul.filter(b=>b.y>-24&&b.y<SH+24&&b.x>-24&&b.x<SW+24);
+    // попадания игрока по врагам
+    for(const b of G.bul){ for(const e of G.en){ if(e.hp>0){ const dx=b.x-e.x,dy=b.y-e.y;
+      if(dx*dx+dy*dy < e.r*e.r){ e.hp--; e.flash=6; b.life=0; if(e.hp<=0){ boom(e.x,e.y); G.kills++; } break; } } } }
+    G.bul=G.bul.filter(b=>b.life>0 && b.y>-24 && b.x>-30 && b.x<SW+30);
+    // сбор ящиков-бонусов
+    for(const c of G.crates){ const dx=c.x-G.ship.x,dy=c.y-G.ship.y; if(dx*dx+dy*dy<(c.r+18)*(c.r+18)){ c.y=1e9; applyCrate(c.type); } }
+    G.crates=G.crates.filter(c=>c.y<SH+30);
+    // урон игроку (пули врагов + столкновение с корпусом)
+    if(G.inv<=0){
+      let hit=false;
+      for(const b of G.ebul){ const dx=b.x-G.ship.x,dy=b.y-G.ship.y; if(dx*dx+dy*dy<256){ b.y=1e9; hit=true; break; } }
+      if(!hit){ for(const e of G.en){ if(e.hp>0){ const dx=e.x-G.ship.x,dy=e.y-G.ship.y, rr=e.r+16; if(dx*dx+dy*dy<rr*rr){ hit=true; break; } } } }
+      if(hit) playerHit();
+    }
+    G.ebul=G.ebul.filter(b=>b.y<1e8);
+    G.en=G.en.filter(e=>e.hp>0 && e.y<SH+70 && e.x>-90 && e.x<SW+90);
+    for(const p of G.expl){ p.x+=p.vx; p.y+=p.vy; p.life--; }
+    G.expl=G.expl.filter(p=>p.life>0);
+    // прогресс = время выживания (нужно продержаться 30 сек)
+    const now=performance.now(); let dt=now-(G.last||now); G.last=now; if(dt>50)dt=50; G.elapsed+=dt;
+    const prog=Math.min(1,G.elapsed/30000);
+    const pf=document.getElementById('sprogfill'), ps=document.getElementById('sprogship');
+    if(pf) pf.style.width=(prog*100)+'%'; if(ps) ps.style.left=(4+prog*88)+'%';
+    if(prog>=1) swin();
+  }
+  function enemyFire(e){
+    if(e.type==='m'){ const n=Math.hypot(e.vx,e.vy)||1; G.ebul.push({x:e.x,y:e.y+e.r*0.5,vx:e.vx/n*4.2,vy:e.vy/n*4.2}); }   // средний — по направлению полёта
+    else { for(let i=0;i<8;i++){ const a=i*Math.PI/4; G.ebul.push({x:e.x,y:e.y,vx:Math.cos(a)*3.2,vy:Math.sin(a)*3.2}); } }  // большой — во все стороны
+  }
+  function playerHit(){ G.lives--; G.inv=90; G.shake=12; boom(G.ship.x,G.ship.y); updateHearts();
+    if(G.lives<=0) shipDown(); }
+  function shipDown(){ G.state='over'; cancelAnimationFrame(G.raf); document.getElementById('sover').classList.add('show'); }
+  document.getElementById('sretry').addEventListener('click',()=>{ document.getElementById('sover').classList.remove('show'); resetRound(); scountdown(3); });
+  function updateHearts(){ const h=document.getElementById('shud'); if(h) h.textContent='❤'.repeat(Math.max(0,G.lives))+'♡'.repeat(Math.max(0,3-G.lives)); }
+
+  // ---- оружие и бонусы ----
+  function bul(x,y,vx,vy,homing){ return {x,y,vx,vy,homing:!!homing,life:130}; }
+  function shoot(){ const x=G.ship.x, y=G.ship.y-24;
+    if(G.weapon==='triple'){ G.bul.push(bul(x,y,0,-9),bul(x,y,-2.6,-8.6),bul(x,y,2.6,-8.6)); }
+    else if(G.weapon==='homing'){ G.bul.push(bul(x,y,0,-9,true)); }
+    else { G.bul.push(bul(x,y,0,-9)); }
+    if(G.wing){ G.bul.push(bul(x-34,y+6,0,-9), bul(x+34,y+6,0,-9)); } }
+  function homeBullet(b){ let best=null,bd=1e9; for(const e of G.en){ if(e.hp>0){ const dx=e.x-b.x,dy=e.y-b.y,d=dx*dx+dy*dy; if(d<bd){bd=d;best=e;} } }
+    if(best){ const dx=best.x-b.x,dy=best.y-b.y,d=Math.hypot(dx,dy)||1, tx=dx/d*9, ty=dy/d*9; b.vx+=(tx-b.vx)*0.2; b.vy+=(ty-b.vy)*0.2; } }
+  function spawnCrate(){ const r=Math.random(); const type=r<0.30?'triple':r<0.55?'health':r<0.70?'bomb':r<0.85?'wing':'homing';
+    G.crates.push({x:30+Math.random()*(SW-60), y:-24, vy:1.4, r:16, type, spin:Math.random()*6}); }
+  function applyCrate(type){
+    if(type==='health'){ if(G.lives<3){ G.lives++; updateHearts(); toast('+1 ❤'); } else toast('Щит полон!'); }
+    else if(type==='triple'){ G.weapon='triple'; G.weaponT=540; toast('Тройной огонь!'); }
+    else if(type==='homing'){ G.weapon='homing'; G.weaponT=540; toast('Самонаведение!'); }
+    else if(type==='wing'){ G.wing=true; toast('Напарники! 🛩'); }
+    else { let n=0; for(const e of G.en){ if(e.hp>0){ boom(e.x,e.y); n++; } } G.en=[]; G.ebul=[]; G.kills+=n; G.shake=16; toast('💥 БОМБА!'); } }
+  let toastTimer=null;
+  function toast(t){ smsg.innerHTML='<div class="sm" style="font-size:15px">'+t+'</div>'; clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>{ if(G.state==='run') smsg.innerHTML=''; },800); }
+  function drawCrate(c){ sctx.save(); sctx.translate(c.x,c.y); sctx.rotate(Math.sin(c.spin)*0.18);
+    const col=c.type==='health'?'#7ee081':c.type==='triple'?'#5fd0e6':c.type==='homing'?'#b98cff':c.type==='wing'?'#ffd36a':'#ff9a5a';
+    sctx.fillStyle='rgba(12,18,38,.92)'; sctx.strokeStyle=col; sctx.lineWidth=2.5;
+    sctx.fillRect(-c.r,-c.r,c.r*2,c.r*2); sctx.strokeRect(-c.r,-c.r,c.r*2,c.r*2);
+    const ic=c.type==='health'?'❤️':c.type==='triple'?'🔱':c.type==='homing'?'🎯':c.type==='wing'?'🛩️':'💣';
+    sctx.font='19px sans-serif'; sctx.textAlign='center'; sctx.textBaseline='middle'; sctx.fillText(ic,0,1);
+    sctx.restore(); }
+  function drawMiniShip(x,y){ sctx.save(); sctx.translate(x,y);
+    sctx.fillStyle='rgba(230,150,60,.8)'; sctx.beginPath(); sctx.moveTo(-4,9); sctx.lineTo(0,17); sctx.lineTo(4,9); sctx.closePath(); sctx.fill();
+    sctx.fillStyle='#cfe6ff'; sctx.strokeStyle='#5fd0e6'; sctx.lineWidth=1.6;
+    sctx.beginPath(); sctx.moveTo(0,-13); sctx.quadraticCurveTo(9,4,7,9); sctx.lineTo(-7,9); sctx.quadraticCurveTo(-9,4,0,-13); sctx.closePath(); sctx.fill(); sctx.stroke();
+    sctx.restore(); }
+
+  function drawStars(sp){ sctx.fillStyle='rgba(200,220,255,.7)';
+    for(const s of G.stars){ s.y+=(sp||s.sp); if(s.y>SH){s.y=0;s.x=Math.random()*SW;} sctx.fillRect(s.x,s.y,s.z,s.z); } }
+  function drawPlayer(){ const s=G.ship; sctx.save(); sctx.translate(s.x,s.y);
+    if(G.inv>0 && Math.floor(G.inv/6)%2===0) sctx.globalAlpha=.35;
+    sctx.fillStyle='rgba(230,150,60,'+(0.6+Math.random()*0.4)+')';
+    sctx.beginPath(); sctx.moveTo(-6,18); sctx.lineTo(0,30+Math.random()*8); sctx.lineTo(6,18); sctx.closePath(); sctx.fill();
+    sctx.fillStyle='#e2eaff'; sctx.strokeStyle='#5fd0e6'; sctx.lineWidth=2;
+    sctx.beginPath(); sctx.moveTo(0,-24); sctx.quadraticCurveTo(16,6,12,18); sctx.lineTo(-12,18); sctx.quadraticCurveTo(-16,6,0,-24); sctx.closePath(); sctx.fill(); sctx.stroke();
+    sctx.fillStyle='#e6b552'; sctx.beginPath(); sctx.moveTo(-12,18); sctx.lineTo(-18,26); sctx.lineTo(-8,18); sctx.closePath(); sctx.fill();
+    sctx.beginPath(); sctx.moveTo(12,18); sctx.lineTo(18,26); sctx.lineTo(8,18); sctx.closePath(); sctx.fill();
+    sctx.fillStyle='#2a90c8'; sctx.beginPath(); sctx.arc(0,-2,5,0,7); sctx.fill();
+    sctx.restore(); }
+  function drawEnemy(e){ const col=e.flash>0?'#fff':(e.type==='b'?'#c0433f':e.type==='m'?'#8158b0':'#7c8496');
+    const r=e.r; sctx.save(); sctx.translate(e.x,e.y);
+    sctx.fillStyle=col; sctx.strokeStyle='rgba(0,0,0,.45)'; sctx.lineWidth=2;
+    sctx.beginPath(); sctx.moveTo(0,r); sctx.quadraticCurveTo(r,-r*0.4,r*0.7,-r*0.7); sctx.lineTo(-r*0.7,-r*0.7); sctx.quadraticCurveTo(-r,-r*0.4,0,r); sctx.closePath(); sctx.fill(); sctx.stroke();
+    sctx.fillStyle='#ff5468'; sctx.beginPath(); sctx.arc(0,-r*0.12,r*0.3,0,7); sctx.fill();
+    sctx.fillStyle='rgba(255,255,255,.85)'; sctx.font='bold '+Math.round(r*0.5)+'px Oswald'; sctx.textAlign='center'; sctx.textBaseline='middle';
+    sctx.fillText('☠', 0, -r*0.12);
+    sctx.restore(); }
+  function sdraw(){ sctx.clearRect(0,0,SW,SH); drawStars();
+    sctx.save(); if(G.shake>0) sctx.translate((Math.random()-.5)*G.shake,(Math.random()-.5)*G.shake);
+    sctx.strokeStyle='#9fe8f5'; sctx.lineWidth=3; sctx.lineCap='round';
+    for(const b of G.bul){ const n=Math.hypot(b.vx,b.vy)||1; sctx.beginPath(); sctx.moveTo(b.x,b.y); sctx.lineTo(b.x-b.vx/n*12,b.y-b.vy/n*12); sctx.stroke(); }
+    for(const b of G.ebul){ sctx.fillStyle='#ff8a5a'; sctx.beginPath(); sctx.arc(b.x,b.y,4,0,7); sctx.fill(); }
+    for(const e of G.en) drawEnemy(e);
+    for(const c of G.crates) drawCrate(c);
+    for(const p of G.expl){ sctx.globalAlpha=Math.max(0,p.life/26); sctx.fillStyle='#ffb057'; sctx.beginPath(); sctx.arc(p.x,p.y,p.r,0,7); sctx.fill(); }
+    sctx.globalAlpha=1; if(G.wing){ drawMiniShip(G.ship.x-34,G.ship.y+8); drawMiniShip(G.ship.x+34,G.ship.y+8); } drawPlayer(); sctx.restore(); }
+  function sloop(){ if(G.state!=='run')return; supdate(); if(G.state!=='run')return; sdraw(); G.raf=requestAnimationFrame(sloop); }
+
+  function swin(){ G.state='win'; cancelAnimationFrame(G.raf);
+    smsg.innerHTML='<div class="sm">Путь свободен — летим на Шелезяку…</div>';
+    let t=0;(function up(){ sctx.clearRect(0,0,SW,SH); drawStars(7); G.ship.y-=7; drawPlayer(); t++;
+      if(t<60){ requestAnimationFrame(up); } else { shooterEl.classList.remove('show'); smsg.innerHTML=''; launchShelezyaka(); } })();
+  }
+  window.addEventListener('resize',()=>{ if(shooterEl.classList.contains('show')){ sfit();
+    G.ship.x=Math.max(20,Math.min(SW-20,G.ship.x)); G.ship.y=Math.max(SH*0.25,Math.min(SH-40,G.ship.y)); } });
 </script>
 </body>
 </html>

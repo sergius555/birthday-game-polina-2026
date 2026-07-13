@@ -33,34 +33,63 @@
   .note{text-align:center;color:var(--muted);font-style:italic;font-size:12.5px;padding:10px 16px 18px}
 
   /* ---- fuel-pouring puzzle ---- */
-  .fuel{margin:8px 16px 4px;border:1px solid var(--rule);border-radius:10px;
-    background:radial-gradient(120% 120% at 50% 20%,#0c1430,#070b1c);padding:14px 14px 16px}
-  .fuel .ft{text-align:center;font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--cyan)}
-  .fuel .goal{text-align:center;color:var(--muted);font-size:13px;line-height:1.5;margin:6px auto 14px;max-width:440px}
-  .fuel .goal b{color:var(--accent)}
-  .cans{display:flex;justify-content:center;gap:30px;align-items:flex-end}
-  .can{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;-webkit-user-select:none;user-select:none}
-  .can .glass{position:relative;width:76px;height:130px;border:2px solid var(--rule);border-top:none;
-    border-radius:0 0 14px 14px;background:rgba(255,255,255,.03);overflow:hidden;transition:box-shadow .2s,border-color .2s}
-  .can.sel .glass{border-color:var(--cyan);box-shadow:0 0 18px rgba(95,208,230,.45)}
-  .can.win .glass{border-color:var(--accent);box-shadow:0 0 24px rgba(230,181,82,.6)}
+  .fuel{position:relative;width:100%;max-width:660px;max-height:94vh;overflow:auto;
+    border:1px solid var(--rule);border-radius:16px;
+    background:radial-gradient(120% 120% at 50% 20%,#0c1430,#070b1c);padding:30px 24px 24px;box-shadow:0 24px 70px rgba(0,0,0,.7)}
+  .fuel .ft{text-align:center;font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:16px;color:var(--cyan)}
+  .fuel .goal{margin:14px auto 20px;max-width:520px}
+  .fuel .goal .lead{font-family:'Oswald';text-align:center;font-size:20px;color:var(--head);line-height:1.3}
+  .fuel .goal .lead b{color:var(--accent)}
+  .fuel .goal .sub{text-align:center;color:var(--muted);font-size:15px;line-height:1.5;margin:8px 0 14px}
+  .fuel .goal .sub b{color:var(--head)}
+  .fuel .goal ul{list-style:none;display:flex;flex-direction:column;gap:9px;max-width:460px;margin:0 auto}
+  .fuel .goal li{display:flex;gap:11px;align-items:flex-start;font-size:15.5px;line-height:1.45;color:var(--ink);
+    border:1px solid var(--rule-soft);border-radius:10px;padding:11px 13px;background:rgba(95,208,230,.05)}
+  .fuel .goal li .n{flex:0 0 auto;color:var(--accent);font-family:'Oswald';font-weight:700;font-size:16px}
+  .fuel .goal li b{color:var(--head)}
+  .cans{display:flex;justify-content:center;gap:42px;align-items:flex-end}
+  .can{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;-webkit-user-select:none;user-select:none}
+  .can .glass{position:relative;width:106px;height:184px;border:2px solid var(--rule);border-top:none;
+    border-radius:0 0 16px 16px;background:rgba(255,255,255,.03);overflow:hidden;transition:box-shadow .2s,border-color .2s}
+  .can.sel .glass{border-color:var(--cyan);box-shadow:0 0 22px rgba(95,208,230,.5)}
+  .can.win .glass{border-color:var(--accent);box-shadow:0 0 28px rgba(230,181,82,.65)}
   .can .fill{position:absolute;left:0;right:0;bottom:0;height:0;
     background:linear-gradient(180deg,#ffd36a,#e6a13a);transition:height .35s ease}
-  .can .fill::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:rgba(255,255,255,.4)}
-  .can .cap{font-family:'Oswald';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  .can .amt{font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--head)}
-  .fbtns{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:16px}
-  .fbtns button{font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;font-size:11.5px;
-    border:1px solid var(--rule);background:rgba(95,208,230,.06);color:var(--ink);border-radius:20px;padding:9px 14px;cursor:pointer}
+  .can .fill::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:rgba(255,255,255,.45)}
+  .can .cap{font-family:'Oswald';font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .can .amt{font-family:'Share Tech Mono',monospace;font-size:22px;color:var(--head)}
+  .fbtns{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .fbtns button{font-family:'Oswald';text-transform:uppercase;letter-spacing:.08em;font-size:14px;
+    border:1px solid var(--rule);background:rgba(95,208,230,.08);color:var(--ink);border-radius:22px;padding:12px 20px;cursor:pointer}
   .fbtns button:active{transform:scale(.96)}
-  .fhint{text-align:center;min-height:20px;font-size:13px;color:var(--muted);margin-top:12px;font-style:italic}
+  .fhint{text-align:center;font-size:15.5px;color:var(--head);margin-top:18px;
+    border:1px dashed var(--cyan);border-radius:10px;padding:13px 14px;background:rgba(95,208,230,.08)}
   .fhint .win{color:var(--accent);font-family:'Oswald';font-style:normal;text-transform:uppercase;letter-spacing:.12em}
-  .repair{margin:8px 16px 4px;border:1px solid var(--warn);border-radius:10px;background:rgba(255,128,145,.08);padding:16px;text-align:center}
-  .repair .rt{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--warn)}
-  .repair .rd{color:#f0d2d6;font-size:13.5px;line-height:1.5;margin:8px auto 14px;max-width:440px}
-  .repair button{font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:13px;
-    color:#2a0a0f;background:var(--warn);border:none;border-radius:26px;padding:12px 22px;cursor:pointer}
-  .repair button:active{transform:scale(.97)}
+  .fsuccess{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px 6px 8px}
+  .fuel.done .ft,.fuel.done .goal,.fuel.done .cans,.fuel.done .fbtns,.fuel.done #fhint{display:none}
+  .fuel.done .fsuccess{display:flex}
+  .fsuccess .ic{font-size:64px;filter:drop-shadow(0 0 18px rgba(230,181,82,.6))}
+  .fsuccess .t{font-family:'Playfair Display';font-weight:900;font-size:30px;color:var(--head)}
+  .fsuccess .s{color:#f0e2c2;font-size:16px;max-width:380px;line-height:1.55}
+  .fsuccess button{margin-top:8px;font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;
+    font-size:14px;color:#1a1305;background:var(--accent);border:none;border-radius:28px;padding:13px 30px;cursor:pointer}
+  .fsuccess button:active{transform:scale(.97)}
+  /* авария реактора на схеме корабля */
+  #reactorZone{opacity:0;pointer-events:none}
+  #reactorZone.broken{pointer-events:auto;cursor:pointer;animation:zoneBlink 1.1s ease-in-out infinite}
+  @keyframes zoneBlink{0%,100%{opacity:.1}50%{opacity:.42}}
+  .led.broken{fill:#ff5468}
+  /* аварийная строка «Реактор»: мигает красным и кликабельна */
+  .sys .row.broken{cursor:pointer;border-color:var(--warn);animation:rBlink 1s ease-in-out infinite}
+  @keyframes rBlink{0%,100%{background:rgba(255,128,145,.05);box-shadow:none}
+    50%{background:rgba(255,128,145,.22);box-shadow:0 0 16px rgba(255,128,145,.4)}}
+  /* полноэкранный оверлей мини-игры */
+  .fuelModal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:16px;
+    background:rgba(3,5,12,.9);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  .fuelModal.show{display:flex}
+  .fclose{position:absolute;top:10px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--rule);
+    background:rgba(255,255,255,.06);color:var(--muted);font-size:15px;cursor:pointer;line-height:1}
+  .fclose:active{transform:scale(.94)}
   .fixedmsg{margin:8px 16px 4px;border:1px solid var(--cyan);border-radius:10px;background:rgba(95,208,230,.08);
     padding:14px 16px;text-align:center;color:var(--cyan);font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;font-size:12.5px}
 </style></head>
@@ -135,7 +164,7 @@
 
       <!-- compartment labels + LEDs -->
       <g font-family="Oswald" font-size="12" fill="#cdd8f5" text-anchor="middle">
-        <circle class="led" cx="108" cy="150" r="3.4" fill="#5fd0e6"/><text x="122" y="153">Реактор</text>
+        <circle class="led" id="reactorLed" cx="108" cy="150" r="3.4" fill="#5fd0e6"/><text x="122" y="153">Реактор</text>
         <circle class="led" cx="160" cy="150" r="3.4" fill="#5fd0e6"/><text x="185" y="153">Топливо</text>
         <circle class="led" cx="232" cy="150" r="3.4" fill="#5fd0e6"/><text x="260" y="141">Жилой</text><text x="260" y="156">отсек</text>
         <circle class="led" cx="312" cy="150" r="3.4" fill="#5fd0e6"/><text x="340" y="153">Навигация</text>
@@ -146,36 +175,47 @@
         <text x="360" y="34">Гиперсвязь</text>
         <text x="257" y="216">Шлюз</text>
       </g>
+      <rect id="reactorZone" x="97" y="98" width="53" height="104" rx="6" fill="#ff5468"/>
     </svg>
   </div>
 
   <div class="sys">
     <div class="row"><span>Двигатели</span><span class="st ok">● В НОРМЕ</span></div>
-    <div class="row"><span>Реактор</span><span class="st ok" id="reactorSt">● 78%</span></div>
+    <div class="row" id="reactorRow"><span>Реактор</span><span class="st ok" id="reactorSt">● 78%</span></div>
     <div class="row"><span>Топливные баки</span><span class="st ok">● ПОЛНЫ</span></div>
     <div class="row"><span>Навигация</span><span class="st ok">● ОНЛАЙН</span></div>
     <div class="row"><span>Гиперсвязь</span><span class="st ok">● СИГНАЛ ЕСТЬ</span></div>
     <div class="row"><span>Мостик</span><span class="st ok">● ГЕРМЕТИЧЕН</span></div>
   </div>
-  <div class="repair" id="repairIntro" style="display:none">
-    <div class="rt">⚠ Авария: реактор обесточен</div>
-    <div class="rd">Двигатель заглох — не хватает топлива. Нужно вручную отмерить и залить топливо в реактор.</div>
-    <button id="startFix">🔧 Начать переливание топлива</button>
-  </div>
-
   <div class="fixedmsg" id="fixedmsg" style="display:none">✔ Реактор заправлен и запущен. Курс на Блук открыт — возвращайся в «Навигацию».</div>
 
-  <div class="fuel" id="fuel" style="display:none">
+  <div class="fuelModal" id="fuelModal">
+   <div class="fuel" id="fuel">
+    <button class="fclose" id="fclose">✕</button>
     <div class="ft">⛽ Переливание топлива · починка реактора</div>
-    <div class="goal">Реактор заглох. Залей в него ровно <b>4 л</b> топлива, но приборы врут — отмерь точно, переливая между канистрами. Нажми на одну канистру, потом на другую — топливо перельётся.</div>
+    <div class="goal">
+      <div class="lead">Реактор заглох! Нужно залить ровно <b>4 литра</b> топлива.</div>
+      <div class="sub">Мерных приборов нет — есть только две канистры: <b>на 5 л</b> и <b>на 3 л</b>. Отмерь ими ровно 4 литра.</div>
+      <ul>
+        <li><span class="n">1.</span><span>Кнопка <b>Наполнить</b> — налить выбранную канистру доверху.</span></li>
+        <li><span class="n">2.</span><span>Кнопка <b>Слить</b> — вылить канистру досуха.</span></li>
+        <li><span class="n">3.</span><span>Нажми одну канистру, потом другую — топливо перельётся из первой во вторую.</span></li>
+      </ul>
+    </div>
     <div class="cans" id="cans"></div>
     <div class="fbtns">
       <button id="fill">🛢 Наполнить</button>
       <button id="spill">🚿 Слить</button>
-      <button id="hint">💡 Подсказка</button>
       <button id="freset">↺ Сброс</button>
     </div>
     <div class="fhint" id="fhint">Выбери канистру.</div>
+    <div class="fsuccess" id="fsuccess">
+      <div class="ic">✅</div>
+      <div class="t">Реактор починен!</div>
+      <div class="s">Ты отмерила ровно 4 литра и заправила двигатель. Гиперпрыжок пошёл — летим на Блук!</div>
+      <button id="fdone">Продолжить →</button>
+    </div>
+   </div>
   </div>
 
   <div class="note">Раздел в сборке — сюда добавим и другие поломки/починки (сборка QR для перезапуска систем). При аварии отсек загорится красным.</div>
@@ -183,7 +223,7 @@
 
 <script>
 (function(){
-  const CAP={A:5,B:3}, TARGET=4, GH=130;
+  const CAP={A:5,B:3}, TARGET=4, GH=184;
   let amt={A:0,B:0}, sel=null, hintStep=0, solved=false;
   const cans=document.getElementById('cans'), fhint=document.getElementById('fhint');
 
@@ -212,10 +252,10 @@
   function check(){
     if(!solved && (amt.A===TARGET||amt.B===TARGET)){
       solved=true; sel=null; render();
-      fhint.innerHTML='<span class="win">✔ Реактор заправлен! Системы в норме.</span>';
-      persistSet('ship','fixed');                                  // реактор починен → курс на Блук открыт
+      document.getElementById('fuel').classList.add('done');       // экран «Реактор починен»
+      persistSet('ship','fixed');                                  // → Навигация завершит прыжок на Блук
       try{ if(inShell) window.parent.postMessage('notify:nav','*'); }catch(e){}
-      setTimeout(applyShip,900);
+      applyShip();                                                 // реактор перестаёт мигать
     }
   }
   function tap(k){
@@ -227,13 +267,11 @@
   }
   document.getElementById('fill').addEventListener('click',()=>{ if(solved)return; if(sel){amt[sel]=CAP[sel];render();check();} else setHint('Сначала выбери канистру.'); });
   document.getElementById('spill').addEventListener('click',()=>{ if(solved)return; if(sel){amt[sel]=0;render();} else setHint('Сначала выбери канистру.'); });
-  const HINTS=['Наполни канистру 5 л.','Перелей из 5 л в 3 л (в 5 л останется 2 л).','Слей канистру 3 л.','Перелей 2 л из 5 л в 3 л.','Наполни канистру 5 л.','Перелей из 5 л в 3 л доверху — в 5 л останется ровно 4 л!'];
-  document.getElementById('hint').addEventListener('click',()=>{ if(solved)return; setHint('💡 '+HINTS[hintStep%HINTS.length]); hintStep++; });
   document.getElementById('freset').addEventListener('click',()=>{ if(solved)return; amt={A:0,B:0};sel=null;hintStep=0;render();setHint('Выбери канистру.'); });
 
   // ---- связь с оболочкой: починку показываем только при аварии ----
   const inShell = window.parent!==window;
-  let started=false, SHIP='';
+  let SHIP='';
   function localState(){
     try{ const v=localStorage.getItem('edinorog_state'); if(v) return JSON.parse(v)||{}; }catch(e){}
     try{ if((window.name||'').indexOf('EDST:')===0) return JSON.parse(window.name.slice(5))||{}; }catch(e){}
@@ -246,20 +284,28 @@
     try{ localStorage.setItem('edinorog_state',j); }catch(e){}
     try{ window.name='EDST:'+j; }catch(e){}
   }
-  const intro=document.getElementById('repairIntro'), fuel=document.getElementById('fuel'),
-        fixedmsg=document.getElementById('fixedmsg'), reactorSt=document.getElementById('reactorSt');
+  const fuelModal=document.getElementById('fuelModal'), fixedmsg=document.getElementById('fixedmsg'),
+        reactorSt=document.getElementById('reactorSt'), reactorRow=document.getElementById('reactorRow'),
+        reactorZone=document.getElementById('reactorZone'), reactorLed=document.getElementById('reactorLed');
+  function openFuel(){ if(SHIP!=='broken'||solved)return; build(); fuelModal.classList.add('show'); }
+  function closeFuel(){ fuelModal.classList.remove('show'); }
+  reactorRow.addEventListener('click',openFuel);
+  if(reactorZone) reactorZone.addEventListener('click',openFuel);
+  document.getElementById('fclose').addEventListener('click',closeFuel);
+  document.getElementById('fdone').addEventListener('click',()=>{ closeFuel(); try{ if(inShell) window.parent.postMessage('tab:nav','*'); }catch(e){} });
   function applyShip(){
     const broken = SHIP==='broken' && !solved;
     const done   = SHIP==='fixed' || solved;
-    intro.style.display    = (broken && !started) ? '' : 'none';
-    fuel.style.display     = (broken &&  started) ? '' : 'none';
+    reactorRow.classList.toggle('broken', broken);
+    if(reactorZone) reactorZone.classList.toggle('broken', broken);
+    if(reactorLed) reactorLed.classList.toggle('broken', broken);
     fixedmsg.style.display = done ? '' : 'none';
     if(reactorSt){
       if(done){ reactorSt.className='st ok'; reactorSt.textContent='● 100%'; }
-      else if(SHIP==='broken'){ reactorSt.className='st warn'; reactorSt.textContent='● АВАРИЯ'; }
+      else if(broken){ reactorSt.className='st warn'; reactorSt.textContent='● АВАРИЯ'; }
+      else { reactorSt.className='st ok'; reactorSt.textContent='● 78%'; }
     }
   }
-  document.getElementById('startFix').addEventListener('click',()=>{ started=true; build(); applyShip(); });
   function applyState(st){ if(st&&st.ship) SHIP=st.ship; applyShip(); }
   window.addEventListener('message',(e)=>{ if(typeof e.data!=='string')return;
     if(e.data.indexOf('state:')===0){ let st={}; try{st=JSON.parse(e.data.slice(6));}catch(_){}

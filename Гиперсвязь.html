@@ -37,8 +37,8 @@
   .list{list-style:none}
   .item{display:flex;gap:12px;align-items:center;padding:13px 15px;border-bottom:1px solid var(--rule-soft);cursor:pointer;transition:background .15s}
   .item:active{background:rgba(95,208,230,.06)}
-  .av{flex:0 0 auto;width:44px;height:44px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;
-    font-size:22px;background:rgba(95,208,230,.1);border:1px solid var(--rule)}
+  .av{flex:0 0 auto;width:54px;height:54px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;
+    font-size:27px;background:rgba(95,208,230,.1);border:1px solid var(--rule)}
   .av img{width:100%;height:100%;object-fit:cover;object-position:center top}
   .it{flex:1 1 auto;min-width:0}
   .it .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
@@ -64,7 +64,7 @@
   .rwrap{max-width:620px;margin:0 auto;padding:16px}
 
   .rhead{display:flex;gap:14px;align-items:center;border-bottom:1px solid var(--rule);padding-bottom:14px;margin-bottom:14px}
-  .rhead .av{width:60px;height:60px;font-size:28px}
+  .rhead .av{width:92px;height:92px;font-size:42px}
   .rhead .from{font-family:'Playfair Display';font-weight:700;color:var(--head);font-size:22px}
   .rhead .role{font-family:'Oswald';text-transform:uppercase;letter-spacing:.12em;font-size:10.5px;color:var(--cyan);margin-top:4px}
   .rhead .subj{font-size:13px;color:var(--muted);margin-top:6px}
@@ -119,6 +119,58 @@
   #accept .d{width:10px;height:10px;border-radius:50%;background:#0a5a2a;box-shadow:0 0 0 3px rgba(10,120,50,.35)}
   @keyframes btn{0%,100%{box-shadow:0 0 20px rgba(95,208,230,.4)}50%{box-shadow:0 0 36px rgba(95,208,230,.8)}}
   #accept:active{transform:scale(.97)}
+
+  /* QR jigsaw */
+  #qr{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;background:#070b18}
+  #qr.show{display:flex}
+  .qrbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--rule);
+    font-family:'Oswald';text-transform:uppercase;letter-spacing:.12em;font-size:13px;color:var(--cyan)}
+  .qrbar button{font-family:'Oswald';font-size:15px;color:var(--muted);background:none;border:1px solid var(--rule);border-radius:50%;width:34px;height:34px;cursor:pointer}
+  .qrhint{font-family:'Oswald';text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--accent);text-align:center;padding:12px 16px 4px}
+  .qrstage{position:relative;flex:1;width:100%;overflow:hidden;touch-action:none}
+  .qrframe{position:absolute;border:2px solid var(--rule);border-radius:6px;background:rgba(255,255,255,.02)}
+  .qrslot{position:absolute;border:1px dashed rgba(190,200,230,.18)}
+  .qrpiece{position:absolute;background-repeat:no-repeat;cursor:grab;touch-action:none;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
+  .qrpiece.drag{cursor:grabbing;z-index:50;filter:drop-shadow(0 8px 16px rgba(0,0,0,.75))}
+  .qrdone{display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:16px}
+  #qr.solved .qrstage,#qr.solved .qrhint{display:none}
+  #qr.solved .qrdone{display:flex}
+  .qrdone .dt{font-family:'Playfair Display';font-weight:900;font-size:28px;color:var(--head)}
+  .qrdone .qrfull{background:#fff;padding:14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .qrdone .qrfull img{display:block;width:min(84vw,400px);height:auto;image-rendering:pixelated}
+  .qrdone button{font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:13px;
+    color:#08131f;background:linear-gradient(180deg,#7ee1f2,#37b7d0);border:none;border-radius:26px;padding:12px 26px;cursor:pointer}
+
+  /* глитч «сломанного» текста робота */
+  .glitch{font-family:'Share Tech Mono',monospace;color:#9fb0d0;letter-spacing:1px;
+    text-shadow:1.2px 0 #ff5468,-1.2px 0 #5fd0e6;animation:gl .16s steps(2) infinite}
+  @keyframes gl{0%{opacity:.85;transform:translateX(0)}50%{opacity:1;transform:translateX(-1px)}100%{opacity:.9;transform:translateX(1px)}}
+  .lost{font-family:'Share Tech Mono',monospace;color:#6b7690;letter-spacing:1px;text-align:center;margin-top:14px;
+    animation:flick 1.1s steps(2) infinite}
+  @keyframes flick{0%,100%{opacity:.6}50%{opacity:.15}}
+
+  /* окно диска Цезаря */
+  #cipher{position:fixed;inset:0;z-index:62;display:none;flex-direction:column;background:#070b18}
+  #cipher.show{display:flex}
+  .cbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--rule);
+    font-family:'Oswald';text-transform:uppercase;letter-spacing:.12em;font-size:13px;color:var(--cyan)}
+  .cbar button{font-family:'Oswald';font-size:15px;color:var(--muted);background:none;border:1px solid var(--rule);border-radius:50%;width:34px;height:34px;cursor:pointer}
+  .cwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;overflow:auto}
+  .chint{font-family:'Oswald';letter-spacing:.02em;font-size:15.5px;color:var(--accent);text-align:center;white-space:nowrap}
+  #cdisk{width:min(94vw,500px);height:min(94vw,500px);touch-action:none;cursor:grab;filter:drop-shadow(0 0 22px rgba(95,208,230,.25))}
+  #cdisk text{-webkit-user-select:none;user-select:none}
+  .ctitle{font-family:'Playfair Display';font-weight:900;font-size:26px;color:var(--head);text-align:center}
+  .cword{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+  .ctile{min-width:24px;height:34px;padding:0 6px;display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--rule);border-radius:6px;background:rgba(8,14,30,.5);
+    font-family:'Share Tech Mono',monospace;font-size:20px;color:#8fe3f2}
+  .cshift{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--cyan)}
+  .cshift b{font-family:'Share Tech Mono',monospace;font-size:18px;color:var(--accent)}
+  .cdone{display:none}
+  .cdone.show{display:block}
+  .cdone button{font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:13px;
+    color:#08131f;background:linear-gradient(180deg,#7ee1f2,#37b7d0);border:none;border-radius:26px;padding:12px 28px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -140,13 +192,36 @@
   <div class="hail">
     <div class="badge">◉ Гиперсвязь · защищённый канал</div>
     <div class="awrap"><div class="aimg">
-      <img src="alisa.jpg" alt="Алиса" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-      <div class="ph" style="display:none">👩‍🚀</div>
+      <img id="callImg" src="alisa.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div id="callPh" class="ph" style="display:none">👩‍🚀</div>
     </div></div>
     <div class="title">Вам входящее сообщение<br>по гиперсвязи</div>
-    <div class="name">Алиса Селезнёва</div>
+    <div class="name" id="callName">Алиса Селезнёва</div>
     <div class="sub" id="calling">борт «Пегас» · вызов…</div>
     <button id="accept"><span class="d"></span>Принять</button>
+  </div>
+</div>
+
+<!-- QR jigsaw -->
+<div id="qr">
+  <div class="qrbar"><span>🧩 Обрывки записки Крыса</span><button id="qrClose">✕</button></div>
+  <div class="qrhint" id="qrhint">Перетаскивай кусочки на пустой квадрат и собери записку.</div>
+  <div class="qrstage" id="qrstage"></div>
+  <div class="qrdone" id="qrdone">
+    <div class="dt">✅ Записка собрана!</div>
+    <div class="qrfull"><img src="qr.png" alt="QR-код"></div>
+    <button id="qrDoneBtn">Готово →</button>
+  </div>
+</div>
+
+<!-- Caesar cipher disk -->
+<div id="cipher">
+  <div class="cbar"><span>◈ Технология древних</span><button id="cipherClose">✕</button></div>
+  <div class="cwrap">
+    <div class="ctitle">«Диск Цезаря»</div>
+    <div class="chint">Этот диск поможет тебе восстановить сломанный текст робота.</div>
+    <div class="cword" id="cword"></div>
+    <svg id="cdisk" viewBox="0 0 300 300"></svg>
   </div>
 </div>
 
@@ -156,13 +231,13 @@
 
   // avatar helper (photo for alisa, emoji otherwise)
   function avatarHTML(m,big){
-    if(m.photo) return '<span class="av"><img src="alisa.jpg" alt="" onerror="this.parentNode.textContent=\'👩‍🚀\'"></span>';
+    if(m.photo) return '<span class="av"><img src="'+m.photo+'" alt="" onerror="this.parentNode.textContent=\''+(m.emoji||'👤')+'\'"></span>';
     return '<span class="av">'+m.icon+'</span>';
   }
 
   // ---- messages ----
   const messages=[
-    {id:'alisa',from:'Алиса Селезнёва',role:'Экипаж корабля «Пегас»',photo:true,urgent:true,unread:true,
+    {id:'alisa',from:'Алиса Селезнёва',role:'Экипаж корабля «Пегас»',photo:'alisa.jpg',emoji:'👩‍🚀',urgent:true,unread:true,
      ts:4,time:'сейчас',subj:'СРОЧНО: помоги вернуть «галактий»!',
      snip:'Полина, случилась беда — без тебя не справиться…', special:'alisa'},
     {id:'parents',from:'Мама и Папа',icon:'💌',unread:true,ts:3,time:'утром',
@@ -189,14 +264,32 @@
 
   // messages that arrive later
   const laterMessages=[
-    {id:'zeleny',from:'Механик Салатовый',icon:'🧑‍🔧',unread:true,ts:5,time:'только что',
+    {id:'zeleny',from:'Механик Салатовый',photo:'green.jpg',emoji:'🧑‍🔧',unread:true,atLevel:3,ts:5,time:'только что',
      subj:'Держись, мы верим в тебя!',
      snip:'Крыс наследил на Венере — узнай, куда он рванул…',
      body:`<p>Полина, это Салатовый. Ранее известен как Зелёный. Твой папа сказал, что новое имя лучше, и я переименовался.</p>
        <p>Засекли твою посадку на Венеру — молодец! Но Крыс уже улетел, разминулись на пару часов.</p>
        <p>Зато он наследил. Заправщики видели его корабль: Крыс расспрашивал дорогу к самому большому космическому рынку галактики — туда, где торгуют редкими зверями со всех планет. Наверняка помчался туда сбыть краденое.</p>
        <p>Не помню, как называется этот рынок-планета, — узнай и проложи курс. Будь осторожна: Крыс хитёр.</p>
-       <div class="sign"><div class="s">Механик Салатовый</div></div>`}
+       <div class="sign"><div class="s">Механик Салатовый</div></div>`},
+    {id:'papa',from:'Папа',icon:'👨',unread:true,atLevel:4,ts:6,time:'только что',
+     subj:'Далеко не летай!',
+     snip:'И надеюсь, ты взяла часы?',
+     body:`<p>Полина, далеко не летай! И надеюсь, ты взяла часы?</p>
+       <div class="sign"><div class="s">Папа</div></div>`},
+    {id:'ushan',from:'Ушаны с Блука',photo:'ushan.jpg',emoji:'🐰',role:'Планета Блук',unread:true,atLevel:4,ts:7,time:'только что',
+     subj:'Крыс был здесь!',
+     snip:'Он улизнул, но оставил обрывки записки…', special:'ushan'},
+    {id:'fiolet',from:'Механик Фиолетовый',photo:'green.jpg',emoji:'🧑‍🔧',unread:true,atLevel:5,ts:8,time:'только что',
+     subj:'Приём! Как ты там?',
+     snip:'Опять переименовался — теперь Фиолетовый…',
+     body:`<p>Полина, приём! Это Фиолетовый, который ранее был Салатовым, а ещё чуть раньше Зелёным.</p>
+       <p>Опять просто твой папа звонил, сказал, что Салатовый мне не к лицу.</p>
+       <p>Ты как там? Нашла Крыса? Ждём от тебя вестей.</p>
+       <div class="sign"><div class="s">Механик Фиолетовый</div></div>`},
+    {id:'robot',from:'Робот Ш-Ш-Шелезяки',photo:'robot.jpg',emoji:'🤖',role:'Планета Шелезяка',unread:true,afterRead:'fiolet',ts:9,time:'сейчас',
+     subj:'⚠ ТРЕВОГА — это ловушка!',
+     snip:'Нам подсыпали яд… вас заманили… сигнал искажён…', special:'robot'}
   ];
 
   const list=document.getElementById('list');
@@ -233,6 +326,20 @@
         <p>Я долго думала, кто способен всё исправить, — и поняла: <b>только ты</b>. Ты умная, смелая и никогда не сдаёшься. Пожалуйста, помоги нам вернуть топливо и останови Крыса. Я в тебя верю. Удачи, капитан Полина!</p>
         <div class="callout"><span class="ic">📡</span><div><b>С чего начать:</b> открой свежий выпуск «Космического Вестника» — там все подробности и первая зацепка.</div></div>
         <div class="sign"><div class="s">Алиса</div></div>`;
+    } else if(m.special==='ushan'){
+      html+=`<p class="hi">Приветствуем, капитан Полина! Мы — ушаны с планеты Блук.</p>
+        <p>Крыс побывал у нас! Он пытался продать на нашем рынке награбленное — да торговцы его узнали.</p>
+        <p>Мы хотели его схватить, но он хитрющий: улизнул в последний миг. Поймать не успели…</p>
+        <p>Зато в отеле, где он прятался, остались <b>обрывки бумаги</b>. Похоже на записку! Мы всё сберегли — сложи кусочки и прочитай, что там.</p>
+        <button class="go" id="showScraps">🧩 Посмотреть кусочки бумаги</button>
+        <div class="sign"><div class="s">Ушаны с Блука</div></div>`;
+    } else if(m.special==='robot'){
+      html+=`<p class="hi" style="color:#ff8091">⚠ ТРЕВОГА. Говорит последний робот Шелезяки.</p>
+        <p>Нам сно-снова подсыпали яд в смазку… мы не мо-можем двигаться… это <b>ЛОВУШКА</b>.</p>
+        <p>Си-системы отка-казывают… ошибка се-семь… <span class="glitch">7…7…7</span></p>
+        <p>Крыса здесь нет — вас заманили нарочно, его подельники уже летят.</p>
+        <p>Настоящий Крыс на пла-планете… <span class="glitch">${CIPHER}</span></p>
+        <button class="go" id="openCipher">🔓 Восстановить текст</button>`;
     } else { html+=m.body; }
     html+='</div>';
     rc.innerHTML=html;reader.classList.add('show');reader.scrollTop=0;
@@ -243,6 +350,14 @@
       if(vb)vb.addEventListener('click',()=>{ if(voice.paused){voice.play();vb.textContent='⏸ Пауза';} else {voice.pause();vb.textContent='▶ Прослушать сообщение';} });
       const tg=document.getElementById('toGazeta');
       if(tg)tg.addEventListener('click',()=>{ stopVoice(); if(window.parent!==window){try{window.parent.postMessage('tab:gazeta','*');}catch(_){}} });
+    }
+    if(m.special==='ushan'){
+      const sc=document.getElementById('showScraps');
+      if(sc) sc.addEventListener('click',openScraps);
+    }
+    if(m.special==='robot'){
+      const oc=document.getElementById('openCipher');
+      if(oc) oc.addEventListener('click',openCipher);
     }
     renderList();
   }
@@ -265,57 +380,246 @@
     if(key==='mailRead'){ s.mailRead=s.mailRead||[]; if(!s.mailRead.includes(val)) s.mailRead.push(val); }
     else if(key==='mailLater') s.mailLater=true;
     else if(key==='callSeen') s.callSeen=true;
+    else s[key]=val;
     saveLocal(s);
   }
 
   const call=document.getElementById('call');
   function shellMsg(m){ try{ if(window.parent!==window) window.parent.postMessage(m,'*'); }catch(e){} }
-  let d=0;const cl=document.getElementById('calling');const base='борт «Пегас» · вызов';
-  let di=null;
-  function startCall(){ shellMsg('call:on'); di=setInterval(()=>{d=(d+1)%4;if(!call.classList.contains('hide'))cl.textContent=base+'.'.repeat(d);},400); }
-  document.getElementById('accept').addEventListener('click',()=>{
-    if(di)clearInterval(di);call.classList.add('hide');shellMsg('call:off');
-    setTimeout(()=>{ openMsg('alisa'); }, 300);
-  });
-
-  let laterDone=false;
-  function deliverLater(){ laterMessages.forEach(m=>{ if(!messages.find(x=>x.id===m.id)) messages.push(m); }); laterDone=true; }
-  // письмо Салатового приходит, когда пройден раннер (level >= 3)
-  function maybeDeliverLater(st){
-    if(laterDone) return;
-    if(st && (st.level>=3 || st.mailLater)){
-      deliverLater(); renderList(); persistSet('mailLater','1');
-      try{ if(inShell) window.parent.postMessage('notify:hyper','*'); }catch(e){}
-    }
+  const CALLS={
+    alisa:{name:'Алиса Селезнёва', photo:'alisa.jpg', ph:'👩‍🚀', sub:'борт «Пегас» · вызов', msg:'alisa'},
+    ushan:{name:'Ушаны с Блука', photo:'ushan.jpg', ph:'🐰', sub:'планета Блук · вызов', msg:'ushan'}
+  };
+  const callImg=document.getElementById('callImg'), callPh=document.getElementById('callPh'),
+        callName=document.getElementById('callName'), cl=document.getElementById('calling');
+  let activeCall=null, di=null, d=0;
+  function startCall(which,immersive){
+    const c=CALLS[which]; if(!c || activeCall===which) return;
+    activeCall=which;
+    callName.textContent=c.name;
+    callImg.src=c.photo; callImg.style.display=''; callPh.style.display='none'; callPh.textContent=c.ph;
+    call.classList.remove('hide');
+    if(immersive) shellMsg('call:on');          // глобальное затемнение — только когда вкладка активна (звонок Алисы в начале)
+    else shellMsg('notify:hyper');              // иначе просто «красная точка», экран звонка ждёт внутри вкладки
+    d=0; if(di)clearInterval(di);
+    di=setInterval(()=>{ d=(d+1)%4; if(!call.classList.contains('hide')) cl.textContent=c.sub+'.'.repeat(d); },400);
   }
+  function hideCall(){ if(di)clearInterval(di); call.classList.add('hide'); shellMsg('call:off'); activeCall=null; }
+  document.getElementById('accept').addEventListener('click',()=>{
+    const c=CALLS[activeCall]; const msg=c?c.msg:'alisa';
+    if(di)clearInterval(di); call.classList.add('hide'); shellMsg('call:off'); activeCall=null;
+    setTimeout(()=>{ openMsg(msg); }, 300);
+  });
+  // какой звонок показать: на Блуке (level 4) — Ушаны; в начале — Алиса
+  function refreshCall(st){
+    const read=(st&&st.mailRead)||[]; const lvl=(st&&st.level)||1;
+    if(lvl>=4 && !read.includes('ushan')) startCall('ushan',false);
+    else if(!(st&&(st.callSeen||read.includes('alisa')))) startCall('alisa',true);
+    else hideCall();   // звонков нет — прячем экран (он видим по умолчанию)
+  }
+
+  // отложенные письма приходят по достижении своего уровня (Салатовый — 3, Папа — 4)
+  function deliverDue(st, notify){
+    const level=(st&&st.level)||1, read=(st&&st.mailRead)||[]; let added=false;
+    laterMessages.forEach(m=>{
+      if(messages.find(x=>x.id===m.id)) return;
+      const okLevel = m.atLevel ? level>=m.atLevel : true;
+      const okRead  = m.afterRead ? read.includes(m.afterRead) : true;
+      if(okLevel && okRead){ messages.push(m); added=true; }
+    });
+    if(added){ renderList(); if(notify){ try{ if(inShell) window.parent.postMessage('notify:hyper','*'); }catch(e){} } }
+  }
+  function maybeDeliverLater(st){ if(st) deliverDue(st, true); }
 
   // shell messages: pause audio, or deliver the saved state
   window.addEventListener('message',(e)=>{
     if(typeof e.data!=='string')return;
     if(e.data==='pause'){ stopVoice(); return; }
     if(e.data.indexOf('state:')===0){ let st={}; try{st=JSON.parse(e.data.slice(6));}catch(_){}
-      initWith(st); maybeDeliverLater(st); }
+      initWith(st); maybeDeliverLater(st); refreshCall(st); }
   });
 
   // ---- init / restore saved state ----
-  let inited=false;
+  let inited=false, scrapsDone=false, decodedAlready=false;
   function initWith(saved){
     if(inited)return; inited=true;
     saved=saved||{};
+    scrapsDone = saved.scraps==='done';
+    decodedAlready = saved.decoded==='shesh';
     const read=Array.isArray(saved.mailRead)?saved.mailRead:[];
-    if(saved.mailLater || saved.level>=3) deliverLater();   // раннер уже пройден — письмо Салатового на месте
+    deliverDue(saved, false);   // восстанавливаем уже пришедшие письма (без уведомления)
     messages.forEach(m=>{ if(read.includes(m.id)) m.unread=false; });
     renderList();
-    const seen=saved.callSeen || read.includes('alisa');
-    if(seen){
-      call.classList.add('hide'); shellMsg('call:off');   // уже видели — без повторного звонка
-    } else {
-      startCall();
-    }
+    refreshCall(saved);
   }
   // ask the shell for saved state; fall back to own storage if standalone / no reply
   if(inShell){ try{window.parent.postMessage('req:state','*');}catch(e){} setTimeout(()=>initWith(localState()),400); }
   else { initWith(localState()); }
+
+  // ---------- QR jigsaw: пустой квадрат в центре, кусочки лежат вокруг ----------
+  const QRURL='qr.png', QN=5;
+  const qrOv=document.getElementById('qr'), qrStage=document.getElementById('qrstage');
+  document.getElementById('qrClose').addEventListener('click',()=>qrOv.classList.remove('show'));
+  document.getElementById('qrDoneBtn').addEventListener('click',()=>qrOv.classList.remove('show'));
+  function openScraps(){
+    qrOv.classList.remove('solved'); qrOv.classList.add('show');
+    if(scrapsDone){ qrOv.classList.add('solved'); }
+    else { requestAnimationFrame(buildPuzzle); }
+  }
+  function solveScraps(){ scrapsDone=true; persistSet('scraps','done'); setTimeout(()=>qrOv.classList.add('solved'),220); }
+
+  function rnd(n){ return Math.floor(Math.random()*n); }
+  function r2(n){ return Math.round(n*100)/100; }
+  // сегмент края: прямая (s=0) или «замочек» (s=±1), симметричный относительно середины
+  function edge(x1,y1,x2,y2,s){
+    if(!s) return 'L '+r2(x2)+' '+r2(y2)+' ';
+    const dx=x2-x1, dy=y2-y1, len=Math.hypot(dx,dy), ux=dx/len, uy=dy/len, nx=-uy*s, ny=ux*s;
+    const P=(fa,fp)=>r2(x1+ux*len*fa+nx*len*fp)+' '+r2(y1+uy*len*fa+ny*len*fp);
+    let d='L '+P(0.35,0)+' ';
+    d+='C '+P(0.32,0.10)+' '+P(0.30,0.27)+' '+P(0.50,0.27)+' ';
+    d+='C '+P(0.70,0.27)+' '+P(0.68,0.10)+' '+P(0.65,0)+' ';
+    d+='L '+P(1,0)+' ';
+    return d;
+  }
+  function jigPath(e,cell,tab){
+    const x0=tab,y0=tab,x1=tab+cell,y1=tab+cell;
+    let d='M '+x0+' '+y0+' ';
+    d+=edge(x0,y0,x1,y0,e.top); d+=edge(x1,y0,x1,y1,e.right);
+    d+=edge(x1,y1,x0,y1,e.bottom); d+=edge(x0,y1,x0,y0,e.left);
+    return d+'Z';
+  }
+  function overlaps(a,b,pad){ return !(a.x+a.w+pad<=b.x || a.x>=b.x+b.w+pad || a.y+a.h+pad<=b.y || a.y>=b.y+b.h+pad); }
+
+  function buildPuzzle(){
+    qrStage.innerHTML='';
+    const W=qrStage.clientWidth, H=qrStage.clientHeight;
+    const BOARD=Math.round(Math.max(240,Math.min(440, Math.min(W,H)*0.68)));
+    const cell=BOARD/QN, tab=cell*0.3, ps=cell+2*tab;
+    const boardX=Math.round((W-BOARD)/2), boardY=Math.round((H-BOARD)/2);
+    const boardRect={x:boardX,y:boardY,w:BOARD,h:BOARD};
+
+    // пустой квадрат-цель со слотами
+    const frame=document.createElement('div'); frame.className='qrframe';
+    frame.style.left=boardX+'px'; frame.style.top=boardY+'px'; frame.style.width=BOARD+'px'; frame.style.height=BOARD+'px';
+    for(let i=0;i<QN*QN;i++){ const s=document.createElement('div'); s.className='qrslot';
+      s.style.left=(i%QN)*cell+'px'; s.style.top=Math.floor(i/QN)*cell+'px'; s.style.width=cell+'px'; s.style.height=cell+'px'; frame.appendChild(s); }
+    qrStage.appendChild(frame);
+
+    const right=[],bottom=[];
+    for(let r=0;r<QN;r++){right[r]=[];bottom[r]=[];for(let c=0;c<QN;c++){
+      right[r][c]=(c<QN-1)?(rnd(2)?1:-1):0; bottom[r][c]=(r<QN-1)?(rnd(2)?1:-1):0; }}
+    const edgesFor=(r,c)=>({ top:r===0?0:-bottom[r-1][c], right:right[r][c], bottom:bottom[r][c], left:c===0?0:-right[r][c-1] });
+    const slotXY=idx=>({x:boardX+(idx%QN)*cell, y:boardY+Math.floor(idx/QN)*cell});
+
+    const placedRects=[];
+    function scatter(){
+      for(let a=0;a<90;a++){ const x=rnd(Math.max(1,W-ps)), y=rnd(Math.max(1,H-ps)); const rect={x,y,w:ps,h:ps};
+        if(overlaps(rect,boardRect,10)) continue;
+        if(placedRects.some(q=>overlaps(rect,q,-ps*0.45))) continue;
+        placedRects.push(rect); return {x,y}; }
+      for(let a=0;a<90;a++){ const x=rnd(Math.max(1,W-ps)), y=rnd(Math.max(1,H-ps)); const rect={x,y,w:ps,h:ps};
+        if(!overlaps(rect,boardRect,4)){ placedRects.push(rect); return {x,y}; } }
+      return {x:rnd(Math.max(1,W-ps)), y:0};
+    }
+
+    const pieces=[];
+    for(let r=0;r<QN;r++)for(let c=0;c<QN;c++){
+      const el=document.createElement('div'); el.className='qrpiece';
+      el.style.width=ps+'px'; el.style.height=ps+'px';
+      el.style.backgroundImage='url("'+QRURL+'")'; el.style.backgroundSize=BOARD+'px '+BOARD+'px';
+      el.style.backgroundPosition=(tab-c*cell)+'px '+(tab-r*cell)+'px';
+      const pth='path("'+jigPath(edgesFor(r,c),cell,tab)+'")'; el.style.clipPath=pth; el.style.webkitClipPath=pth;
+      const pos=scatter();
+      const p={home:r*QN+c, slot:-1, el, x:pos.x, y:pos.y};
+      el.style.left=pos.x+'px'; el.style.top=pos.y+'px';
+      el.addEventListener('pointerdown',ev=>onDown(ev,p));
+      pieces.push(p); qrStage.appendChild(el);
+    }
+
+    function toSlot(p,slot){ p.slot=slot; const xy=slotXY(slot); p.x=xy.x-tab; p.y=xy.y-tab; p.el.style.left=p.x+'px'; p.el.style.top=p.y+'px'; }
+    function toFree(p,x,y){ p.slot=-1; p.x=x; p.y=y; p.el.style.left=x+'px'; p.el.style.top=y+'px'; }
+
+    let drag=null, offx=0, offy=0, sx=0, sy=0, sslot=-1;
+    function onDown(ev,p){
+      if(qrOv.classList.contains('solved'))return;
+      ev.preventDefault(); drag=p; p.el.classList.add('drag');
+      try{p.el.setPointerCapture(ev.pointerId);}catch(_){}
+      const sr=qrStage.getBoundingClientRect();
+      offx=ev.clientX-(sr.left+p.x); offy=ev.clientY-(sr.top+p.y);
+      sx=p.x; sy=p.y; sslot=p.slot;
+      p.el.addEventListener('pointermove',onMove); p.el.addEventListener('pointerup',onUp);
+    }
+    function onMove(ev){ if(!drag)return; const sr=qrStage.getBoundingClientRect();
+      drag.x=ev.clientX-sr.left-offx; drag.y=ev.clientY-sr.top-offy;
+      drag.el.style.left=drag.x+'px'; drag.el.style.top=drag.y+'px'; }
+    function onUp(ev){
+      if(!drag)return; const p=drag; p.el.classList.remove('drag');
+      p.el.removeEventListener('pointermove',onMove); p.el.removeEventListener('pointerup',onUp); drag=null;
+      const cx=p.x+tab+cell/2, cy=p.y+tab+cell/2;   // центр «квадратной» части кусочка
+      if(cx>=boardX && cx<boardX+BOARD && cy>=boardY && cy<boardY+BOARD){
+        const c=Math.min(QN-1,Math.max(0,Math.floor((cx-boardX)/cell)));
+        const r=Math.min(QN-1,Math.max(0,Math.floor((cy-boardY)/cell)));
+        const slot=r*QN+c;
+        const occ=pieces.find(q=>q!==p && q.slot===slot);
+        if(occ){ if(sslot>=0) toSlot(occ,sslot); else toFree(occ,sx,sy); }  // вернуть занимавшего
+        toSlot(p,slot);
+      } else { toFree(p,p.x,p.y); }
+      if(pieces.every(q=>q.slot===q.home)) solveScraps();
+    }
+  }
+
+  // ---------- Технология древних: диск-дешифратор (только помощник) ----------
+  const ALPH='АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';   // 32 буквы, без Ё
+  const WORD='ШЕШИНЕРУ', KEY=7;
+  function shiftText(t,s){ let o=''; for(const ch of t){ const i=ALPH.indexOf(ch); o += (i<0? ch : ALPH[((i+s)%32+32)%32]); } return o; }
+  const CIPHER=shiftText(WORD,KEY);                 // зашифрованное название планеты (в письме и на диске)
+  const NS='http://www.w3.org/2000/svg', STEP=360/32;
+  const cipherOv=document.getElementById('cipher');
+  let gInner=null, rot=0;
+  document.getElementById('cipherClose').addEventListener('click',()=>cipherOv.classList.remove('show'));
+  function openCipher(){ cipherOv.classList.add('show'); rot=0; buildWord(); buildDisk(); }
+
+  function buildWord(){ const w=document.getElementById('cword'); w.innerHTML='';
+    for(const ch of CIPHER){ const t=document.createElement('div'); t.className='ctile'; t.textContent=ch; w.appendChild(t); } }
+
+  function buildDisk(){
+    const svg=document.getElementById('cdisk'), cx=150, cy=150; svg.innerHTML='';
+    function ring(r,stroke,sw,fill){ const c=document.createElementNS(NS,'circle');
+      c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r',r);c.setAttribute('fill',fill||'none');
+      c.setAttribute('stroke',stroke);c.setAttribute('stroke-width',sw);svg.appendChild(c); }
+    ring(142,'rgba(95,208,230,.25)',1,'rgba(8,14,30,.65)');
+    ring(112,'rgba(95,208,230,.35)',1,'rgba(10,16,34,.9)');
+    ring(70,'rgba(230,181,82,.35)',1,'rgba(22,16,8,.85)');
+    // радиальные перегородки — делят кольца на «слоты», чтобы пары букв чётко совпадали
+    for(let i=0;i<32;i++){ const a=(-90+(i+0.5)*STEP)*Math.PI/180; const l=document.createElementNS(NS,'line');
+      l.setAttribute('x1',cx+Math.cos(a)*72); l.setAttribute('y1',cy+Math.sin(a)*72);
+      l.setAttribute('x2',cx+Math.cos(a)*142); l.setAttribute('y2',cy+Math.sin(a)*142);
+      l.setAttribute('stroke','rgba(95,208,230,.22)'); l.setAttribute('stroke-width','1'); svg.appendChild(l); }
+    function letters(parent,rad,fill){ for(let i=0;i<32;i++){ const a=(-90+i*STEP)*Math.PI/180;
+      const t=document.createElementNS(NS,'text');
+      t.setAttribute('x',cx+Math.cos(a)*rad); t.setAttribute('y',cy+Math.sin(a)*rad);
+      t.setAttribute('fill',fill); t.setAttribute('font-size','11'); t.setAttribute('font-family','Share Tech Mono,monospace');
+      t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central'); t.textContent=ALPH[i];
+      parent.appendChild(t); } }
+    letters(svg,127,'#8fe3f2');                      // внешнее кольцо — обычный алфавит
+    gInner=document.createElementNS(NS,'g'); svg.appendChild(gInner);
+    letters(gInner,92,'#e8c07a');                    // внутреннее кольцо — крутится
+    const hub=document.createElementNS(NS,'circle'); hub.setAttribute('cx',cx);hub.setAttribute('cy',cy);hub.setAttribute('r',44);
+    hub.setAttribute('fill','rgba(12,18,38,.96)');hub.setAttribute('stroke','rgba(230,181,82,.4)');svg.appendChild(hub);
+    const num=document.createElementNS(NS,'text'); num.setAttribute('x',cx);num.setAttribute('y',cy+2);num.setAttribute('font-size','34');
+    num.setAttribute('fill','#5fd0e6');num.setAttribute('font-family','Share Tech Mono,monospace');num.setAttribute('text-anchor','middle');num.setAttribute('dominant-baseline','central');svg.appendChild(num);
+    function updNum(){ num.textContent=((Math.round(rot/STEP)%32)+32)%32; }
+    updNum();
+    gInner.setAttribute('transform','rotate('+rot+' 150 150)');
+
+    let drag=false, sa=0, sr=0;
+    function pAng(ev){ const r=svg.getBoundingClientRect(); return Math.atan2(ev.clientY-(r.top+r.height/2), ev.clientX-(r.left+r.width/2))*180/Math.PI; }
+    function spin(){ gInner.setAttribute('transform','rotate('+rot+' 150 150)'); updNum(); }
+    svg.addEventListener('pointerdown',ev=>{ ev.preventDefault(); drag=true; try{svg.setPointerCapture(ev.pointerId);}catch(_){}; sa=pAng(ev); sr=rot; });
+    svg.addEventListener('pointermove',ev=>{ if(!drag)return; rot=sr+(pAng(ev)-sa); spin(); });
+    svg.addEventListener('pointerup',()=>{ if(!drag)return; drag=false; rot=Math.round(rot/STEP)*STEP; spin(); });
+    svg.addEventListener('pointercancel',()=>{ drag=false; });
+  }
 </script>
 </body>
 </html>

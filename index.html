@@ -28,7 +28,7 @@
   .views iframe.active{display:block}
   /* incoming-call mode: iframe covers the whole screen (full darkening), tabs hidden */
   body.calling .views{bottom:0;max-width:none}
-  body.calling .tabs{transform:translateY(140%);pointer-events:none}
+  body.calling .tabs,body.gaming .tabs{transform:translateY(140%);pointer-events:none}
 
   .tabs{position:fixed;left:0;right:0;bottom:0;max-width:720px;margin:0 auto;z-index:10;display:flex;transition:transform .35s ease;
     height:calc(var(--tabh) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
@@ -70,7 +70,7 @@
 
   // ---- global saved progress (localStorage lives in this TOP window — reliable on file://) ----
   const STORE='edinorog_state';
-  const DEFAULT={level:1,callSeen:false,mailRead:[],mailLater:false,ship:''};
+  const DEFAULT={level:1,callSeen:false,mailRead:[],mailLater:false,ship:'',scraps:'',decoded:''};
   // read from localStorage (survives tab close) or window.name (survives reload even when file:// storage is blocked, e.g. Safari)
   function readRaw(){
     try{ const v=localStorage.getItem(STORE); if(v) return v; }catch(e){}
@@ -88,6 +88,19 @@
     try{window.name='';}catch(e){}
     try{location.replace(location.pathname);}catch(e){}
   }
+  // отладка: #level=4 — прыжок на уровень (для повторного теста), напр. index.html#level=4
+  var lvlM=(location.hash+location.search).match(/level=(\d+)/);
+  if(lvlM){
+    try{ var s=JSON.parse(localStorage.getItem(STORE)||'{}');
+      s.level=parseInt(lvlM[1],10); s.callSeen=true; s.mailRead=(s.mailRead||[]).includes('alisa')?s.mailRead:['alisa']; s.ship='fixed';
+      localStorage.setItem(STORE,JSON.stringify(s)); }catch(e){}
+    try{ location.replace(location.pathname); }catch(e){}
+  }
+  // отладка: #nodecode — сбросить только загадку-шифр (остаться на месте)
+  if(location.hash==='#nodecode' || location.search.indexOf('nodecode')>=0){
+    try{ var sd=JSON.parse(localStorage.getItem(STORE)||'{}'); sd.decoded=''; localStorage.setItem(STORE,JSON.stringify(sd)); window.name='EDST:'+JSON.stringify(sd); }catch(e){}
+    try{ location.replace(location.pathname); }catch(e){}
+  }
   let gameState=loadState();
   function applySet(key,val){
     if(key==='level') gameState.level=Math.max(gameState.level||1, parseInt(val,10)||1);
@@ -95,6 +108,8 @@
     else if(key==='mailLater') gameState.mailLater=true;
     else if(key==='mailRead'){ gameState.mailRead=gameState.mailRead||[]; if(!gameState.mailRead.includes(val)) gameState.mailRead.push(val); }
     else if(key==='ship') gameState.ship=val;
+    else if(key==='scraps') gameState.scraps=val;
+    else if(key==='decoded') gameState.decoded=val;
     else return;
     saveState();
   }
@@ -123,6 +138,8 @@
     if(d.indexOf('tab:')===0) activate(d.slice(4));
     if(d==='call:on') document.body.classList.add('calling');
     if(d==='call:off') document.body.classList.remove('calling');
+    if(d==='game:on') document.body.classList.add('gaming');
+    if(d==='game:off') document.body.classList.remove('gaming');
     if(d.indexOf('notify:')===0){ const n=d.slice(7); const b=btns.find(x=>x.dataset.t===n); if(b&&n!==current)b.classList.add('notify'); }
   });
 
