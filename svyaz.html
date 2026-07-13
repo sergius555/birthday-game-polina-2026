@@ -229,6 +229,19 @@
   const voice=document.getElementById('voice');
   function stopVoice(){try{voice.pause();}catch(e){}}
 
+  // ---- звуковые сигналы (Web Audio, без файлов) ----
+  let actx=null;
+  function audioCtx(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return actx; }
+  function unlockAudio(){ const c=audioCtx(); if(c && c.state==='suspended'){ try{c.resume();}catch(e){} } }
+  document.addEventListener('pointerdown', unlockAudio);   // iOS: звук разблокируется первым касанием
+  function beep(freq,start,dur,vol,type){ const c=audioCtx(); if(!c)return;
+    const o=c.createOscillator(), g=c.createGain(); o.type=type||'sine'; o.frequency.value=freq;
+    o.connect(g); g.connect(c.destination); const t=c.currentTime+start;
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.2,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o.stop(t+dur+0.03); }
+  function soundMail(){ unlockAudio(); beep(880,0,0.13,0.17,'sine'); beep(1320,0.11,0.17,0.15,'sine'); }   // «блип» письма
+  function soundCall(){ unlockAudio(); for(const s of [0,0.5]){ beep(620,s,0.2,0.22,'triangle'); beep(790,s+0.19,0.24,0.2,'triangle'); } }  // «звонок»
+
   // avatar helper (photo for alisa, emoji otherwise)
   function avatarHTML(m,big){
     if(m.photo) return '<span class="av"><img src="'+m.photo+'" alt="" onerror="this.parentNode.textContent=\''+(m.emoji||'👤')+'\'"></span>';
@@ -398,7 +411,7 @@
     activeCall=which;
     callName.textContent=c.name;
     callImg.src=c.photo; callImg.style.display=''; callPh.style.display='none'; callPh.textContent=c.ph;
-    call.classList.remove('hide');
+    call.classList.remove('hide'); soundCall();
     if(immersive) shellMsg('call:on');          // глобальное затемнение — только когда вкладка активна (звонок Алисы в начале)
     else shellMsg('notify:hyper');              // иначе просто «красная точка», экран звонка ждёт внутри вкладки
     d=0; if(di)clearInterval(di);
@@ -427,7 +440,7 @@
       const okRead  = m.afterRead ? read.includes(m.afterRead) : true;
       if(okLevel && okRead){ messages.push(m); added=true; }
     });
-    if(added){ renderList(); if(notify){ try{ if(inShell) window.parent.postMessage('notify:hyper','*'); }catch(e){} } }
+    if(added){ renderList(); if(notify){ soundMail(); try{ if(inShell) window.parent.postMessage('notify:hyper','*'); }catch(e){} } }
   }
   function maybeDeliverLater(st){ if(st) deliverDue(st, true); }
 
