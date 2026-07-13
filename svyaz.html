@@ -21,6 +21,15 @@
     background-image:radial-gradient(1.3px 1.3px at 24px 32px,#fff,transparent),radial-gradient(1px 1px at 96px 70px,#dce8ff,transparent),radial-gradient(1px 1px at 150px 20px,#fff,transparent);
     background-repeat:repeat;background-size:200px 200px}
   audio{display:none}
+  #wake{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;cursor:pointer;
+    background-color:#04050c;background-image:radial-gradient(circle at 50% 40%,rgba(30,46,92,.55),transparent 62%)}
+  #wake.show{display:flex}
+  #wake .wk{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px}
+  #wake .wkic{font-size:64px;animation:wkp 1.6s ease-in-out infinite}
+  @keyframes wkp{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+  #wake .wkt{font-family:'Playfair Display';font-weight:700;font-size:26px;color:var(--head)}
+  #wake .wks{font-family:'Oswald';text-transform:uppercase;letter-spacing:.2em;font-size:13px;color:var(--cyan);animation:wkb 1.4s infinite}
+  @keyframes wkb{0%,100%{opacity:1}50%{opacity:.4}}
 
   .mail{position:relative;z-index:1;width:100%;max-width:720px;
     background:linear-gradient(180deg,var(--panel1),var(--panel2));border:2px solid var(--accent);border-radius:12px;
@@ -199,6 +208,15 @@
     <div class="name" id="callName">Алиса Селезнёва</div>
     <div class="sub" id="calling">борт «Пегас» · вызов…</div>
     <button id="accept"><span class="d"></span>Принять</button>
+  </div>
+</div>
+
+<!-- экран включения (нужен для разблокировки звука на iOS перед звонком) -->
+<div id="wake">
+  <div class="wk">
+    <div class="wkic">📟</div>
+    <div class="wkt">Бортовой компьютер</div>
+    <div class="wks">Нажми, чтобы включить</div>
   </div>
 </div>
 
@@ -424,11 +442,24 @@
     setTimeout(()=>{ openMsg(msg); }, 300);
   });
   // какой звонок показать: на Блуке (level 4) — Ушаны; в начале — Алиса
+  // экран «включения»: разблокирует звук первым касанием, затем показывает звонок со звонком
+  let audioReady=false, wakePending=null, wakeImmersive=false;
+  const wakeEl=document.getElementById('wake');
+  wakeEl.addEventListener('click',()=>{
+    audioReady=true; unlockAudio(); wakeEl.classList.remove('show');
+    if(wakePending){ const w=wakePending; wakePending=null;
+      if(!wakeImmersive) shellMsg('call:off');
+      setTimeout(()=>startCall(w,wakeImmersive),60); }
+  });
   function refreshCall(st){
     const read=(st&&st.mailRead)||[]; const lvl=(st&&st.level)||1;
-    if(lvl>=4 && !read.includes('ushan')) startCall('ushan',false);
-    else if(!(st&&(st.callSeen||read.includes('alisa')))) startCall('alisa',true);
-    else hideCall();   // звонков нет — прячем экран (он видим по умолчанию)
+    let which=null, imm=false;
+    if(lvl>=4 && !read.includes('ushan')){ which='ushan'; imm=false; }
+    else if(!(st&&(st.callSeen||read.includes('alisa')))){ which='alisa'; imm=true; }
+    if(!which){ if(activeCall) hideCall(); return; }
+    if(activeCall===which || wakePending===which) return;
+    if(audioReady){ startCall(which,imm); }
+    else { wakePending=which; wakeImmersive=imm; wakeEl.classList.add('show'); shellMsg('call:on'); }
   }
 
   // отложенные письма приходят по достижении своего уровня (Салатовый — 3, Папа — 4)
