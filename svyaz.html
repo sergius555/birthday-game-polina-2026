@@ -22,14 +22,28 @@
     background-repeat:repeat;background-size:200px 200px}
   audio{display:none}
   #wake{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;cursor:pointer;
-    background-color:#04050c;background-image:radial-gradient(circle at 50% 40%,rgba(30,46,92,.55),transparent 62%)}
+    background-color:#04050c;
+    background-image:radial-gradient(circle at 50% 38%,rgba(30,46,92,.6),transparent 62%),
+      radial-gradient(1.4px 1.4px at 30px 40px,#fff,transparent),radial-gradient(1.1px 1.1px at 130px 90px,#cdd8ff,transparent);
+    background-size:auto,240px 240px,240px 240px;background-repeat:no-repeat,repeat,repeat}
   #wake.show{display:flex}
   #wake .wk{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px}
-  #wake .wkic{font-size:64px;animation:wkp 1.6s ease-in-out infinite}
-  @keyframes wkp{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
-  #wake .wkt{font-family:'Playfair Display';font-weight:700;font-size:26px;color:var(--head)}
-  #wake .wks{font-family:'Oswald';text-transform:uppercase;letter-spacing:.2em;font-size:13px;color:var(--cyan);animation:wkb 1.4s infinite}
-  @keyframes wkb{0%,100%{opacity:1}50%{opacity:.4}}
+  #wake .wkbadge{font-family:'Share Tech Mono',monospace;letter-spacing:.14em;font-size:11px;color:var(--cyan);text-transform:uppercase}
+  #wake .wkt{font-family:'Oswald';text-transform:uppercase;letter-spacing:.16em;font-size:13px;color:var(--muted)}
+  #wake .wkship{font-family:'Playfair Display';font-weight:700;font-size:clamp(21px,5vw,30px);color:var(--head);margin-top:-6px;text-shadow:0 0 24px rgba(95,208,230,.3)}
+  #wake .fp{position:relative;width:132px;height:132px;border-radius:50%;margin:10px 0;color:var(--cyan);overflow:hidden;
+    border:2px solid rgba(95,208,230,.5);background:radial-gradient(circle at 50% 45%,rgba(95,208,230,.10),rgba(10,16,34,.6));
+    display:flex;align-items:center;justify-content:center;animation:fppulse 1.8s ease-in-out infinite}
+  @keyframes fppulse{0%,100%{box-shadow:0 0 22px rgba(95,208,230,.35)}50%{box-shadow:0 0 40px rgba(95,208,230,.75)}}
+  #wake .fp svg{width:80px;height:80px}
+  #wake .fp .scan{position:absolute;left:8%;right:8%;height:3px;top:20%;
+    background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 10px var(--cyan);animation:fpscan 1.7s ease-in-out infinite}
+  @keyframes fpscan{0%{top:22%}50%{top:78%}100%{top:22%}}
+  #wake .wks{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:12.5px;color:var(--accent);max-width:280px;animation:wkb 1.4s infinite}
+  @keyframes wkb{0%,100%{opacity:1}50%{opacity:.5}}
+  #wake.ok .fp{color:#7ee081;border-color:#7ee081;box-shadow:0 0 34px rgba(126,224,129,.7);animation:none}
+  #wake.ok .fp .scan{display:none}
+  #wake.ok .wks{color:#7ee081;animation:none}
 
   .mail{position:relative;z-index:1;width:100%;max-width:720px;
     background:linear-gradient(180deg,var(--panel1),var(--panel2));border:2px solid var(--accent);border-radius:12px;
@@ -211,12 +225,27 @@
   </div>
 </div>
 
-<!-- экран включения (нужен для разблокировки звука на iOS перед звонком) -->
+<!-- экран авторизации (разблокирует звук перед звонком) -->
 <div id="wake">
   <div class="wk">
-    <div class="wkic">📟</div>
+    <div class="wkbadge">◉ Защищённый доступ</div>
     <div class="wkt">Бортовой компьютер</div>
-    <div class="wks">Нажми, чтобы включить</div>
+    <div class="wkship">корабль «Космический&nbsp;Единорог»</div>
+    <div class="fp">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+          <path d="M50 28 C31 28 22 44 22 60 L22 70"/>
+          <path d="M50 36 C38 36 31 47 31 60 L31 69"/>
+          <path d="M50 44 C44 44 40 51 40 60 L40 68"/>
+          <path d="M50 28 C69 28 78 44 78 60 L78 70"/>
+          <path d="M50 36 C62 36 69 47 69 60 L69 69"/>
+          <path d="M50 44 C56 44 60 51 60 60 L60 68"/>
+          <path d="M50 52 L50 70"/>
+        </g>
+      </svg>
+      <div class="scan"></div>
+    </div>
+    <div class="wks" id="wkauth">Приложи палец — авторизация капитана Полины</div>
   </div>
 </div>
 
@@ -446,10 +475,12 @@
   let audioReady=false, wakePending=null, wakeImmersive=false;
   const wakeEl=document.getElementById('wake');
   wakeEl.addEventListener('click',()=>{
-    audioReady=true; unlockAudio(); wakeEl.classList.remove('show');
-    if(wakePending){ const w=wakePending; wakePending=null;
-      if(!wakeImmersive) shellMsg('call:off');
-      setTimeout(()=>startCall(w,wakeImmersive),60); }
+    if(audioReady) return;
+    audioReady=true; unlockAudio(); wakeEl.classList.add('ok');
+    const a=document.getElementById('wkauth'); if(a) a.textContent='✔ Доступ разрешён · капитан Полина';
+    setTimeout(()=>{ wakeEl.classList.remove('show'); wakeEl.classList.remove('ok');
+      if(wakePending){ const w=wakePending; wakePending=null;
+        if(!wakeImmersive) shellMsg('call:off'); startCall(w,wakeImmersive); } }, 950);
   });
   function refreshCall(st){
     const read=(st&&st.mailRead)||[]; const lvl=(st&&st.level)||1;
