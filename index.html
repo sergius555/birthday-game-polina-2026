@@ -52,7 +52,6 @@
     <iframe id="f-gazeta"            src="vestnik.html"         title="Газета"></iframe>
     <iframe id="f-nav"               src="nav.html"       title="Навигация"></iframe>
     <iframe id="f-ship"              src="ship.html"         title="Корабль"></iframe>
-    <iframe id="f-log"               src="log.html"          title="Журнал"></iframe>
   </div>
 
   <nav class="tabs">
@@ -60,17 +59,16 @@
     <button data-t="gazeta"><span class="i">📰</span>Газета<span class="badge"></span></button>
     <button data-t="nav"><span class="i">🧭</span>Навигация<span class="badge"></span></button>
     <button data-t="ship"><span class="i">🚀</span>Корабль<span class="badge"></span></button>
-    <button data-t="log"><span class="i">❑</span>Журнал<span class="badge"></span></button>
   </nav>
 
 <script>
-  const frames={hyper:'f-hyper',gazeta:'f-gazeta',nav:'f-nav',ship:'f-ship',log:'f-log'};
+  const frames={hyper:'f-hyper',gazeta:'f-gazeta',nav:'f-nav',ship:'f-ship'};
   const btns=[...document.querySelectorAll('.tabs button')];
   let current='hyper';
 
   // ---- global saved progress (localStorage lives in this TOP window — reliable on file://) ----
   const STORE='edinorog_state';
-  const DEFAULT={level:1,callSeen:false,mailRead:[],mailLater:false,ship:'',scraps:'',decoded:''};
+  const DEFAULT={level:1,callSeen:false,mailRead:[],mailLater:false,ship:'',scraps:'',decoded:'',access:'',nav:''};
   // read from localStorage (survives tab close) or window.name (survives reload even when file:// storage is blocked, e.g. Safari)
   function readRaw(){
     try{ const v=localStorage.getItem(STORE); if(v) return v; }catch(e){}
@@ -92,7 +90,7 @@
   var lvlM=(location.hash+location.search).match(/level=(\d+)/);
   if(lvlM){
     try{ var s=JSON.parse(localStorage.getItem(STORE)||'{}');
-      s.level=parseInt(lvlM[1],10); s.callSeen=true; s.mailRead=(s.mailRead||[]).includes('alisa')?s.mailRead:['alisa']; s.ship='fixed';
+      s.level=parseInt(lvlM[1],10); s.callSeen=true; s.mailRead=['alisa']; s.ship='fixed'; s.access='ok'; s.nav=(s.level>=6?'fixed':s.level===5?'broken':'');
       localStorage.setItem(STORE,JSON.stringify(s)); }catch(e){}
     try{ location.replace(location.pathname); }catch(e){}
   }
@@ -110,6 +108,8 @@
     else if(key==='ship') gameState.ship=val;
     else if(key==='scraps') gameState.scraps=val;
     else if(key==='decoded') gameState.decoded=val;
+    else if(key==='access') gameState.access=val;
+    else if(key==='nav') gameState.nav=val;
     else return;
     saveState();
   }

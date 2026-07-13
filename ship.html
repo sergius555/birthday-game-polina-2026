@@ -92,10 +92,29 @@
   .fclose:active{transform:scale(.94)}
   .fixedmsg{margin:8px 16px 4px;border:1px solid var(--cyan);border-radius:10px;background:rgba(95,208,230,.08);
     padding:14px 16px;text-align:center;color:var(--cyan);font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;font-size:12.5px}
+  /* авария навигации на схеме */
+  #navZone{opacity:0;pointer-events:none}
+  #navZone.broken{pointer-events:auto;cursor:pointer;animation:zoneBlink 1.1s ease-in-out infinite}
+  /* мини-игра «луч через зеркала» */
+  .beamwrap{display:flex;justify-content:center;margin:6px auto 2px}
+  #beam{position:relative;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+  #beam svg{display:block;width:100%;height:auto}
+  #beam .mcell{cursor:pointer}
+  #beam .cellbox{fill:rgba(95,208,230,.04);stroke:rgba(95,208,230,.16);stroke-width:1}
+  #beam .mirror{stroke:#dfe8ff;stroke-width:6;stroke-linecap:round;filter:drop-shadow(0 0 5px rgba(95,208,230,.55))}
+  #beam .mcell .mhit{fill:rgba(95,208,230,.06);stroke:rgba(95,208,230,.45);stroke-width:1.4;rx:8}
+  #beam .obst{fill:rgba(255,84,104,.14);stroke:#ff5468;stroke-width:1.8}
+  #beam .obst2{stroke:#ff5468;stroke-width:2.4;stroke-linecap:round}
+  #beam .beamline{stroke:#5fd0e6;stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(95,208,230,.85))}
+  #beam .beamline.win{stroke:#7ef0ff;stroke-width:5;filter:drop-shadow(0 0 10px rgba(95,208,230,1))}
+  #beam .emit{fill:#ffd35a;filter:drop-shadow(0 0 7px rgba(255,211,90,.9))}
+  #beam .recv{fill:rgba(95,208,230,.16);stroke:#5fd0e6;stroke-width:2}
+  #beam .recv.win{fill:rgba(95,208,230,.5)}
+  .navpz.done .beamwrap,.navpz.done .fbtns,.navpz.done #nhint{display:none}
 </style></head>
 <body>
 <div class="p">
-  <div class="bar"><span>◈ Космический Единорог · схема</span><span class="id">СИСТ. КОНТРОЛЬ · вид сбоку</span></div>
+  <div class="bar"><span>◈ Космический Единорог · схема</span></div>
   <div class="head"><h1>Космический Единорог</h1><p>Отсеки корабля и состояние систем</p></div>
 
   <div class="schem">
@@ -157,7 +176,7 @@
       <line x1="440" y1="122" x2="440" y2="178" stroke="rgba(95,208,230,.5)"/>
 
       <!-- airlock / cargo hatch (bottom) -->
-      <rect x="234" y="188" width="46" height="16" rx="3" fill="rgba(230,181,82,.14)" stroke="#e6b552" stroke-width="1.6"/>
+      <rect x="234" y="188" width="46" height="16" rx="3" fill="rgba(95,208,230,.10)" stroke="#5fd0e6" stroke-width="1.6"/>
       <!-- landing gear -->
       <g stroke="#9aa3bd" stroke-width="2"><line x1="180" y1="204" x2="172" y2="228"/><line x1="160" y1="228" x2="184" y2="228"/>
         <line x1="330" y1="204" x2="338" y2="228"/><line x1="326" y1="228" x2="350" y2="228"/></g>
@@ -167,7 +186,7 @@
         <circle class="led" id="reactorLed" cx="108" cy="150" r="3.4" fill="#5fd0e6"/><text x="122" y="153">Реактор</text>
         <circle class="led" cx="160" cy="150" r="3.4" fill="#5fd0e6"/><text x="185" y="153">Топливо</text>
         <circle class="led" cx="232" cy="150" r="3.4" fill="#5fd0e6"/><text x="260" y="141">Жилой</text><text x="260" y="156">отсек</text>
-        <circle class="led" cx="312" cy="150" r="3.4" fill="#5fd0e6"/><text x="340" y="153">Навигация</text>
+        <circle class="led" id="navLed" cx="312" cy="150" r="3.4" fill="#5fd0e6"/><text x="340" y="153">Навигация</text>
         <circle class="led" cx="392" cy="150" r="3.4" fill="#5fd0e6"/><text x="410" y="153">Мостик</text>
       </g>
       <g font-family="Oswald" font-size="11" fill="#9aa3bd" text-anchor="middle">
@@ -176,6 +195,7 @@
         <text x="257" y="216">Шлюз</text>
       </g>
       <rect id="reactorZone" x="97" y="98" width="53" height="104" rx="6" fill="#ff5468"/>
+      <rect id="navZone" x="301" y="99" width="78" height="104" rx="6" fill="#ff5468"/>
     </svg>
   </div>
 
@@ -183,11 +203,10 @@
     <div class="row"><span>Двигатели</span><span class="st ok">● В НОРМЕ</span></div>
     <div class="row" id="reactorRow"><span>Реактор</span><span class="st ok" id="reactorSt">● 78%</span></div>
     <div class="row"><span>Топливные баки</span><span class="st ok">● ПОЛНЫ</span></div>
-    <div class="row"><span>Навигация</span><span class="st ok">● ОНЛАЙН</span></div>
+    <div class="row" id="navRow"><span>Навигация</span><span class="st ok" id="navSt">● ОНЛАЙН</span></div>
     <div class="row"><span>Гиперсвязь</span><span class="st ok">● СИГНАЛ ЕСТЬ</span></div>
     <div class="row"><span>Мостик</span><span class="st ok">● ГЕРМЕТИЧЕН</span></div>
   </div>
-  <div class="fixedmsg" id="fixedmsg" style="display:none">✔ Реактор заправлен и запущен. Курс на Блук открыт — возвращайся в «Навигацию».</div>
 
   <div class="fuelModal" id="fuelModal">
    <div class="fuel" id="fuel">
@@ -218,7 +237,26 @@
    </div>
   </div>
 
-  <div class="note">Раздел в сборке — сюда добавим и другие поломки/починки (сборка QR для перезапуска систем). При аварии отсек загорится красным.</div>
+  <div class="fuelModal" id="navModal">
+   <div class="fuel navpz" id="navpz">
+    <button class="fclose" id="nclose">✕</button>
+    <div class="ft">🔦 Луч сигнала · починка навигации</div>
+    <div class="goal">
+      <div class="lead">Курсовой луч сбит! Доведи <b>сигнал</b> от передатчика до <b>навигационного приёмника</b> 🧭.</div>
+      <div class="sub">Нажимай на <b>зеркала</b> — они поворачиваются и отражают луч. Разверни их так, чтобы луч добежал до приёмника, обходя повреждённые блоки.</div>
+    </div>
+    <div class="beamwrap"><div id="beam"></div></div>
+    <div class="fbtns"><button id="nreset">↺ Сброс</button></div>
+    <div class="fhint" id="nhint">Поворачивай зеркала, чтобы направить луч.</div>
+    <div class="fsuccess" id="nsuccess">
+      <div class="ic">✅</div>
+      <div class="t">Навигация починена!</div>
+      <div class="s">Луч дошёл до приёмника — курсовой компьютер снова в строю. Можно прокладывать курс на Шешинеру!</div>
+      <button id="ndone">Продолжить →</button>
+    </div>
+   </div>
+  </div>
+
 </div>
 
 <script>
@@ -299,14 +337,102 @@
     reactorRow.classList.toggle('broken', broken);
     if(reactorZone) reactorZone.classList.toggle('broken', broken);
     if(reactorLed) reactorLed.classList.toggle('broken', broken);
-    fixedmsg.style.display = done ? '' : 'none';
+    if(fixedmsg) fixedmsg.style.display = done ? '' : 'none';
     if(reactorSt){
       if(done){ reactorSt.className='st ok'; reactorSt.textContent='● 100%'; }
       else if(broken){ reactorSt.className='st warn'; reactorSt.textContent='● АВАРИЯ'; }
       else { reactorSt.className='st ok'; reactorSt.textContent='● 78%'; }
     }
   }
-  function applyState(st){ if(st&&st.ship) SHIP=st.ship; applyShip(); }
+  function applyState(st){ if(st&&st.ship) SHIP=st.ship; if(st&&st.nav) NAV=st.nav; applyShip(); applyNavUI(); }
+
+  // ================= НАВИГАЦИЯ: мини-игра «луч через зеркала» =================
+  let NAV='', navSolved=false;
+  const navModal=document.getElementById('navModal'), navpz=document.getElementById('navpz'),
+        navZone=document.getElementById('navZone'), navRow=document.getElementById('navRow'),
+        navLed=document.getElementById('navLed'), navSt=document.getElementById('navSt'),
+        navmsg=document.getElementById('navmsg'), beamEl=document.getElementById('beam'), nhint=document.getElementById('nhint');
+
+  function applyNavUI(){
+    const broken = NAV==='broken' && !navSolved;
+    const done   = NAV==='fixed' || navSolved;
+    navRow.classList.toggle('broken', broken);
+    navZone.classList.toggle('broken', broken);
+    if(navLed) navLed.classList.toggle('broken', broken);
+    if(navmsg) navmsg.style.display = done ? '' : 'none';
+    if(navSt){ navSt.className = broken ? 'st warn' : 'st ok'; navSt.textContent = broken ? '● СБОЙ' : '● ОНЛАЙН'; }
+  }
+  function openNav(){ if(NAV!=='broken'||navSolved)return; buildBeam(); navModal.classList.add('show'); }
+  function closeNav(){ navModal.classList.remove('show'); }
+  navRow.addEventListener('click',openNav);
+  navZone.addEventListener('click',openNav);
+  document.getElementById('nclose').addEventListener('click',closeNav);
+  document.getElementById('ndone').addEventListener('click',()=>{ closeNav(); try{ if(inShell) window.parent.postMessage('tab:nav','*'); }catch(e){} });
+  document.getElementById('nreset').addEventListener('click',()=>{ if(navSolved)return; resetBeam(); });
+
+  // поле 5×5: зеркала поворачиваются, луч отражается; довести до приёмника, обойдя повреждённый блок
+  const BN=6, BCS=54, BPAD=30;
+  const DIRV={E:[0,1],W:[0,-1],N:[-1,0],S:[1,0]};
+  const REFL={ '/':{E:'N',N:'E',W:'S',S:'W'}, '\\':{E:'S',S:'E',W:'N',N:'W'} };
+  // змейка из 6 зеркал, старт неверный, единственное решение (проверено)
+  const START={ '0,2':'/','2,2':'/','2,4':'/','4,4':'\\','4,1':'\\','5,1':'/' };
+  const OBST={ '1,4':true, '3,2':true };
+  const EMIT={r:0,c:0,dir:'E'}, RECV={r:5,c:5,dir:'E'};
+  let mirrors={};
+
+  function resetBeam(){ mirrors=Object.assign({},START); nhint.textContent='Поворачивай зеркала, чтобы направить луч.'; renderBeam(); }
+  function buildBeam(){ navSolved=false; navpz.classList.remove('done'); resetBeam(); }
+
+  function ox(c){ return BPAD+c*BCS; } function oy(r){ return BPAD+r*BCS; }
+  function cx(c){ return ox(c)+BCS/2; } function cy(r){ return oy(r)+BCS/2; }
+  function edgePt(r,c,dir){ if(dir==='E')return [ox(c)+BCS,cy(r)]; if(dir==='W')return [ox(c),cy(r)];
+    if(dir==='N')return [cx(c),oy(r)]; return [cx(c),oy(r)+BCS]; }
+
+  function traceBeam(){
+    let r=EMIT.r,c=EMIT.c,dir=EMIT.dir, steps=0, ok=false;
+    const pts=[ edgePt(r,c,'W') ];
+    while(steps++<64){
+      pts.push([cx(c),cy(r)]);
+      const m=mirrors[r+','+c]; if(m) dir=REFL[m][dir];
+      const [dr,dc]=DIRV[dir], nr=r+dr, nc=c+dc;
+      if(nr<0||nr>=BN||nc<0||nc>=BN){ pts.push(edgePt(r,c,dir)); if(r===RECV.r&&c===RECV.c&&dir===RECV.dir) ok=true; break; }
+      if(OBST[nr+','+nc]){ pts.push(edgePt(r,c,dir)); break; }
+      r=nr;c=nc;
+    }
+    return {pts,ok};
+  }
+
+  function renderBeam(){
+    const SZ=BPAD*2+BN*BCS;
+    let s='<svg viewBox="0 0 '+SZ+' '+SZ+'" xmlns="http://www.w3.org/2000/svg">';
+    for(let r=0;r<BN;r++)for(let c=0;c<BN;c++)
+      s+='<rect class="cellbox" x="'+ox(c)+'" y="'+oy(r)+'" width="'+BCS+'" height="'+BCS+'" rx="6"/>';
+    for(const k in OBST){ const p=k.split(',').map(Number), r=p[0], c=p[1];
+      s+='<rect class="obst" x="'+(ox(c)+6)+'" y="'+(oy(r)+6)+'" width="'+(BCS-12)+'" height="'+(BCS-12)+'" rx="6"/>'+
+         '<line class="obst2" x1="'+(ox(c)+15)+'" y1="'+(oy(r)+15)+'" x2="'+(ox(c)+BCS-15)+'" y2="'+(oy(r)+BCS-15)+'"/>'+
+         '<line class="obst2" x1="'+(ox(c)+BCS-15)+'" y1="'+(oy(r)+15)+'" x2="'+(ox(c)+15)+'" y2="'+(oy(r)+BCS-15)+'"/>';
+    }
+    const em=edgePt(EMIT.r,EMIT.c,'W'); s+='<circle class="emit" cx="'+(em[0]-9)+'" cy="'+em[1]+'" r="8"/>';
+    const rv=edgePt(RECV.r,RECV.c,RECV.dir), ro={E:[14,0],W:[-14,0],S:[0,14],N:[0,-14]}[RECV.dir];
+    s+='<circle class="recv" cx="'+(rv[0]+ro[0])+'" cy="'+(rv[1]+ro[1])+'" r="13"/>'+
+       '<text x="'+(rv[0]+ro[0])+'" y="'+(rv[1]+ro[1]+5)+'" font-size="15" text-anchor="middle">🧭</text>';
+    const tr=traceBeam();
+    s+='<polyline class="beamline'+(tr.ok?' win':'')+'" points="'+tr.pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'"/>';
+    for(const k in mirrors){ const p=k.split(',').map(Number), r=p[0], c=p[1], m=mirrors[k];
+      const x1=(m==='/'?ox(c)+BCS-12:ox(c)+12), y1=oy(r)+12, x2=(m==='/'?ox(c)+12:ox(c)+BCS-12), y2=oy(r)+BCS-12;
+      s+='<g class="mcell" data-k="'+k+'"><rect class="mhit" x="'+ox(c)+'" y="'+oy(r)+'" width="'+BCS+'" height="'+BCS+'" rx="8"/>'+
+         '<line class="mirror" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"/></g>';
+    }
+    s+='</svg>';
+    beamEl.innerHTML=s;
+    if(tr.ok){ const rc=beamEl.querySelector('.recv'); if(rc) rc.classList.add('win'); }
+    beamEl.querySelectorAll('.mcell').forEach(g=>{ g.addEventListener('click',()=>{ if(navSolved)return;
+      const k=g.getAttribute('data-k'); mirrors[k]= mirrors[k]==='/'?'\\':'/'; renderBeam(); }); });
+    if(tr.ok) winNav();
+  }
+  function winNav(){ if(navSolved)return; navSolved=true; navpz.classList.add('done');
+    persistSet('nav','fixed'); try{ if(inShell) window.parent.postMessage('notify:nav','*'); }catch(e){} applyNavUI(); }
+
   window.addEventListener('message',(e)=>{ if(typeof e.data!=='string')return;
     if(e.data.indexOf('state:')===0){ let st={}; try{st=JSON.parse(e.data.slice(6));}catch(_){}
       applyState(st); } });

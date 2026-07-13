@@ -29,8 +29,7 @@
   #wake.show{display:flex}
   #wake .wk{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:24px}
   #wake .wkbadge{font-family:'Share Tech Mono',monospace;letter-spacing:.14em;font-size:11px;color:var(--cyan);text-transform:uppercase}
-  #wake .wkt{font-family:'Oswald';text-transform:uppercase;letter-spacing:.16em;font-size:13px;color:var(--muted)}
-  #wake .wkship{font-family:'Playfair Display';font-weight:700;font-size:clamp(21px,5vw,30px);color:var(--head);margin-top:-6px;text-shadow:0 0 24px rgba(95,208,230,.3)}
+  #wake .wktitle{font-family:'Playfair Display';font-weight:700;font-size:clamp(20px,4.6vw,28px);line-height:1.2;color:var(--head);max-width:440px;text-shadow:0 0 24px rgba(95,208,230,.3)}
   #wake .fp{position:relative;width:132px;height:132px;border-radius:50%;margin:10px 0;color:var(--cyan);overflow:hidden;
     border:2px solid rgba(95,208,230,.5);background:radial-gradient(circle at 50% 45%,rgba(95,208,230,.10),rgba(10,16,34,.6));
     display:flex;align-items:center;justify-content:center;animation:fppulse 1.8s ease-in-out infinite}
@@ -39,11 +38,15 @@
   #wake .fp .scan{position:absolute;left:8%;right:8%;height:3px;top:20%;
     background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 10px var(--cyan);animation:fpscan 1.7s ease-in-out infinite}
   @keyframes fpscan{0%{top:22%}50%{top:78%}100%{top:22%}}
-  #wake .wks{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:12.5px;color:var(--accent);max-width:280px;animation:wkb 1.4s infinite}
+  #wake .wkauth{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:2px}
+  #wake .wkline{font-family:'Oswald';text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--muted);animation:wkb 1.4s infinite}
   @keyframes wkb{0%,100%{opacity:1}50%{opacity:.5}}
+  #wake .wkname{font-family:'Playfair Display';font-weight:700;font-size:clamp(22px,5.5vw,30px);color:var(--cyan);letter-spacing:.02em;
+    padding:5px 20px;border:1px solid rgba(95,208,230,.45);border-radius:26px;background:rgba(95,208,230,.08);box-shadow:0 0 18px rgba(95,208,230,.2)}
   #wake.ok .fp{color:#7ee081;border-color:#7ee081;box-shadow:0 0 34px rgba(126,224,129,.7);animation:none}
   #wake.ok .fp .scan{display:none}
-  #wake.ok .wks{color:#7ee081;animation:none}
+  #wake.ok .wkline{color:#7ee081;animation:none}
+  #wake.ok .wkname{color:#7ee081;border-color:#7ee081;background:rgba(126,224,129,.1);box-shadow:0 0 20px rgba(126,224,129,.35)}
 
   .mail{position:relative;z-index:1;width:100%;max-width:720px;
     background:linear-gradient(180deg,var(--panel1),var(--panel2));border:2px solid var(--accent);border-radius:12px;
@@ -65,10 +68,10 @@
   .av img{width:100%;height:100%;object-fit:cover;object-position:center top}
   .it{flex:1 1 auto;min-width:0}
   .it .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-  .it .from{font-family:'Oswald';font-weight:600;color:var(--head);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .it .time{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);flex:0 0 auto}
-  .it .subj{font-size:13.5px;color:var(--ink);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .it .snip{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .it .from{font-family:'Oswald';font-weight:600;color:var(--head);font-size:16.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .it .time{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);flex:0 0 auto}
+  .it .subj{font-size:15.5px;color:var(--ink);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .it .snip{font-size:13.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .item.unread .from{color:#fff}
   .item.unread .subj{font-weight:700;color:var(--head)}
   .dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 7px var(--cyan);opacity:0}
@@ -90,9 +93,9 @@
   .rhead .av{width:92px;height:92px;font-size:42px}
   .rhead .from{font-family:'Playfair Display';font-weight:700;color:var(--head);font-size:22px}
   .rhead .role{font-family:'Oswald';text-transform:uppercase;letter-spacing:.12em;font-size:10.5px;color:var(--cyan);margin-top:4px}
-  .rhead .subj{font-size:13px;color:var(--muted);margin-top:6px}
-  .rbody p{font-size:15.5px;line-height:1.62;margin-bottom:12px}
-  .rbody p.hi{font-family:'Playfair Display';font-style:italic;font-weight:600;font-size:18px;color:var(--head)}
+  .rhead .subj{font-size:15px;color:var(--muted);margin-top:6px}
+  .rbody p{font-size:18.5px;line-height:1.66;margin-bottom:14px}
+  .rbody p.hi{font-family:'Playfair Display';font-style:italic;font-weight:600;font-size:21px;color:var(--head)}
   .rbody b{color:var(--head)} .rbody .warn{color:var(--accent);font-weight:700}
   .sign{margin-top:14px;text-align:right}
   .sign .s{font-family:'Playfair Display';font-style:italic;font-weight:700;font-size:24px;color:var(--head)}
@@ -102,11 +105,19 @@
   .portrait .ph{aspect-ratio:1/1.15;display:flex;align-items:center;justify-content:center;color:var(--cyan);background:linear-gradient(160deg,#0b1a3a,#0a1230)}
   .voicebtn{display:inline-flex;align-items:center;gap:8px;margin:2px 0 12px;font-family:'Oswald';text-transform:uppercase;
     letter-spacing:.1em;font-size:12px;color:#08131f;background:var(--cyan);border:none;border-radius:24px;padding:9px 18px;cursor:pointer}
+  .voicebtn .vbeq{display:none;align-items:flex-end;gap:2px;height:13px}
+  .voicebtn.playing .vbeq{display:inline-flex}
+  .voicebtn .vbeq i{width:3px;height:100%;background:#08131f;border-radius:2px;transform-origin:bottom;animation:eq .9s ease-in-out infinite}
+  .voicebtn .vbeq i:nth-child(2){animation-delay:.18s}
+  .voicebtn .vbeq i:nth-child(3){animation-delay:.36s}
+  .voicebtn .vbeq i:nth-child(4){animation-delay:.54s}
+  .voicebtn .vbeq i:nth-child(5){animation-delay:.72s}
+  @keyframes eq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
   .go{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-family:'Oswald';font-weight:600;text-transform:uppercase;
     letter-spacing:.12em;font-size:12.5px;color:#1a1305;background:var(--accent);border-radius:28px;padding:10px 20px;text-decoration:none;cursor:pointer;border:none}
   .rbody .callout{display:flex;gap:10px;align-items:flex-start;margin:16px 0 4px;border:1px solid var(--accent);
     border-left:4px solid var(--accent);border-radius:6px;background:rgba(230,181,82,.10);padding:12px 15px;
-    font-size:14.5px;line-height:1.5;color:#f4ecd6;box-shadow:0 0 20px rgba(230,181,82,.12)}
+    font-size:16.5px;line-height:1.52;color:#f4ecd6;box-shadow:0 0 20px rgba(230,181,82,.12)}
   .rbody .callout .ic{font-size:19px;line-height:1.1}
   .rbody .callout b{color:var(--accent)}
 
@@ -133,9 +144,9 @@
     background:linear-gradient(160deg,#0b1a3a,#0a1230);position:relative;z-index:2}
   .aimg img{width:100%;height:100%;object-fit:cover;object-position:center top}
   .aimg .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:52px}
-  .hail .title{font-family:'Oswald';text-transform:uppercase;letter-spacing:.2em;font-size:13px;color:var(--head);line-height:1.5;max-width:320px}
-  .hail .name{font-family:'Playfair Display';font-weight:700;font-size:28px;color:var(--head)}
-  .hail .sub{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted)}
+  .hail .ctag{font-family:'Oswald';text-transform:uppercase;letter-spacing:.22em;font-size:13px;color:var(--cyan)}
+  .hail .name{font-family:'Playfair Display';font-weight:700;font-size:clamp(26px,6vw,32px);color:var(--head)}
+  .hail .crole{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:11.5px;color:var(--muted)}
   #accept{margin-top:12px;font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.18em;font-size:16px;
     color:#08131f;background:linear-gradient(180deg,#7ee1f2,#37b7d0);border:none;border-radius:44px;padding:15px 48px;cursor:pointer;
     box-shadow:0 0 24px rgba(95,208,230,.5);animation:btn 1.6s infinite;display:inline-flex;align-items:center;gap:10px}
@@ -190,6 +201,17 @@
     font-family:'Share Tech Mono',monospace;font-size:20px;color:#8fe3f2}
   .cshift{font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--cyan)}
   .cshift b{font-family:'Share Tech Mono',monospace;font-size:18px;color:var(--accent)}
+  /* панель «Хроно-компас» */
+  #chrono{position:fixed;inset:0;z-index:62;display:none;flex-direction:column;background:#070b18}
+  #chrono.show{display:flex}
+  #chrono .ctitle{font-size:clamp(30px,6.5vw,42px)}
+  #chrono .chint{white-space:normal;font-size:16.5px;line-height:1.5;max-width:480px}
+  #chfrags{display:flex;flex-direction:column;gap:14px;width:min(94vw,500px)}
+  .chread{position:relative;border:1px solid var(--rule);border-left:3px solid var(--cyan);border-radius:14px;
+    padding:16px 20px;background:linear-gradient(180deg,rgba(20,28,54,.65),rgba(8,14,30,.5));box-shadow:0 8px 22px rgba(0,0,0,.35)}
+  .chread .rk{font-family:'Oswald';text-transform:uppercase;letter-spacing:.2em;font-size:13.5px;color:var(--cyan);margin-bottom:10px}
+  .chread .rtext{font-family:'PT Serif';font-size:19px;line-height:1.62;color:var(--ink)}
+  .chread .rtext b{color:var(--accent)}
   .cdone{display:none}
   .cdone.show{display:block}
   .cdone button{font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:13px;
@@ -197,7 +219,7 @@
 </style>
 </head>
 <body>
-<audio id="voice" preload="auto" src="audio.mp3"></audio>
+<audio id="voice" preload="auto" src="audio_alisa.mp3"></audio>
 
 <div class="mail">
   <div class="bar"><span class="r"><i></i>Гиперсвязь · входящие</span><span class="id" id="cnt"></span></div>
@@ -213,14 +235,14 @@
 <!-- incoming call -->
 <div id="call">
   <div class="hail">
-    <div class="badge">◉ Гиперсвязь · защищённый канал</div>
+    <div class="badge">◉ Защищённый канал гиперсвязи</div>
+    <div class="ctag" id="calling">Входящий вызов…</div>
     <div class="awrap"><div class="aimg">
       <img id="callImg" src="alisa.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
       <div id="callPh" class="ph" style="display:none">👩‍🚀</div>
     </div></div>
-    <div class="title">Вам входящее сообщение<br>по гиперсвязи</div>
     <div class="name" id="callName">Алиса Селезнёва</div>
-    <div class="sub" id="calling">борт «Пегас» · вызов…</div>
+    <div class="crole" id="callRole">Экипаж корабля «Пегас»</div>
     <button id="accept"><span class="d"></span>Принять</button>
   </div>
 </div>
@@ -229,23 +251,27 @@
 <div id="wake">
   <div class="wk">
     <div class="wkbadge">◉ Защищённый доступ</div>
-    <div class="wkt">Бортовой компьютер</div>
-    <div class="wkship">корабль «Космический&nbsp;Единорог»</div>
+    <div class="wktitle">Бортовой компьютер корабля «Космический&nbsp;Единорог»</div>
     <div class="fp">
       <svg viewBox="0 0 100 100" aria-hidden="true">
-        <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
-          <path d="M50 28 C31 28 22 44 22 60 L22 70"/>
-          <path d="M50 36 C38 36 31 47 31 60 L31 69"/>
-          <path d="M50 44 C44 44 40 51 40 60 L40 68"/>
-          <path d="M50 28 C69 28 78 44 78 60 L78 70"/>
-          <path d="M50 36 C62 36 69 47 69 60 L69 69"/>
-          <path d="M50 44 C56 44 60 51 60 60 L60 68"/>
-          <path d="M50 52 L50 70"/>
+        <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M50 24 C34 24 24 38 24 54 C24 66 30 74 38 79"/>
+          <path d="M50 24 C66 24 76 38 76 54 C76 66 70 74 62 79"/>
+          <path d="M50 31 C39 31 31 42 31 54 C31 64 35 71 42 75"/>
+          <path d="M50 31 C61 31 69 42 69 54 C69 64 65 71 58 75"/>
+          <path d="M50 38 C43 38 38 47 38 55 C38 63 42 68 48 71"/>
+          <path d="M50 38 C57 38 62 47 62 55 C62 63 58 68 52 71"/>
+          <path d="M50 45 C46 45 45 50 45 56 C45 61 47 64 50 66"/>
+          <path d="M50 45 C54 45 55 50 55 56 C55 61 53 64 50 66"/>
         </g>
+        <circle cx="50" cy="55" r="2.6" fill="currentColor" stroke="none"/>
       </svg>
       <div class="scan"></div>
     </div>
-    <div class="wks" id="wkauth">Приложи палец — авторизация капитана Полины</div>
+    <div class="wkauth">
+      <div class="wkline" id="wkline">Приложи палец для авторизации</div>
+      <div class="wkname">Капитан Полина</div>
+    </div>
   </div>
 </div>
 
@@ -262,6 +288,15 @@
 </div>
 
 <!-- Caesar cipher disk -->
+<div id="chrono">
+  <div class="cbar"><span>◷ Показания Хроно-компаса</span><button id="chronoClose">✕</button></div>
+  <div class="cwrap">
+    <div class="ctitle">Восстановленные показания</div>
+    <div class="chint">Компас читает следы времени. Вот что он снял за миг до прыжка Крыса.</div>
+    <div id="chfrags"></div>
+  </div>
+</div>
+
 <div id="cipher">
   <div class="cbar"><span>◈ Технология древних</span><button id="cipherClose">✕</button></div>
   <div class="cwrap">
@@ -275,6 +310,7 @@
 <script>
   const voice=document.getElementById('voice');
   function stopVoice(){try{voice.pause();}catch(e){}}
+  const VOICES={alisa:'audio_alisa.mp3', ushan:'audio_ushans.mp3', robot:'audio_robot.mp3', sheshi:'audio_sheshinery.mp3'};   // голос по письму
 
   // ---- звуковые сигналы (Web Audio, без файлов) ----
   let actx=null;
@@ -303,26 +339,24 @@
     {id:'alisa',from:'Алиса Селезнёва',role:'Экипаж корабля «Пегас»',photo:'alisa.png',emoji:'👩‍🚀',urgent:true,unread:true,
      ts:4,time:'сейчас',subj:'СРОЧНО: помоги вернуть «галактий»!',
      snip:'Полина, случилась беда — без тебя не справиться…', special:'alisa'},
-    {id:'parents',from:'Мама и Папа',icon:'💌',unread:true,ts:3,time:'утром',
-     subj:'Наш космический герой ✨',
-     snip:'Спасёшь галактику — не забудь вынести мусор!',
-     body:`<p class="hi">Полиночка, наша звёздочка!</p>
-       <p>Мы ужасно тобой гордимся: наша дочка спасает целую галактику! Только обещай нам две вещи.</p>
-       <p>Первое: спасёшь мир — вынеси, пожалуйста, мусор 🚀. Второе: надень шапку, в космосе, говорят, сквозняки!</p>
-       <p>Мы очень-очень тебя любим и ждём домой к ужину (даже если ты будешь на другом конце галактики).</p>
-       <div class="sign"><div class="s">Мама и Папа</div></div>`},
     {id:'market',from:'Галакто-Маркет',icon:'🛍️',unread:false,ts:2,time:'вчера',
      subj:'Скидка 50% на корм для склиссов!',
      snip:'Только сегодня! Метеоритная пыль в подарок…',
      body:`<p><b>ГАЛАКТО-МАРКЕТ</b> — всё для юного космонавта!</p>
        <p>🪐 Корм для склиссов — минус 50%!<br>☄️ Метеоритная пыль — в подарок при заказе от 3 астероидов!<br>🧦 Носки с подогревом для полётов к Плутону.</p>
        <p style="color:var(--muted);font-style:italic">Это рекламное сообщение. Отписаться нельзя — мы же в космосе.</p>`},
-    {id:'post',from:'Космопочта',icon:'✉️',unread:false,ts:1,time:'давно',
-     subj:'Добро пожаловать в Гиперсвязь',
-     snip:'Ваш почтовый ящик активирован.',
-     body:`<p>Здравствуйте, капитан!</p>
-       <p>Ваш ящик <b>Гиперсвязи</b> активирован. Сюда приходят сообщения со всей галактики: от друзей, экипажей кораблей и… иногда от совсем незнакомцев. Будьте внимательны.</p>
-       <p>Хорошего полёта! 🌌</p>`}
+    {id:'post',from:'Космопочта',icon:'✉️',unread:true,ts:1,time:'давно',
+     subj:'📦 Корабль «Космический Единорог» передан вам',
+     snip:'Поздравляем! Теперь корабль ваш. Код доступа внутри.',
+     body:`<p class="hi">Капитан Полина, поздравляем! 🎉</p>
+       <p>Межгалактическая <b>Космопочта</b> подтверждает: корабль <b>«Космический&nbsp;Единорог»</b> отныне закреплён за вами. Отсеки, двигатели, гиперсвязь, навигация — всё в вашем распоряжении.</p>
+       <p>Отпечаток пальца принят — планшет узнаёт вас. Но чтобы <b>завести корабль и выйти на связь с галактикой</b>, нужен ещё бортовой код доступа.</p>
+       <p style="text-align:center;margin:16px 0">
+         <span style="display:inline-block;font-family:'Share Tech Mono',monospace;font-size:22px;letter-spacing:2px;
+           color:var(--accent);background:rgba(230,181,82,.10);border:1px solid rgba(230,181,82,.5);
+           border-radius:10px;padding:10px 18px;box-shadow:0 0 18px rgba(230,181,82,.18)">🔑 KipricaTigrica</span>
+       </p>
+       <p style="color:var(--muted);font-style:italic">Никому не сообщайте код доступа. Счастливого полёта, капитан! 🌌</p>`}
   ];
 
   // messages that arrive later
@@ -332,17 +366,17 @@
      snip:'Крыс наследил на Венере — узнай, куда он рванул…',
      body:`<p>Полина, это Салатовый. Ранее известен как Зелёный. Твой папа сказал, что новое имя лучше, и я переименовался.</p>
        <p>Засекли твою посадку на Венеру — молодец! Но Крыс уже улетел, разминулись на пару часов.</p>
-       <p>Зато он наследил. Заправщики видели его корабль: Крыс расспрашивал дорогу к самому большому космическому рынку галактики — туда, где торгуют редкими зверями со всех планет. Наверняка помчался туда сбыть краденое.</p>
-       <p>Не помню, как называется этот рынок-планета, — узнай и проложи курс. Будь осторожна: Крыс хитёр.</p>
+       <p>Зато он наследил. Заправщики слышали, как Крыс всё выспрашивал про какую-то ярмарку. Наверняка туда и помчался сбыть краденое.</p>
+       <p>Разберись, что за ярмарка и где она, и проложи курс. Будь осторожна: Крыс хитёр.</p>
        <div class="sign"><div class="s">Механик Салатовый</div></div>`},
-    {id:'papa',from:'Папа',icon:'👨',unread:true,atLevel:4,ts:6,time:'только что',
+    {id:'papa',from:'Папа',photo:'papa.jpg',emoji:'👨',icon:'👨',unread:true,atLevel:4,ts:6,time:'только что',
      subj:'Далеко не летай!',
      snip:'И надеюсь, ты взяла часы?',
      body:`<p>Полина, далеко не летай! И надеюсь, ты взяла часы?</p>
        <div class="sign"><div class="s">Папа</div></div>`},
-    {id:'ushan',from:'Ушаны с Блука',photo:'ushan.jpg',emoji:'🐰',role:'Планета Блук',unread:true,atLevel:4,ts:7,time:'только что',
+    {id:'ushan',from:'Ушаны с Блука',photo:'ushan.jpg',emoji:'🐰',role:'Планета Блук',unread:true,afterRead:'papa',ts:7,time:'только что',
      subj:'Крыс был здесь!',
-     snip:'Он улизнул, но оставил обрывки записки…', special:'ushan'},
+     snip:'Он улизнул, но оставил обрывки записки…', special:'ushan', call:true},
     {id:'fiolet',from:'Механик Фиолетовый',photo:'green.jpg',emoji:'🧑‍🔧',unread:true,atLevel:5,ts:8,time:'только что',
      subj:'Приём! Как ты там?',
      snip:'Опять переименовался — теперь Фиолетовый…',
@@ -352,7 +386,17 @@
        <div class="sign"><div class="s">Механик Фиолетовый</div></div>`},
     {id:'robot',from:'Робот Ш-Ш-Шелезяки',photo:'robot.png',emoji:'🤖',role:'Планета Шелезяка',unread:true,afterRead:'fiolet',ts:9,time:'сейчас',
      subj:'⚠ ТРЕВОГА — это ловушка!',
-     snip:'Нам подсыпали яд… вас заманили… сигнал искажён…', special:'robot'}
+     snip:'Нам подсыпали яд… вас заманили… сигнал искажён…', special:'robot', call:true},
+    {id:'krys',from:'Крыс',photo:'krys.jpg',emoji:'🐀',role:'Космический пират',unread:true,atLevel:6,ts:10,time:'сейчас',
+     subj:'Ты опоздала, капитан!',
+     snip:'Ха-ха! Пока ты гналась за мной, я всё придумал…',
+     body:`<p class="hi">Ха-ха-ха! Здравствуй, малявка-капитан!</p>
+       <p>Пока ты гналась за мной через полгалактики, я уже всё придумал. Здесь, на Шешинеру, я добыл самое ценное — <b>Хроно-таблетку</b>. Знаешь, что это? Перемещение во времени!</p>
+       <p>Я вернусь в прошлое и спасу своего верного напарника — старину <b>Весельчака&nbsp;У</b>. Вдвоём мы провернём наши дела куда раньше, и тогда ни ты, ни кто-либо ещё нас не остановит. А галактий останется у меня навсегда.</p>
+       <p>Можешь не искать: ты даже не знаешь, в какое время я нырнул. Прощай навсегда, капитан Полина!</p>
+       <div class="sign"><div class="s">Крыс</div></div>`},
+    {id:'sheshi',from:'Шешинерийцы',icon:'🕰️',emoji:'🕰️',role:'Хранители Времени',unread:true,afterRead:'krys',ts:11,time:'сейчас',
+     subj:'Мы поможем догнать Крыса', snip:'Крыс украл Хроно-таблетку и прыгнул в прошлое…', special:'sheshi', call:true}
   ];
 
   const list=document.getElementById('list');
@@ -381,38 +425,47 @@
       '<div><div class="from">'+m.from+'</div>'+(m.role?'<div class="role">'+m.role+'</div>':'')+
       '<div class="subj">'+m.subj+'</div></div></div><div class="rbody">';
     if(m.special==='alisa'){
-      html+=`<button class="voicebtn" id="vb">▶ Прослушать сообщение</button>
+      html+=`<button class="voicebtn" id="vb"><span class="vbeq"><i></i><i></i><i></i><i></i><i></i></span><span class="vblabel">▶ Прослушать сообщение</span></button>
         <p class="hi">Полина, привет! Это Алиса Селезнёва.</p>
         <p>Прости, что так неожиданно и по секретной гиперсвязи, но случилась беда — и без тебя нам не справиться.</p>
         <p>Космический пират <b>Крыс</b> сбежал. Он собрал целую команду и <span class="warn">напал на грузовой почтовый корабль</span>, забрав всё, что там было. А везли самое важное: абсолютное топливо <b>«галактий»</b> — учёные впервые в истории смогли создать его по секретной формуле. На таком топливе корабли долетят до самых дальних звёзд. Если «галактий» останется у Крыса, случится непоправимое.</p>
         <p>Мы с экипажем «Пегаса» сейчас страшно далеко — на другом конце галактики, и вернуться вовремя никак не успеваем. Капитаны тоже в дальней экспедиции, до них не докричаться.</p>
         <p>Я долго думала, кто способен всё исправить, — и поняла: <b>только ты</b>. Ты умная, смелая и никогда не сдаёшься. Пожалуйста, помоги нам вернуть топливо и останови Крыса. Я в тебя верю. Удачи, капитан Полина!</p>
-        <div class="callout"><span class="ic">📡</span><div><b>С чего начать:</b> открой свежий выпуск «Космического Вестника» — там все подробности и первая зацепка.</div></div>
         <div class="sign"><div class="s">Алиса</div></div>`;
     } else if(m.special==='ushan'){
-      html+=`<p class="hi">Приветствуем, капитан Полина! Мы — ушаны с планеты Блук.</p>
+      html+=`<button class="voicebtn" id="vb"><span class="vbeq"><i></i><i></i><i></i><i></i><i></i></span><span class="vblabel">▶ Прослушать сообщение</span></button>
+        <p class="hi">Приветствуем, капитан Полина! Мы — ушаны с планеты Блук.</p>
         <p>Крыс побывал у нас! Он пытался продать на нашем рынке награбленное — да торговцы его узнали.</p>
         <p>Мы хотели его схватить, но он хитрющий: улизнул в последний миг. Поймать не успели…</p>
         <p>Зато в отеле, где он прятался, остались <b>обрывки бумаги</b>. Похоже на записку! Мы всё сберегли — сложи кусочки и прочитай, что там.</p>
         <button class="go" id="showScraps">🧩 Посмотреть кусочки бумаги</button>
         <div class="sign"><div class="s">Ушаны с Блука</div></div>`;
     } else if(m.special==='robot'){
-      html+=`<p class="hi" style="color:#ff8091">⚠ ТРЕВОГА. Говорит последний робот Шелезяки.</p>
-        <p>Нам сно-снова подсыпали яд в смазку… мы не мо-можем двигаться… это <b>ЛОВУШКА</b>.</p>
+      html+=`<button class="voicebtn" id="vb"><span class="vbeq"><i></i><i></i><i></i><i></i><i></i></span><span class="vblabel">▶ Прослушать сообщение</span></button>
+        <p class="hi" style="color:#ff8091">⚠ ТРЕВОГА. Говорит последний робот Шелезяки.</p>
+        <p>Нам сно-снова подсыпали яд в смазку… это <b>ЛОВУШКА</b>.</p>
         <p>Си-системы отка-казывают… ошибка се-семь… <span class="glitch">7…7…7</span></p>
         <p>Крыса здесь нет — вас заманили нарочно, его подельники уже летят.</p>
         <p>Настоящий Крыс на пла-планете… <span class="glitch">${CIPHER}</span></p>
         <button class="go" id="openCipher">🔓 Восстановить текст</button>`;
+    } else if(m.special==='sheshi'){
+      html+=`<button class="voicebtn" id="vb"><span class="vbeq"><i></i><i></i><i></i><i></i><i></i></span><span class="vblabel">▶ Прослушать сообщение</span></button>
+        <p class="hi">Здравствуй, капитан Полина. Мы — Шешинерийцы, <b>Хранители Времени</b>.</p>
+        <p>Крыс украл у нас <b>Хроно-таблетку</b> и прыгнул в прошлое. Но наш <b>Хроно-компас</b> запомнил его прыжок — только показания рассыпались на осколки.</p>
+        <p>Собери из осколков дату, в которую он ушёл. Взгляни на показания:</p>
+        <button class="go" id="openChrono">🔢 Показания Хроно-компаса</button>
+        <div class="sign"><div class="s">Шешинерийцы · Хранители Времени</div></div>`;
     } else { html+=m.body; }
     html+='</div>';
     rc.innerHTML=html;reader.classList.add('show');reader.scrollTop=0;
 
-    if(m.special==='alisa'){
-      try{voice.currentTime=0;voice.play().catch(()=>{});}catch(e){}
+    const vfile=VOICES[m.special];
+    if(vfile){
       const vb=document.getElementById('vb');
-      if(vb)vb.addEventListener('click',()=>{ if(voice.paused){voice.play();vb.textContent='⏸ Пауза';} else {voice.pause();vb.textContent='▶ Прослушать сообщение';} });
-      const tg=document.getElementById('toGazeta');
-      if(tg)tg.addEventListener('click',()=>{ stopVoice(); if(window.parent!==window){try{window.parent.postMessage('tab:gazeta','*');}catch(_){}} });
+      const setVB=(p)=>{ if(!vb)return; vb.classList.toggle('playing',p); const l=vb.querySelector('.vblabel'); if(l)l.textContent=p?'⏸ Пауза':'▶ Прослушать сообщение'; };
+      voice.onplay=()=>setVB(true); voice.onpause=()=>setVB(false); voice.onended=()=>setVB(false);
+      if(vb)vb.addEventListener('click',()=>{ if(voice.paused)voice.play(); else voice.pause(); });
+      try{ voice.pause(); voice.src=vfile; voice.currentTime=0; voice.play().catch(()=>{}); }catch(e){}
     }
     if(m.special==='ushan'){
       const sc=document.getElementById('showScraps');
@@ -422,9 +475,13 @@
       const oc=document.getElementById('openCipher');
       if(oc) oc.addEventListener('click',openCipher);
     }
+    if(m.special==='sheshi'){
+      const oc=document.getElementById('openChrono');
+      if(oc) oc.addEventListener('click',openChrono);
+    }
     renderList();
   }
-  document.getElementById('back').addEventListener('click',()=>{stopVoice();reader.classList.remove('show');});
+  document.getElementById('back').addEventListener('click',()=>{stopVoice();reader.classList.remove('show'); refreshCall(lastState||localState());});
 
   // ---- persistence (state kept by the shell in localStorage — reliable on file://) ----
   const inShell = window.parent!==window;
@@ -450,22 +507,26 @@
   const call=document.getElementById('call');
   function shellMsg(m){ try{ if(window.parent!==window) window.parent.postMessage(m,'*'); }catch(e){} }
   const CALLS={
-    alisa:{name:'Алиса Селезнёва', photo:'alisa.png', ph:'👩‍🚀', sub:'борт «Пегас» · вызов', msg:'alisa'},
-    ushan:{name:'Ушаны с Блука', photo:'ushan.jpg', ph:'🐰', sub:'планета Блук · вызов', msg:'ushan'}
+    alisa:{name:'Алиса Селезнёва', photo:'alisa.png', ph:'👩‍🚀', sub:'Экипаж корабля «Пегас»', msg:'alisa'},
+    ushan:{name:'Ушаны с Блука', photo:'ushan.jpg', ph:'🐰', sub:'Планета Блук', msg:'ushan'},
+    robot:{name:'Робот Шелезяки', photo:'robot.png', ph:'🤖', sub:'Планета Шелезяка', msg:'robot'},
+    sheshi:{name:'Шешинерийцы', ph:'🕰️', sub:'Хранители Времени', msg:'sheshi'}
   };
   const callImg=document.getElementById('callImg'), callPh=document.getElementById('callPh'),
-        callName=document.getElementById('callName'), cl=document.getElementById('calling');
+        callName=document.getElementById('callName'), callRole=document.getElementById('callRole'), cl=document.getElementById('calling');
   let activeCall=null, di=null, d=0;
   function startCall(which,immersive){
     const c=CALLS[which]; if(!c || activeCall===which) return;
     activeCall=which;
-    callName.textContent=c.name;
-    callImg.src=c.photo; callImg.style.display=''; callPh.style.display='none'; callPh.textContent=c.ph;
+    callName.textContent=c.name; callRole.textContent=c.sub;
+    if(c.photo){ callImg.src=c.photo; callImg.style.display=''; callPh.style.display='none'; }
+    else { callImg.style.display='none'; callPh.style.display=''; }
+    callPh.textContent=c.ph||'';
     call.classList.remove('hide'); startRing();
     if(immersive) shellMsg('call:on');          // глобальное затемнение — только когда вкладка активна (звонок Алисы в начале)
     else shellMsg('notify:hyper');              // иначе просто «красная точка», экран звонка ждёт внутри вкладки
     d=0; if(di)clearInterval(di);
-    di=setInterval(()=>{ d=(d+1)%4; if(!call.classList.contains('hide')) cl.textContent=c.sub+'.'.repeat(d); },400);
+    di=setInterval(()=>{ d=(d+1)%4; if(!call.classList.contains('hide')) cl.textContent='Входящий вызов'+'.'.repeat(d); },400);
   }
   function hideCall(){ stopRing(); if(di)clearInterval(di); call.classList.add('hide'); shellMsg('call:off'); activeCall=null; }
   document.getElementById('accept').addEventListener('click',()=>{
@@ -475,44 +536,51 @@
   });
   // какой звонок показать: на Блуке (level 4) — Ушаны; в начале — Алиса
   // экран «включения»: разблокирует звук первым касанием, затем показывает звонок со звонком
-  let audioReady=false, wakePending=null, wakeImmersive=false;
+  let audioReady=false, wakePending=null, wakeImmersive=false, lastState=null;
   const wakeEl=document.getElementById('wake');
   wakeEl.addEventListener('click',()=>{
     if(audioReady) return;
     audioReady=true; unlockAudio(); wakeEl.classList.add('ok');
-    const a=document.getElementById('wkauth'); if(a) a.textContent='✔ Доступ разрешён · капитан Полина';
+    const a=document.getElementById('wkline'); if(a) a.textContent='✔ Доступ разрешён';
     setTimeout(()=>{ wakeEl.classList.remove('show'); wakeEl.classList.remove('ok');
       if(wakePending){ const w=wakePending; wakePending=null;
         if(!wakeImmersive) shellMsg('call:off'); startCall(w,wakeImmersive); } }, 950);
   });
   function refreshCall(st){
-    const read=(st&&st.mailRead)||[]; const lvl=(st&&st.level)||1;
+    if(st) lastState=st;
+    const read=(st&&st.mailRead)||[];
     let which=null, imm=false;
-    if(lvl>=4 && !read.includes('ushan')){ which='ushan'; imm=false; }
+    // Робот — после того как прочитали и вышли из письма Фиолетового; Ушаны — после письма Папы; Алиса — в начале
+    if(read.includes('krys') && !read.includes('sheshi')){ which='sheshi'; imm=false; }
+    else if(read.includes('fiolet') && !read.includes('robot')){ which='robot'; imm=false; }
+    else if(read.includes('papa') && !read.includes('ushan')){ which='ushan'; imm=false; }
     else if(!(st&&(st.callSeen||read.includes('alisa')))){ which='alisa'; imm=true; }
-    if(!which){ if(activeCall) hideCall(); return; }
+    if(!which){ hideCall(); return; }   // звонка нет — всегда прячем (экран #call видим по умолчанию)
     if(activeCall===which || wakePending===which) return;
-    if(audioReady){ startCall(which,imm); }
+    if(reader.classList.contains('show')) return;   // не поднимать звонок, пока открыто письмо — дождёмся выхода
+    if(audioReady || !imm){ startCall(which,imm); }   // экран авторизации — только для первого (иммерсивного) звонка Алисы
     else { wakePending=which; wakeImmersive=imm; wakeEl.classList.add('show'); shellMsg('call:on'); }
   }
 
   // отложенные письма приходят по достижении своего уровня (Салатовый — 3, Папа — 4)
   function deliverDue(st, notify){
-    const level=(st&&st.level)||1, read=(st&&st.mailRead)||[]; let added=false;
+    const level=(st&&st.level)||1, read=(st&&st.mailRead)||[]; let added=false, addedMail=false;
     laterMessages.forEach(m=>{
       if(messages.find(x=>x.id===m.id)) return;
       const okLevel = m.atLevel ? level>=m.atLevel : true;
       const okRead  = m.afterRead ? read.includes(m.afterRead) : true;
-      if(okLevel && okRead){ messages.push(m); added=true; }
+      if(okLevel && okRead){ messages.push(m); added=true; if(!m.call) addedMail=true; }
     });
-    if(added){ renderList(); if(notify){ soundMail(); try{ if(inShell) window.parent.postMessage('notify:hyper','*'); }catch(e){} } }
+    if(added){ renderList(); if(notify){ if(addedMail) soundMail(); try{ if(inShell) window.parent.postMessage('notify:hyper','*'); }catch(e){} } }
   }
   function maybeDeliverLater(st){ if(st) deliverDue(st, true); }
 
   // shell messages: pause audio, or deliver the saved state
   window.addEventListener('message',(e)=>{
     if(typeof e.data!=='string')return;
-    if(e.data==='pause'){ stopVoice(); return; }
+    if(e.data==='pause'){ stopVoice();
+      if(reader.classList.contains('show')){ reader.classList.remove('show'); refreshCall(lastState||localState()); }  // уход на другую вкладку = выход из письма
+      return; }
     if(e.data.indexOf('state:')===0){ let st={}; try{st=JSON.parse(e.data.slice(6));}catch(_){}
       initWith(st); maybeDeliverLater(st); refreshCall(st); }
   });
@@ -656,6 +724,22 @@
   let gInner=null, rot=0;
   document.getElementById('cipherClose').addEventListener('click',()=>cipherOv.classList.remove('show'));
   function openCipher(){ cipherOv.classList.add('show'); rot=0; buildWord(); buildDisk(); }
+
+  // ---- панель «Хроно-компас»: восстановленные показания (история → 4 примера) ----
+  const READINGS=[
+    'Крыс дорвался до таблеток: схватил банку с <b>19</b> таблетками, да ещё <b>7</b> банок <b>по 6</b>, а потом <b>34</b> таблетки рассыпал.',
+    'Убегая, он всё ронял: опрокинул <b>2</b> склянки, а потом рассыпал <b>3</b> мешочка, и в каждом было <b>по 3</b> шестерёнки.',
+    'Чтоб его не догнали, Крыс запер двери: на главной <b>1</b> замок, а на <b>4</b> боковых — <b>по 5</b> замков.',
+    'Напоследок заправил свою колымагу: залил <b>9</b> канистр <b>по 8</b> литров, а потом плеснул сверху ещё <b>6</b>.'
+  ];
+  const RN=['I','II','III','IV'];
+  function openChrono(){
+    document.getElementById('chfrags').innerHTML=READINGS.map((t,i)=>
+      '<div class="chread"><div class="rk">⏱ Показание '+RN[i]+'</div><div class="rtext">'+t+'</div></div>'
+    ).join('');
+    document.getElementById('chrono').classList.add('show');
+  }
+  document.getElementById('chronoClose').addEventListener('click',()=>document.getElementById('chrono').classList.remove('show'));
 
   function buildWord(){ const w=document.getElementById('cword'); w.innerHTML='';
     for(const ch of CIPHER){ const t=document.createElement('div'); t.className='ctile'; t.textContent=ch; w.appendChild(t); } }

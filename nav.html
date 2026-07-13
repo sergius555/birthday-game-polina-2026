@@ -43,6 +43,13 @@
   .center .poslbl{font-family:'Oswald';text-transform:uppercase;letter-spacing:.26em;font-size:13px;color:var(--cyan)}
   .center .posName{font-family:'Playfair Display';font-weight:900;color:var(--head);
     font-size:clamp(44px,12vw,84px);line-height:1;text-shadow:0 0 34px rgba(95,208,230,.4)}
+  .center.hasplanet .posName{font-size:clamp(30px,7vw,48px)}
+  .center .navplanet{position:relative;width:190px;height:190px;display:none;align-items:center;justify-content:center;margin:4px 0}
+  .center .navplanet.show{display:flex}
+  .center .navplanet .ntring{position:absolute;inset:0;width:100%;height:100%;animation:tspin 48s linear infinite;filter:drop-shadow(0 0 6px rgba(230,181,82,.5))}
+  .center .navplanet .nsphere{width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#fff1c2,#e6b552 42%,#b3822f 74%,#5c3d16);
+    box-shadow:0 0 40px rgba(240,205,120,.5),inset -13px -9px 30px rgba(0,0,0,.45)}
 
   .dock{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));
     background:linear-gradient(180deg,transparent,rgba(6,9,20,.7) 30%,rgba(6,9,20,.92));border-top:1px solid var(--rule)}
@@ -71,6 +78,14 @@
   .gmsg .sm{font-family:'Oswald';text-transform:uppercase;letter-spacing:.18em;font-size:13px;color:var(--cyan)}
   .gtap{position:absolute;bottom:26px;left:0;right:0;z-index:6;text-align:center;font-family:'Oswald';
     text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--muted)}
+  .gtitle{position:absolute;top:12px;left:0;right:0;z-index:6;text-align:center;font-family:'Oswald';font-weight:600;
+    text-transform:uppercase;letter-spacing:.14em;font-size:14px;color:var(--head);text-shadow:0 1px 6px rgba(0,0,0,.6)}
+  .glives{position:absolute;top:44px;right:16px;z-index:7;font-size:18px;letter-spacing:.1em;color:var(--head);text-shadow:0 1px 4px rgba(0,0,0,.6)}
+  #gprog{position:absolute;top:44px;left:16px;right:96px;z-index:7;height:22px}
+  #gprog .strack{position:relative;height:100%;border-radius:14px;background:rgba(8,14,30,.72);border:1px solid rgba(95,208,230,.35)}
+  #gprog .sfill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:14px;background:linear-gradient(90deg,rgba(95,208,230,.12),rgba(95,208,230,.45))}
+  #gprog .sgoal{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:17px}
+  #gprog .sship{position:absolute;left:0;top:50%;transform:translate(-50%,-50%);font-size:16px;z-index:2;filter:drop-shadow(0 0 4px rgba(95,208,230,.7))}
 
   /* shooter (Шелезяка) */
   #shooter{position:absolute;inset:0;z-index:5;display:none}
@@ -101,7 +116,11 @@
     background:radial-gradient(circle at 50% 45%,rgba(10,16,38,.94),rgba(3,4,10,.98))}
   #arrive.show{display:flex}
   #arrive .k{font-family:'Oswald';text-transform:uppercase;letter-spacing:.3em;font-size:13px;color:var(--cyan)}
-  #arrive .venus{width:160px;height:160px;border-radius:50%;margin:6px 0;
+  #arrive .planetwrap{position:relative;width:240px;height:240px;display:flex;align-items:center;justify-content:center;margin:6px 0}
+  #arrive .tring{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;filter:drop-shadow(0 0 6px rgba(230,181,82,.5))}
+  #arrive .planetwrap.shesh .tring{opacity:1;animation:tspin 48s linear infinite}
+  @keyframes tspin{to{transform:rotate(360deg)}}
+  #arrive .venus{width:160px;height:160px;border-radius:50%;
     background:radial-gradient(circle at 35% 30%,#ffe6a6,#e8b45a 42%,#b9793a 76%,#7d4e28);
     box-shadow:0 0 60px rgba(240,200,120,.55),inset -18px -12px 40px rgba(0,0,0,.45)}
   #arrive .big{font-family:'Playfair Display';font-weight:900;font-size:clamp(30px,7vw,48px);color:var(--head);letter-spacing:.03em;text-shadow:0 0 30px rgba(240,200,120,.5)}
@@ -121,31 +140,89 @@
   #alarm .acont{margin-top:8px;font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:13px;
     color:#2a0a0f;background:#ff8091;border:none;border-radius:30px;padding:12px 26px;cursor:pointer}
   #alarm .aclose{font-family:'Oswald';text-transform:uppercase;letter-spacing:.12em;font-size:11px;color:var(--muted);background:none;border:1px solid var(--rule);border-radius:20px;padding:8px 18px;cursor:pointer}
+  /* экран «навигация повреждена» (после боя с пиратами) */
+  #navbroken{position:absolute;inset:0;z-index:9;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;
+    background:radial-gradient(circle at 50% 42%,rgba(58,10,16,.95),rgba(8,4,8,.985));animation:nbflick 3.5s steps(1) infinite}
+  #navbroken.show{display:flex}
+  @keyframes nbflick{0%,92%,100%{filter:none}94%{filter:brightness(1.5)}96%{filter:brightness(.7)}}
+  #navbroken .crack{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.55}
+  #navbroken .crack path{stroke:#ff5468;stroke-width:1.6;fill:none;filter:drop-shadow(0 0 5px rgba(255,84,104,.9))}
+  #navbroken .nbwrap{position:relative;z-index:2;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:10px}
+  #navbroken .nbk{font-family:'Oswald';text-transform:uppercase;letter-spacing:.28em;font-size:13px;color:#ff8091;animation:nbblink 1s ease-in-out infinite}
+  @keyframes nbblink{0%,100%{opacity:1}50%{opacity:.35}}
+  #navbroken .nbicon{font-size:58px;filter:drop-shadow(0 0 16px rgba(255,84,104,.7))}
+  #navbroken .nbbig{font-family:'Playfair Display';font-weight:900;font-size:clamp(24px,6vw,38px);color:var(--head);text-shadow:0 0 26px rgba(255,80,104,.5)}
+  #navbroken .nbsub{font-family:'PT Serif';color:#f0d2d6;font-size:15px;max-width:390px;line-height:1.5}
+  #navbroken .nbbtn{margin-top:10px;font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:14px;
+    color:#2a0a0f;background:linear-gradient(180deg,#ffb0b9,#ff5468);border:none;border-radius:30px;padding:14px 28px;cursor:pointer;box-shadow:0 0 22px rgba(255,84,104,.4)}
+  #navbroken .nbbtn:active{transform:scale(.97)}
+  /* прыжок во времени — обратное вращение кольца-часов в прошлом */
+  #arrive .planetwrap.past .tring{animation-direction:reverse}
+  .center .navplanet.past .ntring{animation-direction:reverse}
+  /* оверлей переноса во времени */
+  #timejump{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;flex-direction:column;gap:24px;overflow:hidden;
+    background:radial-gradient(circle at 50% 50%,#0a1436,#04050c 72%)}
+  #timejump.show{display:flex;animation:tjfade .4s ease}
+  @keyframes tjfade{from{opacity:0}to{opacity:1}}
+  #tjcanvas{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+  .tjflash{position:absolute;inset:0;z-index:5;background:radial-gradient(circle at 50% 50%,#eaf7ff,#bfe6ff 40%,rgba(120,200,255,0) 75%);opacity:0;pointer-events:none}
+  .tjflash.burst{animation:tjburst .55s ease-out}
+  @keyframes tjburst{0%{opacity:0;transform:scale(.6)}18%{opacity:.95}100%{opacity:0;transform:scale(1.6)}}
+  .tjr1{transform-origin:60px 60px;animation:tjspin2 3.5s linear infinite}
+  .tjr2{transform-origin:60px 60px;animation:tjspin2 2.4s linear infinite reverse}
+  @keyframes tjspin2{to{transform:rotate(360deg)}}
+  .tjvortex{position:absolute;width:240vmax;height:240vmax;left:50%;top:50%;margin-left:-120vmax;margin-top:-120vmax;pointer-events:none;
+    background:conic-gradient(from 0deg,transparent 0deg,rgba(95,208,230,.16) 40deg,transparent 90deg,rgba(230,181,82,.14) 160deg,transparent 220deg,rgba(150,120,255,.14) 300deg,transparent 360deg);
+    animation:tjspin 2.4s linear infinite;filter:blur(8px)}
+  @keyframes tjspin{to{transform:rotate(-360deg)}}
+  .tjclock{position:relative;z-index:2;width:min(52vw,200px);height:min(52vw,200px);filter:drop-shadow(0 0 28px rgba(95,208,230,.8))}
+  .tjface{fill:rgba(8,14,30,.72);stroke:#5fd0e6;stroke-width:2}
+  .tjh{stroke:#fff;stroke-width:3;stroke-linecap:round;transform-origin:60px 60px}
+  .tjhh{animation:tjrev 3s linear infinite}
+  .tjmh{stroke:#5fd0e6;animation:tjrev .85s linear infinite}
+  @keyframes tjrev{to{transform:rotate(-360deg)}}
+  .tjhub{fill:#e6b552}
+  .tjpanel{position:relative;z-index:4;display:flex;flex-direction:column;align-items:center;gap:10px;
+    background:rgba(6,9,20,.66);border:1px solid rgba(95,208,230,.32);border-radius:18px;padding:16px 34px;
+    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);box-shadow:0 0 40px rgba(0,0,0,.55)}
+  .tjyear{font-family:'Share Tech Mono',monospace;font-size:clamp(48px,15vw,84px);color:var(--accent);letter-spacing:4px;text-shadow:0 0 32px rgba(230,181,82,.8)}
+  .tjlabel{font-family:'Oswald';text-transform:uppercase;letter-spacing:.34em;font-size:14px;color:var(--cyan);animation:tjblink 1s ease-in-out infinite}
+  @keyframes tjblink{0%,100%{opacity:1}50%{opacity:.35}}
 </style>
 </head>
 <body>
   <div class="sky"></div><div class="stars"></div><div class="stars2"></div>
 
-  <div class="hud"><span class="r"><i></i>Навигация</span><span class="id">СИСТ. «ПЕГАС» · курс</span></div>
+  <div class="hud"><span class="r"><i></i>Навигация</span></div>
 
   <div class="center" id="center">
-    <div class="poslbl">◉ Текущее положение</div>
+    <div class="poslbl" id="poslbl">◉ Текущее местоположение</div>
+    <div class="navplanet" id="navplanet">
+      <svg class="ntring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(230,181,82,.25)" stroke-width="1.3"/>
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#e6b552" stroke-width="6" stroke-dasharray="3 45.15" opacity=".85"/>
+        <circle cx="100" cy="14" r="4" fill="#5fd0e6"/>
+      </svg>
+      <div class="nsphere"></div>
+    </div>
     <div class="posName" id="posName">🌍 Земля</div>
   </div>
 
   <div class="dock" id="dock">
     <div class="lbl">◎ Пункт назначения</div>
     <div class="bar2">
-      <input id="dest" type="text" inputmode="text" autocomplete="off" placeholder="Например: планета или координаты…">
+      <input id="dest" type="text" inputmode="text" autocomplete="off" placeholder="Куда направляемся?">
       <button id="go">▶ Вперёд</button>
     </div>
   </div>
 
   <div id="game">
     <canvas id="g"></canvas>
-    <div class="ghud"><span class="score">Астероиды: <b id="sc">0</b> / 5</span><span class="lives" id="lv">❤❤❤</span></div>
+    <div class="gtitle">🚀 Полёт к Венере</div>
+    <div id="gprog"><div class="strack"><div class="sfill" id="gprogfill"></div><div class="sgoal">🟡</div><div class="sship" id="gprogship">🚀</div></div></div>
+    <div class="glives" id="lv">❤❤❤</div>
     <div class="gmsg" id="gmsg"></div>
-    <div class="gtap" id="gtap">жми на экран — прыжок</div>
+    <div class="gtap" id="gtap">🪨 камень внизу — прыгай &nbsp;·&nbsp; 🛰️ спутник сверху — не прыгай</div>
   </div>
 
   <div id="shooter">
@@ -163,7 +240,14 @@
 
   <div id="arrive">
     <div class="k">✦ Прибытие ✦</div>
-    <div class="venus"></div>
+    <div class="planetwrap" id="planetwrap">
+      <svg class="tring" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="120" cy="120" r="104" fill="none" stroke="rgba(230,181,82,.25)" stroke-width="1.4"/>
+        <circle cx="120" cy="120" r="110" fill="none" stroke="#e6b552" stroke-width="7" stroke-dasharray="3 54.6" opacity=".85"/>
+        <circle cx="120" cy="16" r="4.5" fill="#5fd0e6"/>
+      </svg>
+      <div class="venus"></div>
+    </div>
     <div class="big">Мы на Венере!</div>
     <div class="sub">Корабль сел на Венеру. Отсюда Крыс начал свой путь — ищем следующий след.</div>
     <button class="cont" id="cont">Продолжить →</button>
@@ -178,9 +262,46 @@
     <button class="aclose" id="alarmClose">Позже</button>
   </div>
 
+  <div id="navbroken">
+    <svg class="crack" viewBox="0 0 400 700" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 120 L120 180 L90 260 L200 300 L160 400 L300 430 L260 540 L400 600"/>
+      <path d="M120 180 L150 90 L110 0"/>
+      <path d="M200 300 L280 250 L260 150 L340 90"/>
+      <path d="M160 400 L60 430 L20 540"/>
+      <path d="M300 430 L360 360 L400 400"/>
+      <path d="M260 540 L230 640 L300 700"/>
+    </svg>
+    <div class="nbwrap">
+      <div class="nbk">⚠ Ошибка системы · NAV-CORE</div>
+      <div class="nbicon">🧭</div>
+      <div class="nbbig">Навигация повреждена</div>
+      <div class="nbsub">Во время боя с пиратами сбились зеркала курсового луча — навигационный компьютер потерял сигнал. Проложить курс не выйдет, пока луч не наведут заново в отсеке «Корабль».</div>
+      <button class="nbbtn" id="toShipNav">🛠 В отсек «Корабль» →</button>
+    </div>
+  </div>
+
+  <div id="timejump">
+    <canvas id="tjcanvas"></canvas>
+    <div class="tjvortex"></div>
+    <svg class="tjclock" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="54" class="tjface"/>
+      <circle cx="60" cy="60" r="50" fill="none" stroke="#5fd0e6" stroke-width="2" stroke-dasharray="1 25.15" opacity=".5" class="tjr2"/>
+      <circle cx="60" cy="60" r="48" fill="none" stroke="#e6b552" stroke-width="4" stroke-dasharray="2 23.13" opacity=".7" class="tjr1"/>
+      <line class="tjh tjhh" x1="60" y1="60" x2="60" y2="32"/>
+      <line class="tjh tjmh" x1="60" y1="60" x2="60" y2="20"/>
+      <circle cx="60" cy="60" r="4.5" class="tjhub"/>
+    </svg>
+    <div class="tjpanel">
+      <div class="tjyear" id="tjyear">2181</div>
+      <div class="tjlabel">Перенос во времени…</div>
+    </div>
+    <div class="tjflash" id="tjflash"></div>
+  </div>
+
 <script>
   const inShell = window.parent!==window;
-  let LEVEL=1, shipState='';   // '' ок · 'broken' реактор повреждён · 'fixed' починен
+  let LEVEL=1, shipState='', hasAccess=false, navMode='nav', navBroken=false;   // '' ок · 'broken' реактор повреждён · 'fixed' починен
+  const PASS='kipricatigrica';   // бортовой код доступа (сверяем без учёта регистра)
   function localState(){
     try{ const v=localStorage.getItem('edinorog_state'); if(v) return JSON.parse(v)||{}; }catch(e){}
     try{ if((window.name||'').indexOf('EDST:')===0) return JSON.parse(window.name.slice(5))||{}; }catch(e){}
@@ -209,6 +330,14 @@
   }
   function tryLaunch(){
     const raw=dest.value.trim();if(!raw){dest.focus();return;}
+    if(LEVEL>=6){   // Шешинеру: ввод даты для прыжка во времени (27.11.2178 или 27112178)
+      const digits=raw.replace(/\D/g,'');
+      if(digits==='27112178'){ dest.blur(); timeJump(); }
+      else { dest.style.borderColor='#ff8091'; lbl.style.color='#ff8091';
+        lbl.textContent='◎ Временна́я петля — проверь дату';
+        dest.addEventListener('input',resetErr,{once:true}); }
+      return;
+    }
     const tg=target();
     if(!tg.names.includes(raw.toUpperCase())){
       dest.style.borderColor='#ff8091';lbl.style.color='#ff8091';
@@ -228,8 +357,35 @@
     try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}
     startGame();
   }
-  document.getElementById('go').addEventListener('click',()=>{ if(LEVEL===2) startRunnerUI(); else tryLaunch(); });
-  dest.addEventListener('keydown',e=>{if(e.key==='Enter')tryLaunch();});
+  document.getElementById('go').addEventListener('click',()=>{
+    if(navMode==='lock'){ tryUnlock(); return; }
+    if(LEVEL===2) startRunnerUI(); else tryLaunch();
+  });
+  dest.addEventListener('keydown',e=>{ if(e.key==='Enter'){ if(navMode==='lock') tryUnlock(); else tryLaunch(); } });
+
+  // ---- парольный шлюз: код доступа к кораблю (из письма Космопочты) ----
+  function showLock(){
+    navMode='lock';
+    document.getElementById('center').style.display='';
+    document.getElementById('posName').textContent='🔒 Корабль заблокирован';
+    const d=document.getElementById('dock'); d.style.display='';
+    lbl.textContent='🔒 Код доступа к кораблю'; lbl.style.color='';
+    dest.style.display=''; dest.value=''; dest.placeholder='Введите бортовой код…';
+    document.getElementById('go').innerHTML='▶ Разблокировать';
+  }
+  function tryUnlock(){
+    const raw=dest.value.trim(); if(!raw){dest.focus();return;}
+    if(raw.toLowerCase()!==PASS){
+      dest.style.borderColor='#ff8091'; lbl.style.color='#ff8091';
+      lbl.textContent='🔒 Неверный код';
+      dest.addEventListener('input',()=>{dest.style.borderColor='';lbl.style.color='';lbl.textContent='🔒 Код доступа к кораблю';},{once:true});
+      return;
+    }
+    hasAccess=true; navMode='nav'; persistSet('access','ok'); dest.blur();
+    document.getElementById('posName').textContent='✔ Доступ разрешён';
+    lbl.textContent='◎ Корабль заведён'; lbl.style.color='#7fe0a0';
+    setTimeout(()=>{ setPosition(); applyLevel(); }, 950);
+  }
 
   // авария реактора при попытке лететь на Блук
   function triggerMalfunction(){
@@ -251,31 +407,86 @@
       grad:'radial-gradient(circle at 35% 30%,#a6d4ff,#5a7fe8 42%,#3a4bb9 76%,#1f2570)', glow:'rgba(120,160,255,.5)'},
     shelezyaka:{title:'Мы на Шелезяке!', sub:'Планета роботов Шелезяка. Здесь Крыс назначил встречу — идём по следу.',
       grad:'radial-gradient(circle at 35% 30%,#e6ebf2,#9aa3b2 42%,#5b6472 76%,#2c3038)', glow:'rgba(190,205,225,.5)'},
-    shesh:{title:'Мы на Шешинеру!', sub:'Планета Шешинеру. Здесь прячется настоящий Крыс — идём по следу.',
-      grad:'radial-gradient(circle at 35% 30%,#f6c9ff,#c86fd8 44%,#8b3fa8 76%,#4a1f5e)', glow:'rgba(210,140,240,.5)'}
+    shesh:{title:'Мы на Шешинеру!', sub:'Планета Хранителей Времени. Похоже, Крыс уже побывал здесь…',
+      grad:'radial-gradient(circle at 35% 30%,#fff1c2,#e6b552 42%,#b3822f 74%,#5c3d16)', glow:'rgba(240,205,120,.55)'}
   };
   function arrivePlanet(key){
     const a=document.getElementById('arrive'), pl=PLANETS[key], p=a.querySelector('.venus');
     a.querySelector('.big').textContent=pl.title; a.querySelector('.big').style.textShadow='0 0 30px '+pl.glow;
     a.querySelector('.sub').textContent=pl.sub;
     p.style.background=pl.grad; p.style.boxShadow='0 0 60px '+pl.glow+',inset -18px -12px 40px rgba(0,0,0,.45)';
+    document.getElementById('planetwrap').classList.toggle('shesh', key==='shesh');
     document.getElementById('dock').style.display='none'; a.classList.add('show');
   }
   // прыжок на Блук (после починки)
   function launchBluk(){ persistLevel(4); setPosition(); arrivePlanet('bluk'); }
   // прыжок на Шелезяку (по записке из отеля)
   function launchShelezyaka(){ persistLevel(5); setPosition(); arrivePlanet('shelezyaka'); }
+  // экран «навигация повреждена» — поверх, но не над экраном прибытия
+  function renderNav(){
+    const arriving=document.getElementById('arrive').classList.contains('show');
+    document.getElementById('navbroken').classList.toggle('show', navBroken && !arriving);
+  }
+  document.getElementById('toShipNav').addEventListener('click',()=>{
+    try{ if(inShell) window.parent.postMessage('tab:ship','*'); }catch(e){}
+  });
   function launchShesh(){ persistLevel(6); setPosition(); arrivePlanet('shesh'); }
+
+  // прыжок во времени: анимация → прибытие в прошлое
+  // звёздный варп на canvas
+  let tjc,tjx,tjRAF=null,tjStars=[],tjT0=0,tjW=0,tjH=0,tjDpr=1,tjRun=false;
+  function tjResize(){ tjDpr=Math.min(2,window.devicePixelRatio||1); tjW=tjc.clientWidth; tjH=tjc.clientHeight; tjc.width=tjW*tjDpr; tjc.height=tjH*tjDpr; tjx.setTransform(tjDpr,0,0,tjDpr,0,0); }
+  function tjInit(){ tjStars=[]; const R=Math.hypot(tjW,tjH)/2; for(let i=0;i<260;i++){ tjStars.push({a:Math.random()*6.2832, r:Math.random()*R, sp:.5+Math.random()*1.4, c:(Math.random()<.5?'#7fe0f2':(Math.random()<.5?'#ffd873':'#eaf3ff'))}); } }
+  function tjWarp(now){ if(!tjRun)return; if(!tjT0)tjT0=now; const t=(now-tjT0)/1000, cx=tjW/2, cy=tjH/2, R=Math.hypot(tjW,tjH)/2;
+    tjx.fillStyle='rgba(4,5,12,.28)'; tjx.fillRect(0,0,tjW,tjH);
+    const acc=1+t*t*3.4;
+    for(const s of tjStars){ const r0=s.r; s.r+=s.sp*acc*(1.6+r0*0.02);
+      const x0=cx+Math.cos(s.a)*r0, y0=cy+Math.sin(s.a)*r0, x1=cx+Math.cos(s.a)*s.r, y1=cy+Math.sin(s.a)*s.r;
+      tjx.strokeStyle=s.c; tjx.lineWidth=Math.min(3.2,.6+s.r*.006); tjx.globalAlpha=Math.min(1,s.r/100);
+      tjx.beginPath(); tjx.moveTo(x0,y0); tjx.lineTo(x1,y1); tjx.stroke();
+      if(s.r>R){ s.r=Math.random()*8; s.a=Math.random()*6.2832; } }
+    tjx.globalAlpha=1; tjRAF=requestAnimationFrame(tjWarp);
+  }
+  function tjFlash(){ const f=document.getElementById('tjflash'); if(!f)return; f.classList.remove('burst'); void f.offsetWidth; f.classList.add('burst'); }
+  function timeJump(){
+    document.getElementById('center').style.display='none';
+    document.getElementById('dock').style.display='none';
+    try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}
+    const tj=document.getElementById('timejump'); tj.classList.add('show');
+    tjc=document.getElementById('tjcanvas'); tjx=tjc.getContext('2d'); tjResize(); tjInit(); tjT0=0; tjRun=true; tjRAF=requestAnimationFrame(tjWarp);
+    tjFlash();
+    const yEl=document.getElementById('tjyear'); let y=2181; if(yEl)yEl.textContent=y;
+    const yi=setInterval(()=>{ y--; if(yEl)yEl.textContent=y; if(y<=2178)clearInterval(yi); }, 780);
+    setTimeout(()=>{ clearInterval(yi); if(yEl)yEl.textContent=2178; tjFlash(); }, 3300);   // финальная вспышка
+    setTimeout(()=>{ tjRun=false; if(tjRAF)cancelAnimationFrame(tjRAF);
+      tj.classList.remove('show');
+      try{ if(inShell) window.parent.postMessage('game:off','*'); }catch(e){}
+      persistLevel(7); arrivePast();
+    }, 3750);
+  }
+  function arrivePast(){
+    setPosition();
+    const a=document.getElementById('arrive'), pl=PLANETS.shesh, p=a.querySelector('.venus');
+    a.querySelector('.big').textContent='Мы в прошлом!'; a.querySelector('.big').style.textShadow='0 0 30px '+pl.glow;
+    a.querySelector('.sub').textContent='Шешинеру, 27 ноября 2178 года. Крыс где-то совсем рядом — мы почти догнали его!';
+    p.style.background=pl.grad; p.style.boxShadow='0 0 60px '+pl.glow+',inset -18px -12px 40px rgba(0,0,0,.45)';
+    const pw=document.getElementById('planetwrap'); pw.classList.add('shesh'); pw.classList.add('past');
+    document.getElementById('dock').style.display='none'; a.classList.add('show');
+  }
 
   // положение: Земля → Венера → Блук → Шелезяка
   function setPosition(){
     const el=document.getElementById('posName'); if(!el)return;
-    el.textContent = LEVEL>=6 ? '🛸 Шешинеру' : LEVEL>=5 ? '⚙️ Шелезяка' : LEVEL>=4 ? '🔵 Блук' : LEVEL>=3 ? '🟡 Венера' : '🌍 Земля';
+    el.textContent = LEVEL>=6 ? 'Шешинеру' : LEVEL>=5 ? '⚙️ Шелезяка' : LEVEL>=4 ? '🔵 Блук' : LEVEL>=3 ? '🟡 Венера' : '🌍 Земля';
+    const pl=document.getElementById('poslbl'); if(pl) pl.textContent = LEVEL>=7 ? '◉ Прошлое · 27.11.2178' : '◉ Текущее местоположение';
+    const np=document.getElementById('navplanet'); if(np){ np.classList.toggle('show', LEVEL>=6); np.classList.toggle('past', LEVEL>=7); }
+    document.getElementById('center').classList.toggle('hasplanet', LEVEL>=6);
   }
   function showDock(){   // на Венере: поле ввода готово принять «Блук»
+    navMode='nav';
     document.getElementById('center').style.display='';
     const d=document.getElementById('dock'); d.style.display='';
-    dest.style.display=''; dest.value='';
+    dest.style.display=''; dest.value=''; dest.placeholder='Куда направляемся?';
     lbl.textContent='◎ Пункт назначения'; lbl.style.color='';
     document.getElementById('go').innerHTML='▶ Вперёд';
   }
@@ -288,6 +499,8 @@
   }
   function applyLevel(){
     setPosition();
+    if(!hasAccess && LEVEL<3){ showLock(); return; }   // сперва ввести код доступа к кораблю
+    if(LEVEL>=7){ document.getElementById('dock').style.display='none'; return; }   // прошлое — ввод больше не нужен
     if(LEVEL===2){   // раннер ещё не пройден — экран «Продолжить полёт»
       document.querySelector('.dock .lbl').textContent='◎ Полёт к Венере';
       dest.style.display='none';
@@ -298,10 +511,15 @@
   }
   let navStarted=false;
   function applyState(st){
-    if(st){ if(st.level) LEVEL=Math.max(LEVEL, st.level); if(st.ship) shipState=st.ship; }
+    if(st){ if(st.level) LEVEL=Math.max(LEVEL, st.level); if(st.ship) shipState=st.ship; if(st.access) hasAccess=true;
+      if(st.nav==='fixed') navBroken=false; else if(st.nav==='broken') navBroken=true; }
+    // навигация ломается после того, как прочитали письмо Робота (засада) — пока не починили
+    const read=(st&&st.mailRead)||[];
+    if(read.includes('robot') && !(st&&st.nav==='fixed')){ navBroken=true; if(!(st&&st.nav==='broken')) persistSet('nav','broken'); }
     if(!navStarted){ navStarted=true; applyLevel(); }
     // реактор починен на Венере → завершаем прыжок и показываем прибытие на Блук
     if(shipState==='fixed' && LEVEL===3){ document.getElementById('alarm').classList.remove('show'); launchBluk(); }
+    renderNav();
   }
   window.addEventListener('message',(e)=>{ if(typeof e.data!=='string')return;
     if(e.data.indexOf('state:')===0){ let st={}; try{st=JSON.parse(e.data.slice(6));}catch(_){}
@@ -314,38 +532,46 @@
   let W=0,H=0,dpr=1,groundY=0;
   function fit(){dpr=Math.min(2,window.devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;
     cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);groundY=H-Math.max(64,H*0.16);}
-  const S={state:'idle',score:0,lives:3,speed:0,dist:0,raf:null,shipY:0,vy:0,onGround:true,obs:[],
-    spawnX:0,shake:0,inv:0,shipBob:0,winT:0};
+  const S={state:'idle',lives:3,speed:0,dist:0,raf:null,shipY:0,vy:0,onGround:true,obs:[],
+    spawnX:0,shake:0,inv:0,shipBob:0,elapsed:0,last:0};
   const GRAV=0.9, JUMP=-16, SHIP={x:74,w:48,h:32};
+  const FLY_MS=10000;   // лететь 10 секунд
 
-  function resetRun(){S.score=0;S.lives=3;S.speed=4.8;S.dist=0;S.obs=[];S.shipY=groundY-SHIP.h;S.vy=0;S.onGround=true;S.inv=0;
-    document.getElementById('sc').textContent='0';document.getElementById('lv').textContent='❤❤❤';S.spawnX=W+120;}
+  function resetRun(){S.lives=3;S.speed=4.8;S.dist=0;S.elapsed=0;S.last=0;S.obs=[];S.shipY=groundY-SHIP.h;S.vy=0;S.onGround=true;S.inv=0;
+    document.getElementById('lv').textContent='❤❤❤';S.spawnX=W+120;
+    var f=document.getElementById('gprogfill'),sh=document.getElementById('gprogship'); if(f)f.style.width='0%'; if(sh)sh.style.left='4%';}
   function startGame(){fit();resetRun();countdown(3);}
   function countdown(n){S.state='count';drawFrame();
     const g=document.getElementById('gmsg');
     if(n>0){g.innerHTML='<div class="big">'+n+'</div>';setTimeout(()=>countdown(n-1),700);}
-    else{g.innerHTML='<div class="big" style="font-size:44px">Поехали!</div>';setTimeout(()=>{g.innerHTML='';S.state='run';loop();},650);}
+    else{g.innerHTML='<div class="big" style="font-size:44px">Поехали!</div>';setTimeout(()=>{g.innerHTML='';S.last=performance.now();S.state='run';loop();},650);}
   }
   function jump(){ if(S.state==='run'&&S.onGround){S.vy=JUMP;S.onGround=false;} }
   document.getElementById('game').addEventListener('pointerdown',jump);
   window.addEventListener('keydown',e=>{ if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();} });
 
   function spawn(){
-    const type=Math.random()<0.6?'ast':'sat';
-    let w,h;
-    if(type==='ast'){const r=14+Math.random()*12;w=r*2;h=r*2;}
-    else{w=30+Math.random()*10;h=30+Math.random()*14;}
-    S.obs.push({type,x:W+20,w,h,scored:false,r:(type==='ast'?w/2:0)});
+    const high=Math.random()<0.42;   // ~42% высокие (не прыгай), остальные низкие (перепрыгни)
+    if(high){
+      const w=34+Math.random()*16, h=28+Math.random()*10;
+      const yb=groundY-SHIP.h-24;     // низ высокого препятствия — с зазором над кораблём на земле
+      S.obs.push({type:'sat',x:W+20,w,h,y:yb-h,r:0});
+    } else {
+      const r=14+Math.random()*11;
+      S.obs.push({type:'ast',x:W+20,w:r*2,h:r*2,y:groundY-r*2,r});
+    }
   }
   function needSpawn(){
     if(!S.obs.length)return true;
     const last=S.obs[S.obs.length-1];
-    const gap=230+S.speed*20+Math.random()*160;
+    const gap=270+S.speed*22+Math.random()*150;
     return (W-last.x)>gap;
   }
 
   function update(){
-    S.dist+=S.speed; S.speed=Math.min(9.2,4.8+S.score*0.13);
+    const now=performance.now(); let dt=now-(S.last||now); S.last=now; if(dt>50)dt=50; S.elapsed+=dt;
+    S.speed=Math.min(8.2,4.8+(S.elapsed/1000)*0.34);
+    S.dist+=S.speed;
     // ship physics
     S.vy+=GRAV;S.shipY+=S.vy;
     if(S.shipY>=groundY-SHIP.h){S.shipY=groundY-SHIP.h;S.vy=0;S.onGround=true;}
@@ -353,21 +579,24 @@
     // obstacles
     if(needSpawn())spawn();
     for(const o of S.obs)o.x-=S.speed;
-    // collisions + scoring
+    // collisions
     const sx=SHIP.x+7,sy=S.shipY+5,sw=SHIP.w-16,sh=SHIP.h-9;
     for(const o of S.obs){
-      const oy=groundY-o.h;
-      if(!o.scored && o.x+o.w<SHIP.x){o.scored=true;S.score++;document.getElementById('sc').textContent=S.score;
-        if(S.score>=5){win();return;}}
+      const oy=o.y;
       if(S.inv<=0 && sx<o.x+o.w-4 && sx+sw>o.x+4 && sy<oy+o.h-2 && sy+sh>oy+2){
         S.lives--;S.inv=70;S.shake=12;
         document.getElementById('lv').textContent='❤'.repeat(Math.max(0,S.lives))+'♡'.repeat(3-Math.max(0,S.lives));
-        if(S.lives<=0){flashReset();}
+        if(S.lives<=0){flashReset();return;}
       }
     }
     S.obs=S.obs.filter(o=>o.x+o.w>-10);
     if(S.shake>0)S.shake--;
     S.shipBob+=0.2;
+    // прогресс = время полёта (10 сек)
+    const prog=Math.min(1,S.elapsed/FLY_MS);
+    const pf=document.getElementById('gprogfill'), ps=document.getElementById('gprogship');
+    if(pf)pf.style.width=(prog*100)+'%'; if(ps)ps.style.left=(4+prog*88)+'%';
+    if(prog>=1){win();return;}
   }
 
   function flashReset(){
@@ -393,9 +622,9 @@
     ctx.globalAlpha=1;ctx.restore();
   }
   function drawObs(o){
-    const oy=groundY-o.h;
+    const oy=o.y;
     if(o.type==='ast'){
-      const r=o.r,cx=o.x+r,cy=groundY-r;
+      const r=o.r,cx=o.x+r,cy=o.y+r;
       ctx.fillStyle='#8b90a1';ctx.beginPath();ctx.arc(cx,cy,r,0,7);ctx.fill();
       ctx.strokeStyle='#5b6072';ctx.lineWidth=1.4;
       ctx.beginPath();ctx.arc(cx-r*0.3,cy-r*0.2,r*0.25,0,7);ctx.stroke();
@@ -437,7 +666,10 @@
     let t=0;(function up(){ ctx.clearRect(0,0,W,H);drawGround();S.shipY-=6;S.obs=[];drawShip();
       t++; if(t<60){requestAnimationFrame(up);} else { enterVenus(true); } })();
   }
-  document.getElementById('cont').addEventListener('click',()=>{ document.getElementById('arrive').classList.remove('show'); showDock();
+  document.getElementById('cont').addEventListener('click',()=>{ document.getElementById('arrive').classList.remove('show');
+    if(LEVEL>=7){ document.getElementById('center').style.display=''; document.getElementById('dock').style.display='none'; }
+    else showDock();
+    renderNav();
     try{ if(inShell) window.parent.postMessage('game:off','*'); }catch(e){} });
 
   window.addEventListener('resize',()=>{ if(document.getElementById('game').classList.contains('show')){fit();S.shipY=Math.min(S.shipY,groundY-SHIP.h);} });
