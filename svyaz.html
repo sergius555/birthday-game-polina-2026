@@ -287,7 +287,10 @@
     g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.2,t+0.02);
     g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o.stop(t+dur+0.03); }
   function soundMail(){ unlockAudio(); beep(880,0,0.13,0.17,'sine'); beep(1320,0.11,0.17,0.15,'sine'); }   // «блип» письма
-  function soundCall(){ unlockAudio(); for(const s of [0,0.5]){ beep(620,s,0.2,0.22,'triangle'); beep(790,s+0.19,0.24,0.2,'triangle'); } }  // «звонок»
+  function soundCall(){ unlockAudio(); for(const s of [0,0.5]){ beep(620,s,0.2,0.22,'triangle'); beep(790,s+0.19,0.24,0.2,'triangle'); } }  // один «гудок»
+  let ringInt=null;
+  function startRing(){ stopRing(); soundCall(); ringInt=setInterval(soundCall,2200); }   // звонит, пока не «Принять»
+  function stopRing(){ if(ringInt){ clearInterval(ringInt); ringInt=null; } }
 
   // avatar helper (photo for alisa, emoji otherwise)
   function avatarHTML(m,big){
@@ -458,16 +461,16 @@
     activeCall=which;
     callName.textContent=c.name;
     callImg.src=c.photo; callImg.style.display=''; callPh.style.display='none'; callPh.textContent=c.ph;
-    call.classList.remove('hide'); soundCall();
+    call.classList.remove('hide'); startRing();
     if(immersive) shellMsg('call:on');          // глобальное затемнение — только когда вкладка активна (звонок Алисы в начале)
     else shellMsg('notify:hyper');              // иначе просто «красная точка», экран звонка ждёт внутри вкладки
     d=0; if(di)clearInterval(di);
     di=setInterval(()=>{ d=(d+1)%4; if(!call.classList.contains('hide')) cl.textContent=c.sub+'.'.repeat(d); },400);
   }
-  function hideCall(){ if(di)clearInterval(di); call.classList.add('hide'); shellMsg('call:off'); activeCall=null; }
+  function hideCall(){ stopRing(); if(di)clearInterval(di); call.classList.add('hide'); shellMsg('call:off'); activeCall=null; }
   document.getElementById('accept').addEventListener('click',()=>{
     const c=CALLS[activeCall]; const msg=c?c.msg:'alisa';
-    if(di)clearInterval(di); call.classList.add('hide'); shellMsg('call:off'); activeCall=null;
+    stopRing(); if(di)clearInterval(di); call.classList.add('hide'); shellMsg('call:off'); activeCall=null;
     setTimeout(()=>{ openMsg(msg); }, 300);
   });
   // какой звонок показать: на Блуке (level 4) — Ушаны; в начале — Алиса
