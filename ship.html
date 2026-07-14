@@ -370,18 +370,26 @@
   document.getElementById('ndone').addEventListener('click',()=>{ closeNav(); try{ if(inShell) window.parent.postMessage('tab:nav','*'); }catch(e){} });
   document.getElementById('nreset').addEventListener('click',()=>{ if(navSolved)return; resetBeam(); });
 
-  // поле 5×5: зеркала поворачиваются, луч отражается; довести до приёмника, обойдя повреждённый блок
+  // поле 6×6: зеркала поворачиваются, луч отражается; довести до приёмника, обойдя повреждённый блок
   const BN=6, BCS=54, BPAD=30;
   const DIRV={E:[0,1],W:[0,-1],N:[-1,0],S:[1,0]};
   const REFL={ '/':{E:'N',N:'E',W:'S',S:'W'}, '\\':{E:'S',S:'E',W:'N',N:'W'} };
-  // змейка из 6 зеркал, старт неверный, единственное решение (проверено)
-  const START={ '0,2':'/','2,2':'/','2,4':'/','4,4':'\\','4,1':'\\','5,1':'/' };
-  const OBST={ '1,4':true, '3,2':true };
-  const EMIT={r:0,c:0,dir:'E'}, RECV={r:5,c:5,dir:'E'};
-  let mirrors={};
+  const LEVELS=[
+    // Уровень 1 — лёгкий: 3 зеркала, без препятствий, единственное решение
+    { EMIT:{r:0,c:0,dir:'E'}, RECV:{r:0,c:4,dir:'N'}, OBST:{},
+      START:{ '0,1':'/','3,1':'/','3,4':'\\' } },
+    // Уровень 2 — сложный: 6 зеркал (расставлены по-разному), без препятствий
+    { EMIT:{r:0,c:0,dir:'E'}, RECV:{r:5,c:2,dir:'S'}, OBST:{},
+      START:{ '4,3':'\\','2,3':'/','0,2':'/','2,2':'\\','4,1':'/','2,1':'\\','0,3':'/','0,5':'/','5,5':'/' } }
+  ];
+  let beamLevel=0, beamLock=false;
+  let EMIT, RECV, OBST, START, mirrors={};
+  function loadLevel(i){ beamLevel=i; const L=LEVELS[i]; EMIT=L.EMIT; RECV=L.RECV; OBST=L.OBST; START=L.START; mirrors=Object.assign({},START); }
 
-  function resetBeam(){ mirrors=Object.assign({},START); nhint.textContent='Поворачивай зеркала, чтобы направить луч.'; renderBeam(); }
-  function buildBeam(){ navSolved=false; navpz.classList.remove('done'); resetBeam(); }
+  function resetBeam(){ mirrors=Object.assign({},START);
+    nhint.textContent = beamLevel===0 ? 'Поворачивай зеркала, чтобы направить луч.' : 'Зеркал больше, и есть блоки — разверни каждое верно.';
+    renderBeam(); }
+  function buildBeam(){ navSolved=false; beamLock=false; navpz.classList.remove('done'); loadLevel(0); resetBeam(); }
 
   function ox(c){ return BPAD+c*BCS; } function oy(r){ return BPAD+r*BCS; }
   function cx(c){ return ox(c)+BCS/2; } function cy(r){ return oy(r)+BCS/2; }
@@ -393,7 +401,7 @@
     const pts=[ edgePt(r,c,'W') ];
     while(steps++<64){
       pts.push([cx(c),cy(r)]);
-      const m=mirrors[r+','+c]; if(m) dir=REFL[m][dir];
+      const m=mirrors[r+','+c]; if(m) dir=REFL[m][dir];             // зеркало отражает луч
       const [dr,dc]=DIRV[dir], nr=r+dr, nc=c+dc;
       if(nr<0||nr>=BN||nc<0||nc>=BN){ pts.push(edgePt(r,c,dir)); if(r===RECV.r&&c===RECV.c&&dir===RECV.dir) ok=true; break; }
       if(OBST[nr+','+nc]){ pts.push(edgePt(r,c,dir)); break; }
@@ -426,9 +434,14 @@
     s+='</svg>';
     beamEl.innerHTML=s;
     if(tr.ok){ const rc=beamEl.querySelector('.recv'); if(rc) rc.classList.add('win'); }
-    beamEl.querySelectorAll('.mcell').forEach(g=>{ g.addEventListener('click',()=>{ if(navSolved)return;
+    beamEl.querySelectorAll('.mcell').forEach(g=>{ g.addEventListener('click',()=>{ if(navSolved||beamLock)return;
       const k=g.getAttribute('data-k'); mirrors[k]= mirrors[k]==='/'?'\\':'/'; renderBeam(); }); });
-    if(tr.ok) winNav();
+    if(tr.ok){ if(beamLevel===0) advanceLevel(); else winNav(); }
+  }
+  function advanceLevel(){   // лёгкий уровень пройден → показываем сложный
+    if(beamLock)return; beamLock=true;
+    nhint.textContent='✅ Первый контур восстановлен! Теперь сложнее.';
+    setTimeout(()=>{ loadLevel(1); beamLock=false; resetBeam(); }, 1500);
   }
   function winNav(){ if(navSolved)return; navSolved=true; navpz.classList.add('done');
     persistSet('nav','fixed'); try{ if(inShell) window.parent.postMessage('notify:nav','*'); }catch(e){} applyNavUI(); }

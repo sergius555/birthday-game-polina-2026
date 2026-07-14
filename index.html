@@ -142,8 +142,9 @@
     if(d.indexOf('tab:')===0) activate(d.slice(4));
     if(d==='call:on') document.body.classList.add('calling');
     if(d==='call:off') document.body.classList.remove('calling');
-    if(d==='game:on') document.body.classList.add('gaming');
+    if(d==='game:on'){ document.body.classList.add('gaming'); try{window.scrollTo(0,0);}catch(e){} }
     if(d==='game:off') document.body.classList.remove('gaming');
+    if(d==='scroll0'){ try{ window.scrollTo(0,0); document.documentElement.scrollTop=0; if(document.body)document.body.scrollTop=0; }catch(e){} }
     if(d.indexOf('notify:')===0){ const n=d.slice(7); const b=btns.find(x=>x.dataset.t===n); if(b&&n!==current)b.classList.add('notify'); }
   });
 

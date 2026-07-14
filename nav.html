@@ -69,7 +69,7 @@
   #go:active{transform:scale(.97)}
 
   /* game */
-  #game{position:absolute;inset:0;z-index:5;display:none}
+  #game{position:fixed;inset:0;z-index:5;display:none}
   #game.show{display:block}
   #game canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
   .ghud{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;justify-content:space-between;align-items:center;
@@ -92,7 +92,7 @@
   #gprog .sship{position:absolute;left:0;top:50%;transform:translate(-50%,-50%);font-size:16px;z-index:2;filter:drop-shadow(0 0 4px rgba(95,208,230,.7))}
 
   /* shooter (Шелезяка) */
-  #shooter{position:absolute;inset:0;z-index:5;display:none}
+  #shooter{position:fixed;inset:0;z-index:5;display:none}
   #shooter.show{display:block}
   #shooter canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
   #joy{position:absolute;left:22px;bottom:26px;width:120px;height:120px;border-radius:50%;z-index:6;
@@ -417,12 +417,20 @@
     else if(LEVEL===4){ startShooter(); }                                                   // Шелезяка → бой с пиратами
     else { launchShesh(); }                                                                 // Шешинеру (level 5+)
   }
+  // iOS: после ввода в поле клавиатура прокручивает документ — сбрасываем прокрутку, иначе верх игры уезжает
+  function killScroll(){
+    try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(e){}
+    try{ window.scrollTo(0,0); document.documentElement.scrollTop=0; if(document.body)document.body.scrollTop=0; }catch(e){}
+    try{ if(inShell) window.parent.postMessage('scroll0','*'); }catch(e){}
+  }
   function startRunnerUI(){
+    killScroll();
     document.getElementById('center').style.display='none';
     document.getElementById('dock').style.display='none';
     document.getElementById('game').classList.add('show');
     try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}
     startGame();
+    setTimeout(killScroll,60);   // повторно — iOS иногда прокручивает с задержкой
   }
   document.getElementById('go').addEventListener('click',()=>{
     if(navMode==='lock'){ tryUnlock(); return; }
@@ -882,8 +890,10 @@
   }
   function chLoop(now){ if(!chRun)return; if(!chLast)chLast=now; let dt=(now-chLast)/16.67; chLast=now; if(dt>3)dt=3; chUpdate(dt); chDraw(); if(chRun) chRAF=requestAnimationFrame(chLoop); }
   function showChase(){
+    killScroll();
     const el=document.getElementById('chase'); el.classList.add('show');
     try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}
+    setTimeout(killScroll,60);
     chCv=document.getElementById('chcv'); chX2=chCv.getContext('2d'); chFit();
     chP={x:chW*0.5,y:chH*0.72,vx:0,vy:0,ang:-1.5708};
     chK={x:chW*0.5,y:chH*0.28,hd:1.5708,ang:1.5708,wpx:chW*0.5,wpy:chH*0.5,wpT:0,face:'😎',faceT:0,say:60,sayShow:0,sayT:''};
@@ -928,10 +938,12 @@
     if(f)f.style.width='0%'; if(sh)sh.style.left='4%';
   }
   function startShooter(){
+    killScroll();
     document.getElementById('center').style.display='none';
     document.getElementById('dock').style.display='none';
     shooterEl.classList.add('show'); sfit();
     try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}
+    setTimeout(killScroll,60);
     G.stars=[]; for(let i=0;i<46;i++) G.stars.push({x:Math.random()*SW,y:Math.random()*SH,z:1+Math.random()*2,sp:1+Math.random()*2.5});
     resetRound(); G.inv=0; joyId=null; scountdown(3);
   }
