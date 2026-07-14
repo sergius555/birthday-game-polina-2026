@@ -630,7 +630,7 @@
   function spawn(){
     const high=Math.random()<0.42;   // ~42% высокие (не прыгай), остальные низкие (перепрыгни)
     if(high){
-      const w=34+Math.random()*16, h=28+Math.random()*10;
+      const w=40+Math.random()*16, h=118+Math.random()*46;   // высокий и большой — перепрыгнуть нельзя, только под ним по земле
       const yb=groundY-SHIP.h-24;     // низ высокого препятствия — с зазором над кораблём на земле
       S.obs.push({type:'sat',x:W+20,w,h,y:yb-h,r:0});
     } else {
