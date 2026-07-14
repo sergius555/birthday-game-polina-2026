@@ -11,7 +11,7 @@
   :root{--bg:#05060e;--ink:#e7e3d5;--head:#fbf9f1;--muted:#9aa3bd;--rule:rgba(190,200,230,.28);--accent:#e6b552;--cyan:#5fd0e6;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;overflow:hidden}
-  body{background:#05060e;font-family:'PT Serif',Georgia,serif;color:var(--ink);position:relative;height:100vh;-webkit-text-size-adjust:100%}
+  body{background:#05060e;font-family:'PT Serif',Georgia,serif;color:var(--ink);position:relative;height:100%;overflow:hidden;-webkit-text-size-adjust:100%}
 
   .sky{position:absolute;inset:0;z-index:0;
     background:radial-gradient(1000px 700px at 78% 8%,rgba(70,100,200,.22),transparent 60%),
@@ -44,6 +44,10 @@
   .center .posName{font-family:'Playfair Display';font-weight:900;color:var(--head);
     font-size:clamp(44px,12vw,84px);line-height:1;text-shadow:0 0 34px rgba(95,208,230,.4)}
   .center.hasplanet .posName{font-size:clamp(30px,7vw,48px)}
+  #catchBtn{margin-top:20px;font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:15px;
+    color:#1a1305;background:var(--accent);border:none;border-radius:30px;padding:14px 30px;cursor:pointer;box-shadow:0 0 26px rgba(230,181,82,.45);animation:cbpulse 1.6s ease-in-out infinite}
+  #catchBtn:active{transform:scale(.97)}
+  @keyframes cbpulse{0%,100%{box-shadow:0 0 22px rgba(230,181,82,.4)}50%{box-shadow:0 0 40px rgba(230,181,82,.8)}}
   .center .navplanet{position:relative;width:190px;height:190px;display:none;align-items:center;justify-content:center;margin:4px 0}
   .center .navplanet.show{display:flex}
   .center .navplanet .ntring{position:absolute;inset:0;width:100%;height:100%;animation:tspin 48s linear infinite;filter:drop-shadow(0 0 6px rgba(230,181,82,.5))}
@@ -188,6 +192,43 @@
   .tjyear{font-family:'Share Tech Mono',monospace;font-size:clamp(48px,15vw,84px);color:var(--accent);letter-spacing:4px;text-shadow:0 0 32px rgba(230,181,82,.8)}
   .tjlabel{font-family:'Oswald';text-transform:uppercase;letter-spacing:.34em;font-size:14px;color:var(--cyan);animation:tjblink 1s ease-in-out infinite}
   @keyframes tjblink{0%,100%{opacity:1}50%{opacity:.35}}
+  /* экран победы (финал) */
+  #victory{position:fixed;inset:0;z-index:61;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;overflow:hidden;
+    background:radial-gradient(circle at 50% 38%,rgba(40,32,14,.95),rgba(6,7,14,.98))}
+  #victory.show{display:flex}
+  #victory .vconf{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  #victory .vconf i{position:absolute;top:-24px;width:9px;height:14px;border-radius:2px;opacity:.9;animation:vfall linear infinite}
+  @keyframes vfall{0%{transform:translateY(-30px) rotate(0)}100%{transform:translateY(105vh) rotate(540deg)}}
+  #victory .vwrap{position:relative;z-index:2;max-width:460px;display:flex;flex-direction:column;align-items:center;gap:12px}
+  #victory .vk{font-family:'Oswald';text-transform:uppercase;letter-spacing:.3em;font-size:14px;color:var(--accent)}
+  #victory .vcatch{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0}
+  #victory .vp{display:flex;flex-direction:column;align-items:center;gap:6px}
+  #victory .vav{width:92px;height:92px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:46px;
+    border:2px solid var(--accent);background:rgba(230,181,82,.1);box-shadow:0 0 24px rgba(230,181,82,.35);filter:grayscale(.15)}
+  #victory .vav img{width:100%;height:100%;object-fit:cover}
+  #victory .vn{font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;font-size:12px;color:var(--muted)}
+  #victory .vnet{font-size:34px;filter:drop-shadow(0 0 10px rgba(95,208,230,.5))}
+  #victory .vbig{font-family:'Playfair Display';font-weight:900;font-size:clamp(30px,7vw,48px);color:var(--head);text-shadow:0 0 30px rgba(240,205,120,.5)}
+  #victory .vsub{font-family:'PT Serif';color:#f0e2c2;font-size:16px;line-height:1.55;max-width:400px}
+  #victory .vcont{margin-top:10px;font-family:'Oswald';font-weight:600;text-transform:uppercase;letter-spacing:.14em;font-size:15px;
+    color:#1a1305;background:var(--accent);border:none;border-radius:30px;padding:14px 34px;cursor:pointer;box-shadow:0 0 26px rgba(230,181,82,.4)}
+  #victory .vcont:active{transform:scale(.97)}
+  /* мини-игра «погоня за Крысом» */
+  #chase{position:fixed;inset:0;z-index:59;display:none;overflow:hidden;background:radial-gradient(circle at 50% 40%,#0a1230,#05060e)}
+  #chase.show{display:block}
+  #chase canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+  #chase .chhd{position:absolute;top:14px;left:0;right:0;z-index:3;text-align:center;font-family:'Oswald';text-transform:uppercase;letter-spacing:.14em;font-size:15px;color:var(--head)}
+  #chmeter{position:absolute;top:46px;left:16px;right:16px;z-index:3;display:flex;align-items:center;gap:8px}
+  #chmeter .chmtrack{flex:1;height:16px;border-radius:10px;background:rgba(8,14,30,.7);border:1px solid rgba(230,181,82,.4);overflow:hidden}
+  #chmeter .chmfill{height:100%;width:0;background:linear-gradient(90deg,rgba(230,181,82,.35),#e6b552)}
+  #chmeter .chmlbl{font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;font-size:11px;color:var(--accent)}
+  #cjoy{position:absolute;left:22px;bottom:26px;width:120px;height:120px;border-radius:50%;z-index:3;
+    background:radial-gradient(circle at 50% 50%,rgba(95,208,230,.10),rgba(95,208,230,.03));border:2px solid rgba(95,208,230,.4);touch-action:none}
+  #cjoyknob{position:absolute;left:35px;top:35px;width:50px;height:50px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle at 40% 35%,#9fe8f5,#37b7d0);box-shadow:0 0 16px rgba(95,208,230,.6)}
+  #chase .chtap2{position:absolute;bottom:34px;left:156px;right:16px;z-index:3;font-family:'Oswald';text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:var(--muted)}
+  #chase .chmsg{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;pointer-events:none;
+    font-family:'Playfair Display';font-weight:900;font-size:clamp(30px,8vw,54px);color:var(--head);text-shadow:0 0 30px rgba(230,181,82,.6)}
 </style>
 </head>
 <body>
@@ -206,6 +247,7 @@
       <div class="nsphere"></div>
     </div>
     <div class="posName" id="posName">🌍 Земля</div>
+    <button id="catchBtn" style="display:none">🦀 Поймать Крыса</button>
   </div>
 
   <div class="dock" id="dock">
@@ -298,6 +340,28 @@
     <div class="tjflash" id="tjflash"></div>
   </div>
 
+  <div id="victory">
+    <div class="vconf" id="vconf"></div>
+    <div class="vwrap">
+      <div class="vk">✦ Победа! ✦</div>
+      <div class="vcatch">
+        <div class="vp"><span class="vav"><img src="krys.jpg" alt="" onerror="this.parentNode.textContent='🐀'"></span><div class="vn">Крыс</div></div>
+      </div>
+      <div class="vbig">Крыс пойман!</div>
+      <div class="vsub">Полина настигла Крыса и вернула галактий! Жители всех планет благодарны тебе — ты спасла галактику, капитан! 🎉</div>
+      <button class="vcont" id="vcont">🎉 Ура!</button>
+    </div>
+  </div>
+
+  <div id="chase">
+    <canvas id="chcv"></canvas>
+    <div class="chhd">🚀 Догони Крыса!</div>
+    <div id="chmeter"><div class="chmtrack"><div class="chmfill" id="chmfill"></div></div><span class="chmlbl">Захват</span></div>
+    <div id="cjoy"><div id="cjoyknob"></div></div>
+    <div class="chtap2">Веди корабль джойстиком · подберись и зажми Крыса клешнями</div>
+    <div class="chmsg" id="chmsg"></div>
+  </div>
+
 <script>
   const inShell = window.parent!==window;
   let LEVEL=1, shipState='', hasAccess=false, navMode='nav', navBroken=false;   // '' ок · 'broken' реактор повреждён · 'fixed' починен
@@ -316,6 +380,9 @@
     try{ window.name='EDST:'+j; }catch(e){}
   }
   function persistLevel(n){ LEVEL=Math.max(LEVEL,n); persistSet('level',n); }
+  // прибытие на планету: уровень поднимаем локально, но рассылаем (→ приходят письма) только по «Продолжить»
+  let pendingLevel=null;
+  function persistLevelOnContinue(n){ LEVEL=Math.max(LEVEL,n); pendingLevel=n; }
 
   const dest=document.getElementById('dest');
   const lbl=document.querySelector('.dock .lbl');
@@ -323,10 +390,10 @@
 
   // цель по уровню: 1 → Венера, 3 → Блук, 4+ → Шелезяка
   function target(){
-    if(LEVEL>=5) return {names:['ШЕШИНЕРУ','SHESHINERU'], hint:'◎ Курс не распознан — расшифруй сообщение робота'};
-    if(LEVEL>=4) return {names:['ШЕЛЕЗЯКА','SHELEZYAKA'], hint:'◎ Курс не распознан — прочитай записку из отеля'};
-    if(LEVEL>=3) return {names:['БЛУК','BLUK'], hint:'◎ Курс не распознан — проверь письмо Механика'};
-    return {names:['ВЕНЕРА','VENERA','VENUS'], hint:'◎ Курс не распознан — загляни в «Космический Вестник»'};
+    if(LEVEL>=5) return {names:['ШЕШИНЕРУ','SHESHINERU'], hint:'◎ Курс не распознан'};
+    if(LEVEL>=4) return {names:['ШЕЛЕЗЯКА','SHELEZYAKA'], hint:'◎ Курс не распознан'};
+    if(LEVEL>=3) return {names:['БЛУК','BLUK'], hint:'◎ Курс не распознан'};
+    return {names:['ВЕНЕРА','VENERA','VENUS'], hint:'◎ Курс не распознан'};
   }
   function tryLaunch(){
     const raw=dest.value.trim();if(!raw){dest.focus();return;}
@@ -419,9 +486,9 @@
     document.getElementById('dock').style.display='none'; a.classList.add('show');
   }
   // прыжок на Блук (после починки)
-  function launchBluk(){ persistLevel(4); setPosition(); arrivePlanet('bluk'); }
+  function launchBluk(){ persistLevelOnContinue(4); setPosition(); arrivePlanet('bluk'); }
   // прыжок на Шелезяку (по записке из отеля)
-  function launchShelezyaka(){ persistLevel(5); setPosition(); arrivePlanet('shelezyaka'); }
+  function launchShelezyaka(){ persistLevelOnContinue(5); setPosition(); arrivePlanet('shelezyaka'); }
   // экран «навигация повреждена» — поверх, но не над экраном прибытия
   function renderNav(){
     const arriving=document.getElementById('arrive').classList.contains('show');
@@ -430,7 +497,7 @@
   document.getElementById('toShipNav').addEventListener('click',()=>{
     try{ if(inShell) window.parent.postMessage('tab:ship','*'); }catch(e){}
   });
-  function launchShesh(){ persistLevel(6); setPosition(); arrivePlanet('shesh'); }
+  function launchShesh(){ persistLevelOnContinue(6); setPosition(); arrivePlanet('shesh'); }
 
   // прыжок во времени: анимация → прибытие в прошлое
   // звёздный варп на canvas
@@ -461,7 +528,7 @@
     setTimeout(()=>{ tjRun=false; if(tjRAF)cancelAnimationFrame(tjRAF);
       tj.classList.remove('show');
       try{ if(inShell) window.parent.postMessage('game:off','*'); }catch(e){}
-      persistLevel(7); arrivePast();
+      persistLevelOnContinue(7); arrivePast();
     }, 3750);
   }
   function arrivePast(){
@@ -480,6 +547,7 @@
     el.textContent = LEVEL>=6 ? 'Шешинеру' : LEVEL>=5 ? '⚙️ Шелезяка' : LEVEL>=4 ? '🔵 Блук' : LEVEL>=3 ? '🟡 Венера' : '🌍 Земля';
     const pl=document.getElementById('poslbl'); if(pl) pl.textContent = LEVEL>=7 ? '◉ Прошлое · 27.11.2178' : '◉ Текущее местоположение';
     const np=document.getElementById('navplanet'); if(np){ np.classList.toggle('show', LEVEL>=6); np.classList.toggle('past', LEVEL>=7); }
+    const cb=document.getElementById('catchBtn'); if(cb) cb.style.display = (LEVEL===7 ? '' : 'none');
     document.getElementById('center').classList.toggle('hasplanet', LEVEL>=6);
   }
   function showDock(){   // на Венере: поле ввода готово принять «Блук»
@@ -533,11 +601,20 @@
   function fit(){dpr=Math.min(2,window.devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;
     cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);groundY=H-Math.max(64,H*0.16);}
   const S={state:'idle',lives:3,speed:0,dist:0,raf:null,shipY:0,vy:0,onGround:true,obs:[],
-    spawnX:0,shake:0,inv:0,shipBob:0,elapsed:0,last:0};
+    spawnX:0,shake:0,inv:0,shipBob:0,elapsed:0,last:0,
+    pops:[],bg:[],dots:[],dodges:0};
   const GRAV=0.9, JUMP=-16, SHIP={x:74,w:48,h:32};
-  const FLY_MS=10000;   // лететь 10 секунд
+  const FLY_MS=15000;   // лететь 15 секунд
+  const PRAISE=['Класс!','Ловко!','Ура!','Супер!','Вот это да!','Молодец!'];
+
+  function initBg(){
+    S.bg=[]; const pal=['#3a2a5a','#2a4a5a','#5a3a3a','#2a3a5a'];
+    for(let i=0;i<3;i++){ S.bg.push({x:W*(0.3+i*0.5)+Math.random()*W*0.4, y:40+Math.random()*(groundY-120), r:26+Math.random()*40, c:pal[i%pal.length], pf:0.12+Math.random()*0.12, ring:Math.random()<0.5}); }
+    S.dots=[]; for(let i=0;i<48;i++){ S.dots.push({x:Math.random()*W, y:Math.random()*(groundY-6), r:Math.random()<0.5?0.8:1.4, tw:Math.random()*6, pf:0.25+Math.random()*0.5}); }
+  }
 
   function resetRun(){S.lives=3;S.speed=4.8;S.dist=0;S.elapsed=0;S.last=0;S.obs=[];S.shipY=groundY-SHIP.h;S.vy=0;S.onGround=true;S.inv=0;
+    S.pops=[];S.dodges=0;initBg();
     document.getElementById('lv').textContent='❤❤❤';S.spawnX=W+120;
     var f=document.getElementById('gprogfill'),sh=document.getElementById('gprogship'); if(f)f.style.width='0%'; if(sh)sh.style.left='4%';}
   function startGame(){fit();resetRun();countdown(3);}
@@ -567,6 +644,7 @@
     const gap=270+S.speed*22+Math.random()*150;
     return (W-last.x)>gap;
   }
+  function addPop(x,y,txt){ S.pops.push({x,y,txt,life:60}); }
 
   function update(){
     const now=performance.now(); let dt=now-(S.last||now); S.last=now; if(dt>50)dt=50; S.elapsed+=dt;
@@ -589,11 +667,20 @@
         if(S.lives<=0){flashReset();return;}
       }
     }
+    // хвальба за успешно пройденное препятствие
+    for(const o of S.obs){ if(!o.passed && o.x+o.w<SHIP.x){ o.passed=true; S.dodges++;
+      if(S.dodges%3===0) addPop(SHIP.x+SHIP.w+8, S.shipY-8, PRAISE[Math.floor(Math.random()*PRAISE.length)]); } }
     S.obs=S.obs.filter(o=>o.x+o.w>-10);
     if(S.shake>0)S.shake--;
     S.shipBob+=0.2;
-    // прогресс = время полёта (10 сек)
+    // прогресс = время полёта
     const prog=Math.min(1,S.elapsed/FLY_MS);
+    // всплывающая похвала
+    for(const p of S.pops){ p.y-=0.6; p.life--; }
+    S.pops=S.pops.filter(p=>p.life>0);
+    // фон (параллакс)
+    for(const b of S.bg){ b.x-=S.speed*b.pf; if(b.x<-b.r-20){ b.x=W+b.r+Math.random()*W*0.5; b.y=40+Math.random()*(groundY-120); } }
+    for(const d of S.dots){ d.x-=S.speed*d.pf; d.tw+=0.08; if(d.x<-3){ d.x=W+Math.random()*40; d.y=Math.random()*(groundY-6); } }
     const pf=document.getElementById('gprogfill'), ps=document.getElementById('gprogship');
     if(pf)pf.style.width=(prog*100)+'%'; if(ps)ps.style.left=(4+prog*88)+'%';
     if(prog>=1){win();return;}
@@ -647,30 +734,180 @@
     const off=(S.dist%40);
     for(let x=-off;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,groundY+7);ctx.lineTo(x+16,groundY+7);ctx.stroke();}
   }
+  function drawBg(){
+    for(const d of S.dots){ const a=0.3+Math.abs(Math.sin(d.tw))*0.55; ctx.globalAlpha=a; ctx.fillStyle='#cfe0ff';
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,7);ctx.fill(); }
+    ctx.globalAlpha=1;
+    for(const b of S.bg){ ctx.globalAlpha=0.45; ctx.fillStyle=b.c; ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,7);ctx.fill();
+      if(b.ring){ ctx.strokeStyle='rgba(230,181,82,.45)';ctx.lineWidth=2; ctx.save();ctx.translate(b.x,b.y);ctx.scale(1,0.32);
+        ctx.beginPath();ctx.arc(0,0,b.r*1.55,0,7);ctx.stroke();ctx.restore(); }
+      ctx.globalAlpha=1; }
+  }
+  function drawFx(){
+    ctx.textAlign='center';ctx.font='700 21px Oswald';
+    for(const p of S.pops){ ctx.globalAlpha=Math.max(0,Math.min(1,p.life/28)); ctx.fillStyle='#ffd84d';
+      ctx.fillText(p.txt,p.x,p.y); }
+    ctx.globalAlpha=1;ctx.textAlign='left';
+  }
   function drawFrame(){
     ctx.clearRect(0,0,W,H);
     ctx.save();
     if(S.shake>0)ctx.translate((Math.random()-.5)*S.shake,(Math.random()-.5)*S.shake);
+    drawBg();
     drawGround();
     for(const o of S.obs)drawObs(o);
     drawShip();
+    drawFx();
     ctx.restore();
   }
   function loop(){ if(S.state!=='run')return; update(); if(S.state!=='run')return; drawFrame(); S.raf=requestAnimationFrame(loop); }
 
   function win(){
     S.state='win';cancelAnimationFrame(S.raf);
-    persistLevel(3);   // раннер пройден — уровень 3 (следующий этап)
+    persistLevelOnContinue(3);   // раннер пройден — уровень 3 (рассылка/письма — по «Продолжить»)
     const g=document.getElementById('gmsg');g.innerHTML='<div class="sm">Подлетаем к Венере…</div>';
     // ship flies up
     let t=0;(function up(){ ctx.clearRect(0,0,W,H);drawGround();S.shipY-=6;S.obs=[];drawShip();
       t++; if(t<60){requestAnimationFrame(up);} else { enterVenus(true); } })();
   }
-  document.getElementById('cont').addEventListener('click',()=>{ document.getElementById('arrive').classList.remove('show');
-    if(LEVEL>=7){ document.getElementById('center').style.display=''; document.getElementById('dock').style.display='none'; }
-    else showDock();
+  document.getElementById('cont').addEventListener('click',()=>{
+    if(pendingLevel!=null){ persistSet('level',pendingLevel); pendingLevel=null; }   // письма прилетают только теперь, по «Продолжить»
+    document.getElementById('arrive').classList.remove('show');
+    if(LEVEL>=7){ document.getElementById('center').style.display=''; document.getElementById('dock').style.display='none'; setPosition(); }
+    else { showDock(); }
     renderNav();
-    try{ if(inShell) window.parent.postMessage('game:off','*'); }catch(e){} });
+    try{ if(inShell) window.parent.postMessage('game:off','*'); }catch(e){}
+  });
+  document.getElementById('catchBtn').addEventListener('click',showChase);
+  // ---- финальная мини-игра: погоня за Крысом (3 поимки + трюки) ----
+  let chCv,chX2,chW=0,chH=0,chDpr=1,chRAF=null,chRun=false,chLast=0,chMeter=0,chCaught=false;
+  let chP={x:0,y:0,vx:0,vy:0,ang:-1.5708};
+  let chK={x:0,y:0,hd:1.5708,ang:1.5708,wpx:0,wpy:0,wpT:0,face:'😎',faceT:0,say:0,sayShow:0,sayT:''};
+  let cjoyVec={x:0,y:0}, cjoyId=null;
+  let chStruggles=0, chStruggleT=0, chBlinkCd=0, chSlip=0, chBanT=0, chEscT=0, chPuff=0, chPuffX=0, chPuffY=0, chFlashT=0, chFlashTxt='';
+  let chBananas=[], chClones=[], chActx=null;
+  const CH_CATCH=76, CH_STRUGGLE_MAX=2, K_SAYS=['Не догонишь!','Ха-ха!','Мимо!','Куда тебе!','Бе-бе-бе!'];
+  function chClamp(v,a,b){return v<a?a:(v>b?b:v);}
+  function chFit(){ chDpr=Math.min(2,window.devicePixelRatio||1); chW=chCv.clientWidth; chH=chCv.clientHeight; chCv.width=chW*chDpr; chCv.height=chH*chDpr; chX2.setTransform(chDpr,0,0,chDpr,0,0); }
+  function chBeep(kind){ try{ if(!chActx) chActx=new (window.AudioContext||window.webkitAudioContext)(); const c=chActx; if(c.state==='suspended')c.resume();
+    const o=c.createOscillator(), g=c.createGain(); o.connect(g); g.connect(c.destination); const t=c.currentTime;
+    if(kind==='squeak'){ o.type='square'; o.frequency.setValueAtTime(680,t); o.frequency.exponentialRampToValueAtTime(1500,t+0.12); g.gain.setValueAtTime(0.001,t); g.gain.linearRampToValueAtTime(0.13,t+0.01); g.gain.exponentialRampToValueAtTime(0.001,t+0.16); o.start(t); o.stop(t+0.18); }
+    else if(kind==='boing'){ o.type='sine'; o.frequency.setValueAtTime(420,t); o.frequency.exponentialRampToValueAtTime(120,t+0.26); g.gain.setValueAtTime(0.001,t); g.gain.linearRampToValueAtTime(0.15,t+0.01); g.gain.exponentialRampToValueAtTime(0.001,t+0.3); o.start(t); o.stop(t+0.32); }
+    else { o.type='triangle'; o.frequency.setValueAtTime(300,t); o.frequency.exponentialRampToValueAtTime(950,t+0.1); g.gain.setValueAtTime(0.001,t); g.gain.linearRampToValueAtTime(0.15,t+0.01); g.gain.exponentialRampToValueAtTime(0.001,t+0.2); o.start(t); o.stop(t+0.22); }
+  }catch(e){} }
+  const cjoy=document.getElementById('cjoy'), cjoyknob=document.getElementById('cjoyknob');
+  function cjoyAt(ev){ const r=cjoy.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2; let dx=ev.clientX-cx, dy=ev.clientY-cy; const max=r.width/2-8, dd=Math.hypot(dx,dy); if(dd>max){dx=dx/dd*max;dy=dy/dd*max;} cjoyknob.style.left=(r.width/2-25+dx)+'px'; cjoyknob.style.top=(r.height/2-25+dy)+'px'; cjoyVec={x:dx/max,y:dy/max}; }
+  function chResetKnob(){ if(cjoyknob){cjoyknob.style.left='35px';cjoyknob.style.top='35px';} cjoyVec={x:0,y:0}; }
+  cjoy.addEventListener('pointerdown',e=>{e.preventDefault();cjoyId=e.pointerId;try{cjoy.setPointerCapture(e.pointerId);}catch(_){};cjoyAt(e);try{if(!chActx)chActx=new(window.AudioContext||window.webkitAudioContext)();chActx.resume();}catch(_){}});
+  cjoy.addEventListener('pointermove',e=>{if(cjoyId===e.pointerId)cjoyAt(e);});
+  cjoy.addEventListener('pointerup',e=>{if(cjoyId===e.pointerId){cjoyId=null;chResetKnob();}});
+  cjoy.addEventListener('pointercancel',()=>{cjoyId=null;chResetKnob();});
+  function chRocket(s,fill,stroke,scale,isP){
+    chX2.save(); chX2.translate(s.x,s.y); chX2.rotate(s.ang+1.5708); chX2.scale(scale,scale);
+    chX2.fillStyle='rgba(255,160,60,.75)'; chX2.beginPath(); chX2.moveTo(-6,15); chX2.lineTo(0,26+Math.random()*6); chX2.lineTo(6,15); chX2.closePath(); chX2.fill();
+    chX2.fillStyle=fill; chX2.strokeStyle=stroke; chX2.lineWidth=2;
+    chX2.beginPath(); chX2.moveTo(0,-22); chX2.quadraticCurveTo(13,-4,10,15); chX2.lineTo(-10,15); chX2.quadraticCurveTo(-13,-4,0,-22); chX2.closePath(); chX2.fill(); chX2.stroke();
+    chX2.fillStyle='rgba(255,255,255,.5)'; chX2.beginPath(); chX2.arc(0,-5,4,0,7); chX2.fill();
+    if(isP){ const open=(1-chMeter)*0.46+0.06; chX2.strokeStyle='#cfe8ff'; chX2.lineWidth=3; chX2.lineCap='round';
+      chX2.beginPath(); chX2.moveTo(0,-20); chX2.lineTo(Math.sin(open)*17,-20-Math.cos(open)*17); chX2.moveTo(0,-20); chX2.lineTo(-Math.sin(open)*17,-20-Math.cos(open)*17); chX2.stroke(); }
+    chX2.restore();
+  }
+  function chDraw(){
+    chX2.clearRect(0,0,chW,chH);
+    chX2.textAlign='center'; chX2.textBaseline='middle';
+    chX2.font='22px system-ui,"Apple Color Emoji"';
+    for(const b of chBananas){ chX2.save(); chX2.globalAlpha=Math.min(1,b.life/60); chX2.translate(b.x,b.y); chX2.rotate(b.spin); chX2.fillText('🍌',0,0); chX2.restore(); }
+    if(chPuff>0){ chX2.save(); chX2.globalAlpha=Math.min(1,chPuff/18); chX2.font='26px system-ui,"Apple Color Emoji"'; chX2.fillText('💨',chPuffX,chPuffY); chX2.restore(); }
+    chRocket(chK,'#d64550','#ff5468',0.92,false);
+    chRocket(chP,'#bfe6ff','#5fd0e6',1.05,true);
+    if(chK.sayShow>0){ chX2.font='700 16px Oswald,system-ui,sans-serif'; chX2.fillStyle='#ffd873'; chX2.fillText(chK.sayT, chK.x, chK.y-30); }
+    if(chFlashT>0){ chX2.save(); chX2.globalAlpha=Math.min(1,chFlashT/28); chX2.font='900 26px Playfair Display,serif'; chX2.fillStyle='#ffd873'; chX2.fillText(chFlashTxt, chK.x, chK.y-48); chX2.restore(); }
+  }
+  function chPickWp(o,minX,maxX,minY,maxY){
+    let bx=o.x,by=o.y,bd=-1;
+    for(let i=0;i<3;i++){ const x=minX+24+Math.random()*(maxX-minX-48), y=minY+24+Math.random()*(maxY-minY-48);
+      const dd=Math.hypot(x-chP.x,y-chP.y); if(dd>bd){bd=dd;bx=x;by=y;} }
+    o.wpx=bx; o.wpy=by; o.wpT=60+Math.random()*60;
+  }
+  function chWpStep(o,dt,minX,maxX,minY,maxY,speed){
+    o.wpT-=dt; const pd=Math.hypot(o.x-chP.x,o.y-chP.y);
+    if(o.wpT<=0 || Math.hypot(o.wpx-o.x,o.wpy-o.y)<30 || pd<85) chPickWp(o,minX,maxX,minY,maxY);
+    let tha=Math.atan2(o.wpy-o.y,o.wpx-o.x)+(Math.random()-0.5)*0.3;
+    let da=tha-o.hd; while(da>Math.PI)da-=6.2832; while(da<-Math.PI)da+=6.2832;
+    o.hd+=chClamp(da,-0.16*dt,0.16*dt);
+    o.x=chClamp(o.x+Math.cos(o.hd)*speed*dt,minX,maxX); o.y=chClamp(o.y+Math.sin(o.hd)*speed*dt,minY,maxY);
+    o.ang=o.hd;
+  }
+  function chBlink(minX,maxX,minY,maxY){
+    chBlinkCd=150; chPuffX=chK.x; chPuffY=chK.y; chPuff=18;
+    const a=Math.atan2(chK.y-chP.y,chK.x-chP.x)+(Math.random()-0.5)*1.2;
+    chK.x=chClamp(chK.x+Math.cos(a)*95,minX,maxX); chK.y=chClamp(chK.y+Math.sin(a)*95,minY,maxY);
+    chK.hd=a; chPickWp(chK,minX,maxX,minY,maxY); chK.face='😝'; chK.faceT=30; chBeep('squeak');
+  }
+  function chDoStruggle(minX,maxX,minY,maxY){   // Крыс вырывается из клешней ДО поимки
+    chStruggles++; chMeter=0; chEscT=26; chFlashTxt='Вырвался!'; chFlashT=100; chBlink(minX,maxX,minY,maxY);
+    chStruggleT=15+Math.random()*12;
+  }
+  function chWin(){   // поймал по-настоящему — шкала заполнена до конца
+    chCaught=true; chRun=false; chBananas=[]; chMeter=1;
+    chK.x=chP.x+Math.cos(chP.ang)*30; chK.y=chP.y+Math.sin(chP.ang)*30; chK.ang=chP.ang;
+    const mm=document.getElementById('chmsg'); if(mm) mm.textContent='Попался, Крыс!'; chBeep('pop');
+    setTimeout(()=>{ document.getElementById('chase').classList.remove('show'); showVictory(); }, 1250);
+  }
+  function chUpdate(dt){
+    if(chCaught) return;
+    const pSpeed=3.85, topUI=100, botM=44, sideM=36;
+    const minX=sideM, maxX=chW-sideM, minY=topUI, maxY=chH-botM;
+    // Полина (на банане — крутится и не слушается)
+    if(chSlip>0){ chSlip-=dt; chP.ang+=0.55*dt; chP.x=chClamp(chP.x+Math.cos(chP.ang)*1.3*dt,sideM,chW-sideM); chP.y=chClamp(chP.y+Math.sin(chP.ang)*1.3*dt,topUI,chH-botM); }
+    else { chP.vx=cjoyVec.x*pSpeed; chP.vy=cjoyVec.y*pSpeed; chP.x=chClamp(chP.x+chP.vx*dt,sideM,chW-sideM); chP.y=chClamp(chP.y+chP.vy*dt,topUI,chH-botM); if(Math.hypot(chP.vx,chP.vy)>0.4) chP.ang=Math.atan2(chP.vy,chP.vx); }
+    // Крыс (с каждым вырыванием чуть быстрее — «отчаяннее»)
+    const kSpeed=2.9+Math.min(chStruggles,CH_STRUGGLE_MAX)*0.1;
+    chWpStep(chK,dt,minX,maxX,minY,maxY,kSpeed);
+    const pd=Math.hypot(chK.x-chP.x,chK.y-chP.y);
+    // бананы (чаще после каждого вырывания)
+    chBanT-=dt; if(chBanT<=0){ chBanT=Math.max(60,140-chStruggles*22)+Math.random()*80; chBananas.push({x:chK.x,y:chK.y,life:380,spin:Math.random()*6}); }
+    for(const b of chBananas) b.life-=dt; chBananas=chBananas.filter(b=>b.life>0);
+    if(chSlip<=0){ for(let i=0;i<chBananas.length;i++){ if(Math.hypot(chBananas[i].x-chP.x,chBananas[i].y-chP.y)<26){ chSlip=48; chBananas.splice(i,1); chBeep('boing'); chFlashTxt='Ой-ой!'; chFlashT=90; break; } } }
+    if(chPuff>0)chPuff-=dt; if(chFlashT>0)chFlashT-=dt; if(chEscT>0)chEscT-=dt;
+    chK.say-=dt; if(chK.say<=0 && pd>CH_CATCH){ chK.say=150+Math.random()*90; chK.sayT=K_SAYS[Math.floor(Math.random()*K_SAYS.length)]; chK.sayShow=140; }
+    if(chK.sayShow>0) chK.sayShow-=dt;
+    // захват: держим в клешнях — шкала растёт; пока держим неплотно (<0.7), Крыс может вырваться
+    if(pd<CH_CATCH && chEscT<=0){
+      chMeter=Math.min(1,chMeter+dt*0.022);
+      if(chStruggles<CH_STRUGGLE_MAX && chMeter>=0.5){ chDoStruggle(minX,maxX,minY,maxY); }   // первые 2 раза — вырывается ровно на половине
+      else if(chMeter>=1) chWin();                                                            // 3-й раз — ловим до конца
+    } else { chMeter=Math.max(0,chMeter-dt*0.02); }
+    const mf=document.getElementById('chmfill'); if(mf) mf.style.width=(chMeter*100)+'%';
+  }
+  function chLoop(now){ if(!chRun)return; if(!chLast)chLast=now; let dt=(now-chLast)/16.67; chLast=now; if(dt>3)dt=3; chUpdate(dt); chDraw(); if(chRun) chRAF=requestAnimationFrame(chLoop); }
+  function showChase(){
+    const el=document.getElementById('chase'); el.classList.add('show');
+    try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}
+    chCv=document.getElementById('chcv'); chX2=chCv.getContext('2d'); chFit();
+    chP={x:chW*0.5,y:chH*0.72,vx:0,vy:0,ang:-1.5708};
+    chK={x:chW*0.5,y:chH*0.28,hd:1.5708,ang:1.5708,wpx:chW*0.5,wpy:chH*0.5,wpT:0,face:'😎',faceT:0,say:60,sayShow:0,sayT:''};
+    chMeter=0; chCaught=false; chStruggles=0; chStruggleT=13; chBlinkCd=0; chSlip=0; chBanT=90; chEscT=0; chPuff=0; chFlashT=0; chBananas=[]; chClones=[]; chResetKnob();
+    const cc=document.getElementById('chcatch'); if(cc) cc.textContent='';
+    const mf=document.getElementById('chmfill'); if(mf)mf.style.width='0%';
+    const mm=document.getElementById('chmsg'); if(mm)mm.textContent='';
+    if(chRAF)cancelAnimationFrame(chRAF); chRun=true; chLast=0; chRAF=requestAnimationFrame(chLoop);
+  }
+  // ---- финал: экран победы ----
+  function showVictory(){
+    const conf=document.getElementById('vconf');
+    if(conf && !conf.childElementCount){ const cols=['#e6b552','#5fd0e6','#ff8091','#7fe0a0','#c86fd8','#fff1c2']; let h='';
+      for(let i=0;i<60;i++){ const l=Math.random()*100, d=(2.5+Math.random()*2.5).toFixed(2), dl=(-Math.random()*4).toFixed(2), c=cols[i%cols.length];
+        h+='<i style="left:'+l.toFixed(1)+'%;background:'+c+';animation-duration:'+d+'s;animation-delay:'+dl+'s"></i>'; }
+      conf.innerHTML=h; }
+    document.getElementById('victory').classList.add('show');
+    try{ if(inShell) window.parent.postMessage('game:on','*'); }catch(e){}   // спрятать вкладки на время финала
+  }
+  document.getElementById('vcont').addEventListener('click',()=>{
+    document.getElementById('victory').classList.remove('show');
+    persistLevel(8);   // финал пройден → приходят поздравительные письма
+    try{ if(inShell){ window.parent.postMessage('game:off','*'); window.parent.postMessage('tab:hyper','*'); } }catch(e){}
+  });
 
   window.addEventListener('resize',()=>{ if(document.getElementById('game').classList.contains('show')){fit();S.shipY=Math.min(S.shipY,groundY-SHIP.h);} });
 
