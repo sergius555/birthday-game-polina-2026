@@ -628,7 +628,7 @@
     spawnX:0,shake:0,inv:0,shipBob:0,elapsed:0,last:0,
     pops:[],bg:[],dots:[],dodges:0};
   const GRAV=0.9, JUMP=-16, SHIP={x:74,w:48,h:32};
-  const FLY_MS=15000;   // лететь 15 секунд
+  const FLY_MS=30000;   // лететь 30 секунд
   const PRAISE=['Класс!','Ловко!','Ура!','Супер!','Вот это да!','Молодец!'];
 
   function initBg(){
@@ -672,7 +672,7 @@
 
   function update(){
     const now=performance.now(); let dt=now-(S.last||now); S.last=now; if(dt>50)dt=50; S.elapsed+=dt;
-    S.speed=Math.min(8.2,4.8+(S.elapsed/1000)*0.34);
+    S.speed=Math.min(9.6,4.8+(S.elapsed/1000)*0.16);   // плавный разгон на весь 30-сек полёт
     S.dist+=S.speed;
     // ship physics
     S.vy+=GRAV;S.shipY+=S.vy;
@@ -983,7 +983,7 @@
 
   function spawnEnemy(){
     const roll=Math.random(); const type=roll<0.6?'s':roll<0.95?'m':'b';
-    const hp=type==='s'?1:type==='m'?2:3, size=type==='s'?26:type==='m'?38:56, spd=type==='b'?1.1:type==='m'?1.6:2.1;
+    const hp=type==='s'?1:type==='m'?2:3, size=type==='s'?26:type==='m'?38:56, spd=type==='b'?1.43:type==='m'?2.08:2.73;   // +30% скорость врагов
     const side=Math.random(); let x,y,vx,vy;
     if(side<0.7){ x=size+Math.random()*(SW-2*size); y=-size; vx=Math.max(-1.6,Math.min(1.6,(G.ship.x-x)/220)); vy=spd; }
     else if(side<0.85){ x=-size; y=Math.random()*SH*0.4; vx=spd*0.9; vy=spd*0.5; }
@@ -996,8 +996,8 @@
 
   function supdate(){
     if(G.inv>0)G.inv--; if(G.shake>0)G.shake--;
-    G.ship.x=Math.max(20,Math.min(SW-20,G.ship.x+joyVec.x*2.5));
-    G.ship.y=Math.max(SH*0.25,Math.min(SH-40,G.ship.y+joyVec.y*2.5));
+    G.ship.x=Math.max(20,Math.min(SW-20,G.ship.x+joyVec.x*3.75));   // +50% скорость корабля игрока
+    G.ship.y=Math.max(SH*0.25,Math.min(SH-40,G.ship.y+joyVec.y*3.75));
     // авто-огонь игрока (режим зависит от бонуса)
     G.fire--; if(G.fire<=0){ shoot(); G.fire=(G.weapon==='single'?66:G.weapon==='triple'?78:84); }
     for(const b of G.bul){ if(b.homing) homeBullet(b); b.x+=b.vx; b.y+=b.vy; b.life--; }
