@@ -27,7 +27,7 @@
   .views iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:var(--bg)}
   .views iframe.active{display:block}
   /* incoming-call mode: iframe covers the whole screen (full darkening), tabs hidden */
-  body.calling .views{bottom:0;max-width:none}
+  body.calling .views,body.gaming .views{bottom:0;max-width:none}
   body.calling .tabs,body.gaming .tabs{transform:translateY(140%);pointer-events:none}
 
   .tabs{position:fixed;left:0;right:0;bottom:0;max-width:720px;margin:0 auto;z-index:10;display:flex;transition:transform .35s ease;
@@ -123,7 +123,11 @@
     btns.forEach(b=>{ b.classList.toggle('active',b.dataset.t===name); if(b.dataset.t===name) b.classList.remove('notify'); });
     current=name;
   }
-  btns.forEach(b=>b.addEventListener('click',()=>activate(b.dataset.t)));
+  btns.forEach(b=>b.addEventListener('click',()=>{
+    activate(b.dataset.t);
+    // клик по «Гиперсвязь» всегда возвращает к списку писем (даже если открыто письмо/мини-игра письма)
+    if(b.dataset.t==='hyper'){ try{frameEl('hyper').contentWindow.postMessage('gohome','*');}catch(e){} }
+  }));
 
   // push saved state to each page as it loads (covers the request/reply race)
   Object.keys(frames).forEach(k=>{ const f=frameEl(k); f.addEventListener('load',()=>pushState(f.contentWindow)); });

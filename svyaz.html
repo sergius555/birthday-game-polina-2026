@@ -665,6 +665,11 @@
     if(e.data==='pause'){ stopVoice();
       if(reader.classList.contains('show')){ reader.classList.remove('show'); refreshCall(lastState||localState()); }  // уход на другую вкладку = выход из письма
       return; }
+    if(e.data==='gohome'){ stopVoice();   // клик по «Гиперсвязь» → назад к списку писем (из письма или мини-игры письма)
+      reader.classList.remove('show');
+      ['qr','cipher','chrono'].forEach(id=>{ const el=document.getElementById(id); if(el)el.classList.remove('show'); });
+      renderList(); refreshCall(lastState||localState());
+      return; }
     if(e.data.indexOf('state:')===0){ let st={}; try{st=JSON.parse(e.data.slice(6));}catch(_){}
       initWith(st); maybeDeliverLater(st); refreshCall(st); }
   });
