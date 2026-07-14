@@ -10,8 +10,9 @@
 <style>
   :root{--bg:#05060e;--tab:#0b1122;--tab2:#131b31;--muted:#8b95b3;--cyan:#5fd0e6;--accent:#e6b552;--rule:rgba(190,200,230,.22);--tabh:64px;}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;overflow:hidden;background:#05060e}
-  body{font-family:'Oswald',system-ui,sans-serif;-webkit-text-size-adjust:100%}
+  html,body{height:100%;width:100%;overflow:hidden;overscroll-behavior:none;background:#05060e}
+  /* жёсткая блокировка прокрутки страницы на iOS (иначе под вкладками виден пустой низ) */
+  body{position:fixed;inset:0;font-family:'Oswald',system-ui,sans-serif;-webkit-text-size-adjust:100%;touch-action:none;overscroll-behavior:none}
   /* space background in the side gutters */
   body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     background:radial-gradient(1000px 800px at 80% -5%,rgba(60,90,180,.18),transparent 60%),
@@ -128,6 +129,8 @@
     // клик по «Гиперсвязь» всегда возвращает к списку писем (даже если открыто письмо/мини-игра письма)
     if(b.dataset.t==='hyper'){ try{frameEl('hyper').contentWindow.postMessage('gohome','*');}catch(e){} }
   }));
+  // запрет прокрутки страницы-оболочки на iOS (тач внутри iframe сюда не долетает — игры/письма скроллятся сами)
+  document.addEventListener('touchmove',e=>{ e.preventDefault(); },{passive:false});
 
   // push saved state to each page as it loads (covers the request/reply race)
   Object.keys(frames).forEach(k=>{ const f=frameEl(k); f.addEventListener('load',()=>pushState(f.contentWindow)); });

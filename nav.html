@@ -10,8 +10,8 @@
 <style>
   :root{--bg:#05060e;--ink:#e7e3d5;--head:#fbf9f1;--muted:#9aa3bd;--rule:rgba(190,200,230,.28);--accent:#e6b552;--cyan:#5fd0e6;}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;overflow:hidden}
-  body{background:#05060e;font-family:'PT Serif',Georgia,serif;color:var(--ink);position:relative;height:100%;overflow:hidden;-webkit-text-size-adjust:100%}
+  html,body{height:100%;width:100%;overflow:hidden;overscroll-behavior:none}
+  body{background:#05060e;font-family:'PT Serif',Georgia,serif;color:var(--ink);position:relative;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;-webkit-text-size-adjust:100%}
 
   .sky{position:absolute;inset:0;z-index:0;
     background:radial-gradient(1000px 700px at 78% 8%,rgba(70,100,200,.22),transparent 60%),
@@ -412,17 +412,33 @@
       dest.addEventListener('input',resetErr,{once:true});return;
     }
     dest.blur();
-    if(LEVEL<3){ persistLevel(2); startRunnerUI(); }                                        // Венера → раннер
+    if(LEVEL<3){ persistLevel(2); afterKeyboard(startRunnerUI); }                            // Венера → раннер (ждём закрытия клавиатуры)
     else if(LEVEL===3){ if(shipState==='fixed') launchBluk(); else triggerMalfunction(); }  // Блук (нужен целый реактор)
-    else if(LEVEL===4){ startShooter(); }                                                   // Шелезяка → бой с пиратами
+    else if(LEVEL===4){ afterKeyboard(startShooter); }                                      // Шелезяка → бой (ждём закрытия клавиатуры)
     else { launchShesh(); }                                                                 // Шешинеру (level 5+)
   }
-  // iOS: после ввода в поле клавиатура прокручивает документ — сбрасываем прокрутку, иначе верх игры уезжает
+  // iOS: после ввода в поле клавиатура смещает экран — сбрасываем прокрутку, иначе верх игры уезжает
   function killScroll(){
     try{ if(document.activeElement && document.activeElement.blur) document.activeElement.blur(); }catch(e){}
     try{ window.scrollTo(0,0); document.documentElement.scrollTop=0; if(document.body)document.body.scrollTop=0; }catch(e){}
     try{ if(inShell) window.parent.postMessage('scroll0','*'); }catch(e){}
   }
+  // запуск мини-игры ПОСЛЕ полного закрытия клавиатуры iOS (иначе оверлей уезжает вверх)
+  function afterKeyboard(fn){
+    try{ dest.blur(); }catch(e){}
+    killScroll();
+    const run=()=>{ killScroll(); fn(); setTimeout(killScroll,80); };
+    const vv=window.visualViewport;
+    if(!vv){ setTimeout(run,350); return; }
+    if(vv.height >= window.innerHeight-20){ setTimeout(run,120); return; }   // клавиатуры и так нет
+    let done=false;
+    const finish=()=>{ if(done)return; done=true; vv.removeEventListener('resize',onR); run(); };
+    const onR=()=>{ if(vv.height >= window.innerHeight-20) finish(); };       // экран вернулся → клавиатура закрылась
+    vv.addEventListener('resize',onR);
+    setTimeout(finish,700);                                                   // подстраховка, если события не будет
+  }
+  // запрет прокрутки iframe навигации на iOS (игры используют pointer-события — им preventDefault не мешает)
+  document.addEventListener('touchmove',e=>{ e.preventDefault(); },{passive:false});
   function startRunnerUI(){
     killScroll();
     document.getElementById('center').style.display='none';
