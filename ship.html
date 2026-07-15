@@ -47,14 +47,16 @@
     border:1px solid var(--rule-soft);border-radius:10px;padding:11px 13px;background:rgba(95,208,230,.05)}
   .fuel .goal li .n{flex:0 0 auto;color:var(--accent);font-family:'Oswald';font-weight:700;font-size:16px}
   .fuel .goal li b{color:var(--head)}
-  .cans{display:flex;justify-content:center;gap:42px;align-items:flex-end}
+  .cans{position:relative;display:flex;justify-content:center;gap:42px;align-items:flex-end}
+  .pourfx{position:absolute;inset:0;pointer-events:none;z-index:5;overflow:visible}
+  .pourfx path{filter:drop-shadow(0 0 5px rgba(255,200,100,.75))}
   .can{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;-webkit-user-select:none;user-select:none}
   .can .glass{position:relative;width:106px;height:184px;border:2px solid var(--rule);border-top:none;
     border-radius:0 0 16px 16px;background:rgba(255,255,255,.03);overflow:hidden;transition:box-shadow .2s,border-color .2s}
   .can.sel .glass{border-color:var(--cyan);box-shadow:0 0 22px rgba(95,208,230,.5)}
   .can.win .glass{border-color:var(--accent);box-shadow:0 0 28px rgba(230,181,82,.65)}
   .can .fill{position:absolute;left:0;right:0;bottom:0;height:0;
-    background:linear-gradient(180deg,#ffd36a,#e6a13a);transition:height .35s ease}
+    background:linear-gradient(180deg,#ffd36a,#e6a13a);transition:height .5s ease}
   .can .fill::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:rgba(255,255,255,.45)}
   .can .cap{font-family:'Oswald';font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
   .can .amt{font-family:'Share Tech Mono',monospace;font-size:22px;color:var(--head)}
@@ -287,20 +289,45 @@
   }
   function setHint(t){ if(!solved) fhint.textContent=t; }
   function pour(s,d){ const t=Math.min(amt[s],CAP[d]-amt[d]); amt[d]+=t; amt[s]-=t; }
+  // струя топлива дугой из канистры-источника в приёмник
+  function pourStream(sk,dk){
+    const cansEl=document.getElementById('cans');
+    const sg=cansEl.querySelector('.can[data-k="'+sk+'"] .glass'), dg=cansEl.querySelector('.can[data-k="'+dk+'"] .glass');
+    if(!sg||!dg) return;
+    const base=cansEl.getBoundingClientRect(), a=sg.getBoundingClientRect(), b=dg.getBoundingClientRect();
+    const x1=a.left+a.width/2-base.left, y1=a.top-base.top+6;
+    const x2=b.left+b.width/2-base.left, y2=b.top-base.top+6;
+    const midY=Math.min(y1,y2)-30, midX=(x1+x2)/2;
+    const NS='http://www.w3.org/2000/svg';
+    const svg=document.createElementNS(NS,'svg'); svg.setAttribute('class','pourfx');
+    svg.innerHTML='<defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffd36a"/><stop offset="1" stop-color="#e6a13a"/></linearGradient></defs>'
+      +'<path d="M'+x1+' '+y1+' Q'+midX+' '+midY+' '+x2+' '+y2+'" fill="none" stroke="url(#pg)" stroke-width="7" stroke-linecap="round"/>';
+    cansEl.appendChild(svg);
+    const path=svg.querySelector('path'), len=path.getTotalLength();
+    path.style.strokeDasharray=len; path.style.strokeDashoffset=len;
+    path.getBoundingClientRect();   // reflow
+    path.style.transition='stroke-dashoffset .38s ease-in, opacity .25s ease .34s';
+    path.style.strokeDashoffset='0';
+    setTimeout(()=>{ path.style.opacity='0'; }, 360);
+    setTimeout(()=>{ svg.remove(); }, 700);
+  }
   function check(){
     if(!solved && (amt.A===TARGET||amt.B===TARGET)){
-      solved=true; sel=null; render();
-      document.getElementById('fuel').classList.add('done');       // экран «Реактор починен»
-      persistSet('ship','fixed');                                  // → Навигация завершит прыжок на Блук
-      try{ if(inShell) window.parent.postMessage('notify:nav','*'); }catch(e){}
-      applyShip();                                                 // реактор перестаёт мигать
+      solved=true; sel=null; render();                             // канистра с 4 л подсвечивается — даём увидеть решение
+      fhint.textContent='✨ Ровно 4 литра!';
+      setTimeout(()=>{
+        document.getElementById('fuel').classList.add('done');     // экран «Реактор починен»
+        persistSet('ship','fixed');                                // → Навигация завершит прыжок на Блук
+        try{ if(inShell) window.parent.postMessage('notify:nav','*'); }catch(e){}
+        applyShip();                                               // реактор перестаёт мигать
+      }, 1400);
     }
   }
   function tap(k){
     if(solved)return;
     if(sel===null){ sel=k; setHint('Теперь нажми на другую канистру, чтобы перелить, — или кнопку ниже.'); }
     else if(sel===k){ sel=null; setHint('Выбери канистру.'); }
-    else { pour(sel,k); sel=null; setHint('Переливаем…'); }
+    else { const t=Math.min(amt[sel],CAP[k]-amt[k]); const src=sel; pour(sel,k); if(t>0) pourStream(src,k); sel=null; setHint('Переливаем…'); }
     render(); check();
   }
   document.getElementById('fill').addEventListener('click',()=>{ if(solved)return; if(sel){amt[sel]=CAP[sel];render();check();} else setHint('Сначала выбери канистру.'); });
@@ -436,7 +463,12 @@
     if(tr.ok){ const rc=beamEl.querySelector('.recv'); if(rc) rc.classList.add('win'); }
     beamEl.querySelectorAll('.mcell').forEach(g=>{ g.addEventListener('click',()=>{ if(navSolved||beamLock)return;
       const k=g.getAttribute('data-k'); mirrors[k]= mirrors[k]==='/'?'\\':'/'; renderBeam(); }); });
-    if(tr.ok){ if(beamLevel===0) advanceLevel(); else winNav(); }
+    if(tr.ok){ if(beamLevel===0) advanceLevel(); else finishNav(); }
+  }
+  function finishNav(){   // луч дошёл — даём Полине увидеть решение, потом успех
+    if(beamLock||navSolved)return; beamLock=true;
+    nhint.textContent='✨ Луч дошёл до приёмника!';
+    setTimeout(winNav, 1400);
   }
   function advanceLevel(){   // лёгкий уровень пройден → показываем сложный
     if(beamLock)return; beamLock=true;
@@ -451,6 +483,15 @@
       applyState(st); } });
   if(inShell){ try{window.parent.postMessage('req:state','*');}catch(e){} setTimeout(()=>applyState(localState()),400); }
   else { applyState(localState()); }
+
+  // мягкий блип по нажатию любой кнопки
+  (function(){ let ac; document.addEventListener('click',e=>{ if(!e.target.closest('button'))return;
+    try{ ac=ac||new (window.AudioContext||window.webkitAudioContext)(); if(ac.state==='suspended')ac.resume();
+      const o=ac.createOscillator(),g=ac.createGain(); o.type='sine'; o.frequency.value=560;
+      o.connect(g); g.connect(ac.destination); const t=ac.currentTime;
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.045,t+0.008); g.gain.exponentialRampToValueAtTime(0.0001,t+0.1);
+      o.start(t); o.stop(t+0.11); }catch(_){}
+  },true); })();
 })();
 </script>
 </body></html>

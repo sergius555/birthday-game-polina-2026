@@ -27,8 +27,17 @@
   .stars2{background-image:radial-gradient(1px 1px at 60px 20px,#fff,transparent),
       radial-gradient(1.4px 1.4px at 20px 120px,#cfe0ff,transparent),
       radial-gradient(1px 1px at 140px 90px,#fff,transparent);
-    background-repeat:repeat;background-size:300px 300px;opacity:.7;animation:tw 7s ease-in-out infinite}
-  @keyframes tw{0%,100%{opacity:.9}50%{opacity:.55}}
+    background-repeat:repeat;background-size:300px 300px;opacity:.92;animation:tw 7s ease-in-out infinite}
+  @keyframes tw{0%,100%{opacity:1}50%{opacity:.72}}
+  /* случайная звезда периодически подмигивает (создаётся из JS) */
+  .twinkle{position:absolute;z-index:0;pointer-events:none;width:3px;height:3px;border-radius:50%;
+    background:#fff;box-shadow:0 0 7px 2px rgba(205,228,255,.95);opacity:0;will-change:transform,opacity;
+    animation:twk 1.5s ease-in-out forwards}
+  .twinkle::before,.twinkle::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    background:linear-gradient(rgba(215,235,255,.9),transparent);}
+  .twinkle::before{width:1.5px;height:14px;background:linear-gradient(to bottom,transparent,rgba(215,235,255,.9),transparent)}
+  .twinkle::after{width:14px;height:1.5px;background:linear-gradient(to right,transparent,rgba(215,235,255,.9),transparent)}
+  @keyframes twk{0%{opacity:0;transform:scale(.3)}35%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.5)}}
 
   .hud{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;justify-content:space-between;
     padding:14px 18px;font-family:'Oswald';text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--cyan)}
@@ -58,6 +67,7 @@
   .dock{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));
     background:linear-gradient(180deg,transparent,rgba(6,9,20,.7) 30%,rgba(6,9,20,.92));border-top:1px solid var(--rule)}
   .dock .lbl{font-family:'Oswald';text-transform:uppercase;letter-spacing:.16em;font-size:10.5px;color:var(--cyan);margin:0 4px 7px;text-align:center}
+  .dock .lbl:empty{display:none}
   .bar2{display:flex;gap:10px;max-width:620px;margin:0 auto}
   #dest{flex:1 1 auto;min-width:0;background:#070c1e;border:1px solid var(--rule);border-radius:10px;color:var(--head);
     font-family:'Share Tech Mono',monospace;font-size:18px;letter-spacing:.06em;padding:13px 14px;outline:none}
@@ -251,7 +261,7 @@
   </div>
 
   <div class="dock" id="dock">
-    <div class="lbl">◎ Пункт назначения</div>
+    <div class="lbl"></div>
     <div class="bar2">
       <input id="dest" type="text" inputmode="text" autocomplete="off" placeholder="Куда направляемся?">
       <button id="go">▶ Вперёд</button>
@@ -386,7 +396,7 @@
 
   const dest=document.getElementById('dest');
   const lbl=document.querySelector('.dock .lbl');
-  function resetErr(){dest.style.borderColor='';lbl.textContent='◎ Пункт назначения';lbl.style.color='';}
+  function resetErr(){dest.style.borderColor='';lbl.textContent='';lbl.style.color='';}
 
   // цель по уровню: 1 → Венера, 3 → Блук, 4+ → Шелезяка
   function target(){
@@ -579,7 +589,7 @@
     document.getElementById('center').style.display='';
     const d=document.getElementById('dock'); d.style.display='';
     dest.style.display=''; dest.value=''; dest.placeholder='Куда направляемся?';
-    lbl.textContent='◎ Пункт назначения'; lbl.style.color='';
+    lbl.textContent=''; lbl.style.color='';
     document.getElementById('go').innerHTML='▶ Вперёд';
   }
   // прибытие на Венеру (после раннера)
@@ -1118,6 +1128,24 @@
   }
   window.addEventListener('resize',()=>{ if(shooterEl.classList.contains('show')){ sfit();
     G.ship.x=Math.max(20,Math.min(SW-20,G.ship.x)); G.ship.y=Math.max(SH*0.25,Math.min(SH-40,G.ship.y)); } });
+
+  // случайная звезда периодически подмигивает (лёгкий блеск в фоне навигации)
+  (function(){
+    function sparkle(){ const t=document.createElement('div'); t.className='twinkle';
+      t.style.left=(4+Math.random()*92)+'%'; t.style.top=(5+Math.random()*88)+'%';
+      document.body.appendChild(t); setTimeout(()=>{ if(t.parentNode)t.remove(); },1700);
+      setTimeout(sparkle, 900+Math.random()*1700); }
+    setTimeout(sparkle, 800);
+  })();
+
+  // мягкий блип по нажатию любой кнопки
+  (function(){ let ac; document.addEventListener('click',e=>{ if(!e.target.closest('button'))return;
+    try{ ac=ac||new (window.AudioContext||window.webkitAudioContext)(); if(ac.state==='suspended')ac.resume();
+      const o=ac.createOscillator(),g=ac.createGain(); o.type='sine'; o.frequency.value=560;
+      o.connect(g); g.connect(ac.destination); const t=ac.currentTime;
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.045,t+0.008); g.gain.exponentialRampToValueAtTime(0.0001,t+0.1);
+      o.start(t); o.stop(t+0.11); }catch(_){}
+  },true); })();
 </script>
 </body>
 </html>
