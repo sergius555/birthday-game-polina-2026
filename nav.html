@@ -999,7 +999,7 @@
     if(side<0.7){ x=size+Math.random()*(SW-2*size); y=-size; vx=Math.max(-1.6,Math.min(1.6,(G.ship.x-x)/220)); vy=spd; }
     else if(side<0.85){ x=-size; y=Math.random()*SH*0.4; vx=spd*0.9; vy=spd*0.5; }
     else { x=SW+size; y=Math.random()*SH*0.4; vx=-spd*0.9; vy=spd*0.5; }
-    const fireT=type==='m'?(40+Math.floor(Math.random()*40)):type==='b'?(60+Math.floor(Math.random()*40)):1e9;   // ×1.5 скорострельность врагов
+    const fireT=type==='m'?(57+Math.floor(Math.random()*57)):type==='b'?(86+Math.floor(Math.random()*57)):1e9;   // враги: −30% скорострельности
     G.en.push({x,y,vx,vy,hp,maxhp:hp,r:size/2,type,flash:0,fireT});
   }
   function boom(x,y){ for(let i=0;i<12;i++){ const a=Math.random()*7, s=1+Math.random()*3;
@@ -1010,7 +1010,7 @@
     G.ship.x=Math.max(20,Math.min(SW-20,G.ship.x+joyVec.x*3.75));   // +50% скорость корабля игрока
     G.ship.y=Math.max(SH*0.25,Math.min(SH-40,G.ship.y+joyVec.y*3.75));
     // авто-огонь игрока (режим зависит от бонуса)
-    G.fire--; if(G.fire<=0){ shoot(); G.fire=(G.weapon==='single'?33:G.weapon==='triple'?39:42); }   // ×2 скорострельность игрока
+    G.fire--; if(G.fire<=0){ shoot(); G.fire=(G.weapon==='single'?27:G.weapon==='triple'?32:35); }   // ещё +20% скорострельность игрока
     for(const b of G.bul){ if(b.homing) homeBullet(b); b.x+=b.vx; b.y+=b.vy; b.life--; }
     // оружие и напарники — навсегда (сбрасываются только при гибели / прилёте)
     // спавн врагов и ящиков-бонусов
@@ -1019,7 +1019,7 @@
     for(const c of G.crates){ c.y+=c.vy; c.spin+=0.03; }
     // движение врагов + их стрельба
     for(const e of G.en){ e.x+=e.vx; e.y+=e.vy; if(e.flash>0)e.flash--;
-      if(e.type!=='s' && e.y>0 && e.y<SH*0.85){ e.fireT--; if(e.fireT<=0){ enemyFire(e); e.fireT=(e.type==='b'?120:87)+Math.floor(Math.random()*47); } } }   // ×1.5 скорострельность врагов
+      if(e.type!=='s' && e.y>0 && e.y<SH*0.85){ e.fireT--; if(e.fireT<=0){ enemyFire(e); e.fireT=(e.type==='b'?171:124)+Math.floor(Math.random()*67); } } }   // враги: −30% скорострельности
     // пули врагов
     for(const b of G.ebul){ b.x+=b.vx; b.y+=b.vy; }
     G.ebul=G.ebul.filter(b=>b.y>-24&&b.y<SH+24&&b.x>-24&&b.x<SW+24);
