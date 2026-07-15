@@ -999,7 +999,7 @@
     if(side<0.7){ x=size+Math.random()*(SW-2*size); y=-size; vx=Math.max(-1.6,Math.min(1.6,(G.ship.x-x)/220)); vy=spd; }
     else if(side<0.85){ x=-size; y=Math.random()*SH*0.4; vx=spd*0.9; vy=spd*0.5; }
     else { x=SW+size; y=Math.random()*SH*0.4; vx=-spd*0.9; vy=spd*0.5; }
-    const fireT=type==='m'?(57+Math.floor(Math.random()*57)):type==='b'?(86+Math.floor(Math.random()*57)):1e9;   // враги: −30% скорострельности
+    const fireT=type==='m'?(81+Math.floor(Math.random()*81)):type==='b'?(123+Math.floor(Math.random()*81)):1e9;   // враги: ещё −30% скорострельности
     G.en.push({x,y,vx,vy,hp,maxhp:hp,r:size/2,type,flash:0,fireT});
   }
   function boom(x,y){ for(let i=0;i<12;i++){ const a=Math.random()*7, s=1+Math.random()*3;
@@ -1019,7 +1019,7 @@
     for(const c of G.crates){ c.y+=c.vy; c.spin+=0.03; }
     // движение врагов + их стрельба
     for(const e of G.en){ e.x+=e.vx; e.y+=e.vy; if(e.flash>0)e.flash--;
-      if(e.type!=='s' && e.y>0 && e.y<SH*0.85){ e.fireT--; if(e.fireT<=0){ enemyFire(e); e.fireT=(e.type==='b'?171:124)+Math.floor(Math.random()*67); } } }   // враги: −30% скорострельности
+      if(e.type!=='s' && e.y>0 && e.y<SH*0.85){ e.fireT--; if(e.fireT<=0){ enemyFire(e); e.fireT=(e.type==='b'?244:177)+Math.floor(Math.random()*96); } } }   // враги: ещё −30% скорострельности
     // пули врагов
     for(const b of G.ebul){ b.x+=b.vx; b.y+=b.vy; }
     G.ebul=G.ebul.filter(b=>b.y>-24&&b.y<SH+24&&b.x>-24&&b.x<SW+24);
