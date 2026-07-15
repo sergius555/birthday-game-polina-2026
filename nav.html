@@ -682,7 +682,7 @@
 
   function update(){
     const now=performance.now(); let dt=now-(S.last||now); S.last=now; if(dt>50)dt=50; S.elapsed+=dt;
-    S.speed=Math.min(9.6,4.8+(S.elapsed/1000)*0.16);   // плавный разгон на весь 30-сек полёт
+    S.speed=Math.min(9.6,4.8+(S.elapsed/1000)*0.08);   // разгон в 2 раза медленнее
     S.dist+=S.speed;
     // ship physics
     S.vy+=GRAV;S.shipY+=S.vy;
