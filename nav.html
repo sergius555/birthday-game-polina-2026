@@ -662,7 +662,7 @@
   window.addEventListener('keydown',e=>{ if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();} });
 
   function spawn(){
-    const high=Math.random()<0.42;   // ~42% высокие (не прыгай), остальные низкие (перепрыгни)
+    const high=Math.random()<0.5;   // 50/50 высокие (не прыгай) / низкие (перепрыгни) — больше решений
     if(high){
       const w=40+Math.random()*16, h=118+Math.random()*46;   // высокий и большой — перепрыгнуть нельзя, только под ним по земле
       const yb=groundY-SHIP.h-24;     // низ высокого препятствия — с зазором над кораблём на земле
@@ -672,7 +672,7 @@
       S.obs.push({type:'ast',x:W+20,w:r*2,h:r*2,y:groundY-r*2,r});
     }
     // разрыв до СЛЕДУЮЩЕГО препятствия — фиксируем один раз (иначе рандом «смазывается» покадрово)
-    S.nextGap = 230 + S.speed*16 + Math.random()*300;   // адекватный рандом: не впритык и не скучно ровно
+    S.nextGap = 175 + S.speed*11 + Math.random()*235;   // потеснее — меньше времени на реакцию, но проходимо
   }
   function needSpawn(){
     if(!S.obs.length)return true;
@@ -683,7 +683,7 @@
 
   function update(){
     const now=performance.now(); let dt=now-(S.last||now); S.last=now; if(dt>50)dt=50; S.elapsed+=dt;
-    S.speed=Math.min(9.6,4.8+(S.elapsed/1000)*0.08);   // разгон в 2 раза медленнее
+    S.speed=Math.min(15,7.5+(S.elapsed/1000)*0.125);   // +20% к базовой скорости и ускорению
     S.dist+=S.speed;
     // ship physics
     S.vy+=GRAV;S.shipY+=S.vy;
@@ -959,7 +959,7 @@
     scv.width=SW*sdpr; scv.height=SH*sdpr; sctx.setTransform(sdpr,0,0,sdpr,0,0); }
 
   function resetRound(){
-    G.ship.x=SW/2; G.ship.y=SH-90; G.bul=[]; G.ebul=[]; G.en=[]; G.crates=[]; G.expl=[]; G.kills=0; G.fire=0; G.spawn=30; G.crateT=300; G.lives=3; G.shake=0; G.weapon='single'; G.weaponT=0; G.wing=false; G.elapsed=0; G.last=0;
+    G.ship.x=SW/2; G.ship.y=SH-90; G.bul=[]; G.ebul=[]; G.en=[]; G.crates=[]; G.expl=[]; G.kills=0; G.fire=0; G.spawn=15; G.crateT=300; G.lives=3; G.shake=0; G.weapon='single'; G.weaponT=0; G.wing=false; G.elapsed=0; G.last=0;
     updateHearts(); resetKnob();
     var f=document.getElementById('sprogfill'), sh=document.getElementById('sprogship');
     if(f)f.style.width='0%'; if(sh)sh.style.left='4%';
@@ -1014,7 +1014,7 @@
     for(const b of G.bul){ if(b.homing) homeBullet(b); b.x+=b.vx; b.y+=b.vy; b.life--; }
     // оружие и напарники — навсегда (сбрасываются только при гибели / прилёте)
     // спавн врагов и ящиков-бонусов
-    G.spawn--; if(G.spawn<=0){ spawnEnemy(); G.spawn=48+Math.floor(Math.random()*36); }
+    G.spawn--; if(G.spawn<=0){ spawnEnemy(); G.spawn=24+Math.floor(Math.random()*18); }   // ×2 количество врагов
     G.crateT--; if(G.crateT<=0){ spawnCrate(); G.crateT=360+Math.floor(Math.random()*200); }
     for(const c of G.crates){ c.y+=c.vy; c.spin+=0.03; }
     // движение врагов + их стрельба
@@ -1049,8 +1049,9 @@
     if(prog>=1) swin();
   }
   function enemyFire(e){
-    if(e.type==='m'){ const n=Math.hypot(e.vx,e.vy)||1; G.ebul.push({x:e.x,y:e.y+e.r*0.5,vx:e.vx/n*4.2,vy:e.vy/n*4.2}); }   // средний — по направлению полёта
-    else { for(let i=0;i<8;i++){ const a=i*Math.PI/4; G.ebul.push({x:e.x,y:e.y,vx:Math.cos(a)*3.2,vy:Math.sin(a)*3.2}); } }  // большой — во все стороны
+    const dx=G.ship.x-e.x, dy=G.ship.y-e.y, n=Math.hypot(dx,dy)||1, ux=dx/n, uy=dy/n, base=Math.atan2(uy,ux);
+    if(e.type==='m'){ const sp=4.6; G.ebul.push({x:e.x,y:e.y+e.r*0.4,vx:ux*sp,vy:uy*sp}); }                 // средний — прицельный выстрел в игрока
+    else { const sp=3.8; for(let k=-1;k<=1;k++){ const a=base+k*0.17; G.ebul.push({x:e.x,y:e.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp}); } }   // большой — веер из 3, целится в игрока
   }
   function playerHit(){ G.lives--; G.inv=90; G.shake=12; boom(G.ship.x,G.ship.y); updateHearts();
     if(G.lives<=0) shipDown(); }
